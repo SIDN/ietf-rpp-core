@@ -342,9 +342,83 @@ RPP-code: 1000
 TODO
 ```
 
+## Processes Path Segment
+
+Each provisioning object may have one or more running processes, such as a transfer or deletion. Each process can have its own transient data, which is distinct from the data of the provisioning object itself. The processes can be started, stopped, or interacted with using their own specific set of representations and operations.
+
+All processes related to a provisioning object in RPP MUST exist under the `/{collection}/{id}/processes/{process_name}` path.
+
+### Generic proces interface
+
+A generic interface for interacting with the processes is defined as follows:
+
+#### Starting:
+`POST /{collection}/{id}/processes/{process_name}`
+
+The payload of such a request contains process-specific input information. A started process MAY create a resource at `/{collection}/{id}/processes/{process_name}/latest` to access and interact with the latest process instance. In such case the response MUST be a 302 Found with a `Location` header pointing to the created resource.
+In case process is created, executed and immediately terminated by the server, a 302 Found response MAY still be provided where the result of the process could be obtained by the client.
+
+Server MAY decide not to expose any resource for interaction with the created process, in such case a 202 Accepted MUST be provided.
+
+#### Cancelling:
+`DELETE /{collection}/{id}/processes/{process_name}/latest`
+
+This request is intended to stop the running process. The server MUST return a 204 response if the process has been stopped and the resource is gone, or a 202 response if the process has been stopped but the resource remains.
+
+#### Status
+`GET /{collection}/{id}/processes/{process_name}/latest`
+
+This retrieves the representation of the process's status. If no process is running, the server MAY keep the status of the last performed process and provide as response or return a 404 response otherwise.
+
+#### Other operations
+
+Other operations on a process can be performed by adding path segments to the `/{collection}/{id}/processes/{process_name}/latest` URL path.
+
+### Relation to object representation
+
+In certain situations, it may be necessary to start a process during a resource's creation or update. In these cases, the representation sent to the server would contain a combination of object data and transient, process-related data. For the process data to be distinct and consistent with the URL path structure, it shall be enclosed in the `processes/{process_name}` JSON path when transmitted with the object's representation.
+
+Structure:
+
+```http
+POST /.../{collection}/{id}
+...
+{
+    ... object data ...
+    "processes": {
+        "{process_name}": {
+            ... process data ...
+        }
+    }
+    ...
+}
+```
+
+Example: Domain Create request with 2-year registration:
+
+```http
+POST /rpp/v1/domains HTTP/2
+Host: rpp.example.nl
+Authorization: Bearer <token>
+Accept: application/rpp+json
+Content-Type: application/rpp+json
+Accept-Language: en
+Content-Length: 220
+
+{
+    "name": "example.nl",
+    "processes": {
+        "creation": {
+            "periods": "P2Y"
+        }
+    }
+    ... other domain data ...
+}
+```
+
 ## Renew Resource
 
-- Request: POST /{collection}/{id}/renewal
+- Request: POST /{collection}/{id}/processes/renewal
 - Request message: Optional
 - Response message: Renew response
 
@@ -355,7 +429,7 @@ Not all EPP object types include support for the renew command. The current-date
 Example Domain Renew request:
 
 ```http
-POST /rpp/v1/domains/example.nl/renewal?current-date=2024-01-01 HTTP/2
+POST /rpp/v1/domains/example.nl/processes/renewal?current-date=2024-01-01 HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -368,7 +442,7 @@ Content-Length: 0
 Example Domain Renew request, using 1 year period:
 
 ```http
-POST /rpp/v1/domains/example.nl/renewal?current-date=2024-01-01?unit=y&value=1 HTTP/2
+POST /rpp/v1/domains/example.nl/processes/renewal?current-date=2024-01-01?unit=y&value=1 HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -399,7 +473,7 @@ TODO
 
 ### Start
 
-- Request: POST /{collection}/{id}/transfer
+- Request: POST /{collection}/{id}/processes/transfer
 - Request message: Optional
 - Response message: Status
 
@@ -410,7 +484,7 @@ If the transfer request is successful, then the response MUST include the Locati
 Example request not using object authorization:
 
 ```http
-POST /rpp/v1/domains/example.nl/transfer HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfer HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -423,7 +497,7 @@ Content-Length: 0
 Example request using object authorization:
 
 ```http
-POST /rpp/v1/domains/example.nl/transfer HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfer HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -437,7 +511,7 @@ Content-Length: 0
 Example request using 1 year renewal period, using the `unit` and `value` query parameters:
 
 ```http
-POST /rpp/v1/domains/example.nl/transfer?unit=y&value=1 HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfer?unit=y&value=1 HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -456,7 +530,7 @@ Server: Example RPP server v1.0
 Content-Language: en
 Content-Length: 328
 Content-Type: application/rpp+json
-Location: https://rpp.example.nl/rpp/v1/domains/example.nl/transfer
+Location: https://rpp.example.nl/rpp/v1/domains/example.nl/processes/transfer
 RPP-code: 1001
 
 TODO
@@ -467,14 +541,14 @@ TODO
 A transfer object may not exist, when no transfer has been initiated for the specified object.
 The client MUST use the HTTP GET method and MUST NOT add content to the HTTP message body.
 
-- Request: GET {collection}/{id}/transfer
+- Request: GET {collection}/{id}/processes/transfer
 - Request message: Optional
 - Response message: Transfer Status response
 
 Example domain name Transfer Status request without authorization information required:
 
 ```http
-GET /rpp/v1/domains/example.nl/transfer HTTP/2
+GET /rpp/v1/domains/example.nl/processes/transfer HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -488,7 +562,7 @@ If the requested transfer object has associated authorization information that i
 Example domain name Transfer Query request using RPP-AuthInfo header:
 
 ```http
-GET /rpp/v1/domains/example.nl/transfer HTTP/2
+GET /rpp/v1/domains/example.nl/processes/transfer HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -503,7 +577,7 @@ If the requested object has associated authorization information linked to anoth
 Example domain name Transfer Query request and authorization using RPP-AuthInfo and the RPP-Roid header:
 
 ```http
-GET /rpp/v1/domains/example.nl/transfer HTTP/2
+GET /rpp/v1/domains/example.nl/processes/transfer HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -530,7 +604,7 @@ TODO
 
 ### Cancel
 
-- Request: POST /{collection}/{id}/transfer/cancelation
+- Request: POST /{collection}/{id}/processes/transfer/cancelation
 - Request message: Optional
 - Response message: Status
 
@@ -539,7 +613,7 @@ The new sponsoring client MUST use the HTTP POST method to cancel a requested tr
 Example request:
 
 ```http
-POST /rpp/v1/domains/example.nl/transfer/cancelation HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfer/cancelation HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -564,7 +638,7 @@ TODO
 
 ### Reject
 
-- Request: POST /{collection}/{id}/transfer/rejection
+- Request: POST /{collection}/{id}/processes/transfer/rejection
 - Request message:  None
 - Response message: Status
 
@@ -573,7 +647,7 @@ The currently sponsoring client of the object MUST use the HTTP POST method to r
 Example request:
 
 ```http
-POST /rpp/v1/domains/example.nl/transfer/rejection HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfer/rejection HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -599,7 +673,7 @@ TODO
 
 ### Approve
 
-- Request: POST /{collection}/{id}/transfer/approval
+- Request: POST /{collection}/{id}/processes/transfer/approval
 - Request message: Optional
 - Response message: Status
 
@@ -608,7 +682,7 @@ The currently sponsoring client MUST use the HTTP POST method to approve a trans
 Example Approve request:
 
 ```http
-POST /rpp/v1/domains/example.nl/transfer/approval HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfer/approval HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
