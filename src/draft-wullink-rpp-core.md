@@ -386,7 +386,7 @@ Each provisioning object may be related to one or more running processes, such a
 
 All processes related to a provisioning object in RPP MUST exist under the `/{collection}/{id}/processes/{process_name}` path.
 
-The server operation MAY decide for which processes such resources are existing, whether they only exist for the currently running processes or also for completed or cancelled processes. The period for which completed processes remain available for retrieval is defined by server policy.
+The server operator MAY decide for which processes such resources are existing, whether they only exist for the currently running processes or also for completed or cancelled processes. The period for which completed processes remain available for retrieval is defined by server policy.
 
 ### Generic proces interface
 
@@ -395,14 +395,15 @@ A generic interface for interacting with the processes is defined as follows:
 #### Starting:
 `POST /{collection}/{id}/processes/{process_name}`
 
-The payload of such a request contains process-specific input information. A started process MAY create a resource at `/{collection}/{id}/processes/{process_name}/latest` to access and interact with the latest process instance. In such case the response MUST be a 302 Found with a `Location` header pointing to the created resource.
-In case process is created, executed and immediately terminated by the server, a 302 Found response MAY still be provided where the result of the process could be obtained by the client.
+The payload of such a request contains process-specific input information. A started process MAY create a resource at `/{collection}/{id}/processes/{process_name}/latest` to access and interact with the latest process instance. In such case the response MUST be a 201 Created with a `Location` header pointing to the created resource together with the process state representation.
 
-A started process MAY create a resource at `/{collection}/{id}/processes/{process_name}/latest` to access and interact with the latest process instance. In such case the response MUST be a 303 See Other with a `Location` header pointing to the created process resource.
+The server operator MAY support direct access to process resources using server generated identifier. Such resource MAY be accessible using following URL: `/{collection}/{id}/processes/{process_name}/{process_id}`, where process_id is the process identifier.
 
-When a process is created, executed and immediately completed by the server, a 303 See Other response MAY still be provided where the result of the process could be obtained by the client.
+A started process MAY also expose a resource at `/{collection}/{id}/processes/{process_name}/latest` to access and interact with the latest process instance. In case server offers any access to process information of given process name, the access to the last instance using `/{collection}/{id}/processes/{process_name}/latest` URL is MANDATORY.
 
-Server MAY decide not to expose any resource for interaction with a created process, in such case a 202 Accepted MUST be provided.
+In both cases the response to a POST request MUST be a 201 Created with with the process state representation and a `Location` header pointing to the created process resource.
+
+When a process is created, executed and immediately completed by the server, a 201 Created response MAY still be provided together with the representation of the process result.
 
 Server MAY decide not to expose any resource for interaction with the created process, in such case a 202 Accepted MUST be provided.
 
@@ -426,7 +427,7 @@ If the client wants to cancel a specific process instance, the request MUST be:
 
 `DELETE /{collection}/{id}/processes/{process_name}/{process_id}`
 
-This request is intended to stop the running process. The server MUST return a 204 response if the process has been stopped and the resource is gone, or a 202 response if the process has been stopped but the resource remains.
+This request is intended to stop the running process. The server MUST return a 204 response if the process has been stopped and the resource is gone, or a 200 response if the process has been stopped but the resource remains.
 
 #### Status
 
@@ -456,11 +457,11 @@ The following URL structure and HTTP method MAY be exposed by the server and MUS
 
 `GET /{collection}/{id}/processes/`
 
-It is up to server policy to define which kind of processes and in which state, running or past, are being listed. A server MAY also not implement this end point at all returning either 404 Not Found or 501 Not Implemented response code.
+It is up to server policy to define the type of processes and state, running or completed, made available for the client. A server MAY also choose not implement this end point at all returning either the HTPP status code 404 Not Found or a 501 Not Implemented status code.
 
 ### Relation to object representation
 
-In certain situations a resource creation is performed by a process same time. In these cases, the representation sent to the server MAY contain a combination of object data and transient, process-related data. For example domain registration would contain domain representation which will be stored with domain object, and the registration process data such as registration duration or price, which would be transient as registration process data.
+In certain situations a resource creation may require additional process data or implicitly start an asynchronous process with own inputs, lifecycle and state. In these cases, the representation sent to the server MAY contain a combination of object data and process-related data. For example a domain create request contains domain representation data which will be stored with domain object, and domain creation process data such as registration duration or price, which would be part as registration process data, but not directly stored with the domain object.
 
 For the process data to be distinct and consistent with the URL path structure, it MUST be enclosed in the `processes/{process_name}` JSON path when transmitted with the object's representation.
 
