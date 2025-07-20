@@ -148,7 +148,7 @@ Some EPP result codes, like 01500, 02500, 02501 and 02502 are related to session
 When an error occurs that prevents processing of the requested action, an RPP server MUST respond using a Problem Detail
 document [@!RFC9457] detailing what went wrong, or what was not acceptable to the server.
 The `type` field SHOULD be a URN under the `urn:ietf:params:rpp:code:` namespace, using the RPP response code; e.g.
-with a header of `RPP-Code: 2005` the `type` field is `urn:ietf:params:rpp:code:2005`.
+with a header of `RPP-Code: 02005` the `type` field is `urn:ietf:params:rpp:code:02005`.
 Implementations MAY use other URIs, for more specificity about custom error types.
 
 Implementations MAY add extension fields to the Problem Detail document to convey additional information about the
