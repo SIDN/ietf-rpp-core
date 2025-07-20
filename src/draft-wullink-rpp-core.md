@@ -735,12 +735,11 @@ TODO
 ## URN Sub-namespace for RPP (urn:ietf:params:rpp)
 
 The IANA is requested to add the following value to the "IETF URN Sub-namespace for Registered Protocol Parameter 
-Identifiers" registry, following the template in [RFC3553]:
+Identifiers" registry, following the template in [@!RFC3553]:
 
-Registry name:  acme  
-Specification:  This Document  
-Repository:  http://www.iana.org/assignments/acme  
-Index value:  No transformation needed.
+Registered Parameter Identifier: rpp  
+Reference:  This Document  
+IANA Registry Reference: [@!RFC5730]
 
 # Internationalization Considerations
 
