@@ -152,7 +152,18 @@ with a header of `RPP-Code: 02005` the `type` field is `urn:ietf:params:rpp:code
 Implementations MAY use other URIs, for more specificity about custom error types.
 
 Implementations MAY add extension fields to the Problem Detail document to convey additional information about the
-causes of the error.
+causes of the error. For example, to indicate the account balance on a billing failure, the following could be sent:
+
+```json
+{
+  "type": "urn:ietf:params:rpp:code:2104",
+  "title": "Billing failure",
+  "status": 405,
+  "detail": "Not enough balance on account to create domain",
+  "balance": 10.0,
+  "action_cost": 25.0
+}
+```
 
 # Endpoints
 
