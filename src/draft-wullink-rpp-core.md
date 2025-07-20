@@ -382,38 +382,25 @@ TODO
 
 ## Renew Resource
 
-- Request: POST /{collection}/{id}/renewal
-- Request message: Optional
+- Request: POST /{collection}/{id}/processes/renewals
+- Request message: Renew request
 - Response message: Renew response
 
-Not all EPP object types include support for the renew command. The current-date query parameter MAY be used for date on which the current validity period ends, as described in [@!RFC5731, section 3.2.3]. The new period MAY be added to the request using the unit and value request parameters. The response MUST include the Location header for the renewed object.
-
- **TODO:**: current-date: can also be a HTTP header?
+Not every object resource includes support for the renew command. The response MUST include the Location header for the created renewal process resource.
 
 Example Domain Renew request:
 
 ```http
-POST /rpp/v1/domains/example.nl/renewal?current-date=2024-01-01 HTTP/2
+POST /rpp/v1/domains/example.nl/processes/renewals HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Content-Type: application/rpp+json
+RPP-Cltrid: ABC-12345
 Accept-Language: en
-Content-Length: 0
+Content-Length: 210
 
-```
-
-Example Domain Renew request, using 1 year period:
-
-```http
-POST /rpp/v1/domains/example.nl/renewal?current-date=2024-01-01?unit=y&value=1 HTTP/2
-Host: rpp.example.nl
-Authorization: Bearer <token>
-Accept: application/rpp+json
-Content-Type: application/rpp+json
-Accept-Language: en
-Content-Length: 0
-
+TODO: add renew request data here
 ```
 
 Example Renew response:
@@ -423,12 +410,14 @@ HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Language: en
+RPP-Svtrid: XYZ-12345
+RPP-Cltrid: ABC-12345
 Content-Length: 205
-Location: https://rpp.example.nl/rpp/v1/domains/example.nl
+Location: https://rpp.example.nl/rpp/v1/domains/example.nl/processes/renewals/XYZ-12345
 Content-Type: application/rpp+json
 RPP-code: 01000
 
-TODO
+TODO add renew response data here
 ```
 
 ## Transfer Resource
