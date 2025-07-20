@@ -33,6 +33,13 @@ organization = "DENIC"
   email = "pawel.kowalik@denic.de"
   uri = "https://denic.de/"
 
+[[author]]
+fullname="Q Misell"
+organization = "AS207960 Cyfyngedig"
+  [author.address]
+  email = "q@as207960.net"
+  uri = "https://magicalcodewit.ch"
+
 %%%
 
 .# Abstract
@@ -135,6 +142,17 @@ Table 1: RPP result code and HTTP Status-Code mapping.
 | 501 Not Implemented | The requested command or feature is not implemented. | 02100-02103 |
 
 Some EPP result codes, like 01500, 02500, 02501 and 02502 are related to session management and therefore not applicable to a sessionless RPP protocol.
+
+# Problem Detail responses for errors
+
+When an error occurs that prevents processing of the requested action, an RPP server MUST respond using a Problem Detail
+document [@!RFC9457] detailing what went wrong, or what was not acceptable to the server.
+The `type` field SHOULD be a URN under the `urn:ietf:params:rpp:code:` namespace, using the RPP response code; e.g.
+with a header of `RPP-Code: 2005` the `type` field is `urn:ietf:params:rpp:code:2005`.
+Implementations MAY use other URIs, for more specificity about custom error types.
+
+Implementations MAY add extension fields to the Problem Detail document to convey additional information about the
+causes of the error.
 
 # Endpoints
 
@@ -714,7 +732,15 @@ TODO
 
 # IANA Considerations
 
-TODO
+## URN Sub-namespace for RPP (urn:ietf:params:rpp)
+
+The IANA is requested to add the following value to the "IETF URN Sub-namespace for Registered Protocol Parameter 
+Identifiers" registry, following the template in [RFC3553]:
+
+Registry name:  acme  
+Specification:  This Document  
+Repository:  http://www.iana.org/assignments/acme  
+Index value:  No transformation needed.
 
 # Internationalization Considerations
 
