@@ -64,7 +64,7 @@ URL - A Uniform Resource Locator as defined in [@!RFC3986].
 
 Resource - An object having a type, data, and possible relationship to other resources, identified by a URL.
 
-RPP client - An HTTP user agent performing an RPP request 
+RPP client - An HTTP user agent performing an RPP request
 
 RPP server - An HTTP server responsible for processing requests and returning results in any supported media type.
 
@@ -81,7 +81,6 @@ All example requests assume a RPP server using HTTP version 2 is listening on th
 A RPP request does not always require a request message body. The information conveyed by the HTTP method, URL, and request headers may be sufficient for the server to be able to successfully processes a request. However, the client MUST include a request message body when the server requires additional attributes to be present in the request message. The RPP HTTP headers listed below use the "RPP-" prefix, following the recommendations in [@!RFC6648].
 
 - `RPP-Cltrid`:  The client transaction identifier is the equivalent of the `clTRID` element defined in [@!RFC5730] and MUST be used accordingly, when the HTTP message body does not contain an EPP request that includes a cltrid.
-
 - `RPP-Authorization`: The client MAY use this header to send authorization information in the format `<method> <authorization information>`, similar to the HTTP `Authorization` header. The `<method>` indicates the type of authorization being used. For the `eppauthcode` method, the authorization information MUST use a semicolon-separated key/value format: `AuthInfo=<AuthInfo>; Roid=<Roid>`, where `AuthInfo` is REQUIRED and `Roid` is OPTIONAL unless required by the context (as described in [@!RFC5731], [@!RFC5733], and [@!RFC5730]). For other methods, the authorization information format is method-specific and may not use key/value pairs unless otherwise specified.
 
 # Response Headers
@@ -96,7 +95,46 @@ The server HTTP response contains a status code, headers, and MAY contain an RPP
 
 For the EPP codes related to session management (1500, 2500, 2501 and 2502) there are no corresponding RPP codes.
 
+In order for RPP to be backwards compatible with EPP, RPP will use 5-digit coding of the result codes, where first digit will denote origin specification of the result codes.
+
+For [@!RFC5730] Result Codes the leading digit MUST be "0".
+For RPP result codes the leading digit MUST be "1". For avoidance of confusion RPP MUST not define new codes with the same semantic meaning as already defined in EPP.
+
+For RPP codes the remaining 4 digits MUST keep the same semantics as [@!RFC5730] Result Codes.
+
 - `RPP-Queue-Size`: Return the number of unacknowledged messages in the client message queue. The server MAY include this header in all RPP responses.
+
+# Error handling and relation between HTTP status codes and RPP codes
+
+RPP leverages standard HTTP status codes to reflect the outcome of RPP operations. The RPP result codes are based on the EPP result codes defined in [@!RFC5730]. This allows clients to handle responses generically using common HTTP patterns. While the HTTP status code provides the primary, high-level outcome, the specific RPP result code MUST still be provided in the `RPP-Code` HTTP header for detailed diagnostics.
+
+The mapping strategy is to use the most specific HTTP code that accurately reflects the operation's result.
+
+For common and well-defined outcomes, a specific HTTP status code is used. For example, an attempt to access a non-existent resource (EPP code 2302) MUST return 404 Not Found, and an attempt to create a resource that already exists (EPP code 2303) MUST return 409 Conflict. This allows a client to handle these common situations based on the HTTP code alone.
+
+For all other failures, a generic HTTP status code is used. Client-side errors (e.g., syntax, parameter, or policy violations) MUST return 400 Bad Request. Server-side failures MUST return 500 Internal Server Error.
+
+The server MUST return HTTP status codes, following the mapping rules in Table 1.
+
+Table 1: RPP result code and HTTP Status-Code mapping.
+
+| HTTP Status-Code | Description | Corresponding RPP result code(s) |
+| ---------------- | ----------- | -------------------------------- |
+| Success (2xx)    |             |                                  |
+| 200 OK | The request was successful (e.g., for GET or UPDATE). | 01000 (in all cases not specified otherwise),01300,01301 |
+| 201 Created | The resource was created successfully. | 01000 for resource creating requests (POST/PUT) |
+| 202 Accepted | The request was accepted for asynchronous processing. | 01001 |
+| 204 No Content | The resource was deleted successfully. | 01000 for DELETE |
+| Client Errors (4xx) |   |   |
+| 400 Bad Request | Generic client-side error (syntax, parameters, policy). | 02000-02005,02104-02106,02300-02301,02304-02308 |
+| 403 Forbidden | Authentication or authorization failed. | 02200-02202 |
+| 404 Not Found | The requested resource does not exist. | 02303 |
+| 409 Conflict | The resource could not be created because it already exists. | 02302 |
+| Server Errors (5xx) |   |   |
+| 500 Internal Server Error | Generic server-side error; command failed. | 02400 |
+| 501 Not Implemented | The requested command or feature is not implemented. | 02100-02103 |
+
+Some EPP result codes, like 01500, 02500, 02501 and 02502 are related to session management and therefore not applicable to a sessionless RPP protocol.
 
 # Endpoints
 
@@ -146,7 +184,7 @@ Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 RPP-Cltrid: ABC-12345
 RPP-Svtrid: XYZ-12345
-RPP-result-code: 1000
+RPP-code: 01000
 Content-Length: 0
 
 ```
@@ -159,7 +197,7 @@ The Object Info request MUST use the HTTP GET method on a resource identifying a
 - Request message: Optional
 - Response message: Info response
 
-Example request for an object not using authorization information.  
+Example request for an object not using authorization information.
 
 ```http
 GET /rpp/v1/domains/example.nl HTTP/2
@@ -171,7 +209,7 @@ RPP-Cltrid: ABC-12345
 
 ```
 
-Example request using RPP-AuthInfo and RPP-Roid headers for an object that has attached authorization information.  
+Example request using RPP-AuthInfo and RPP-Roid headers for an object that has attached authorization information.
 
 ```http
 GET /rpp/v1/domains/example.nl HTTP/2
@@ -194,7 +232,7 @@ Server: Example RPP server v1.0
 Content-Length: 424
 Content-Type: application/rpp+json
 Content-Language: en
-RPP-code: 1000
+RPP-code: 01000
 
 TODO: JSON message here
 ```
@@ -230,7 +268,7 @@ Server: Example RPP server v1.0
 Content-Length: 312
 Content-Type: application/rpp+json
 Content-Language: en
-RPP-code: 1301
+RPP-code: 01301
 
 TODO
 ```
@@ -241,7 +279,7 @@ TODO
 - Request message: None
 - Response message: Poll Ack response
 
-The client MUST use the HTTP DELETE method to acknowledge receipt of a message from the queue. The "msgID" attribute of a received RPP Poll message MUST be included in the message resource URL, using the {id} path element. The server MUST use RPP headers to return the RPP result code and the number of messages left in the queue. The server MUST NOT add content to the HTTP message body of a successful response, the server may add content to the message body of an error response. 
+The client MUST use the HTTP DELETE method to acknowledge receipt of a message from the queue. The "msgID" attribute of a received RPP Poll message MUST be included in the message resource URL, using the {id} path element. The server MUST use RPP headers to return the RPP result code and the number of messages left in the queue. The server MUST NOT add content to the HTTP message body of a successful response, the server may add content to the message body of an error response.
 
 Example request:
 
@@ -262,7 +300,7 @@ HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Language: en
-RPP-code: 1000
+RPP-code: 01000
 RPP-Queue-Size: 0
 RPP-Svtrid: XYZ-12345
 RPP-Cltrid: ABC-12345
@@ -303,7 +341,7 @@ Content-Language: en
 Content-Length: 642
 Content-Type: application/rpp+json
 Location: https://rpp.example.nl/rpp/v1/domains/example.nl
-RPP-code: 1000
+RPP-code: 01000
 
 TODO
 ```
@@ -337,7 +375,7 @@ Server: Example RPP server v1.0
 Content-Length: 80
 RPP-Svtrid: XYZ-12345
 RPP-Cltrid: ABC-12345
-RPP-code: 1000
+RPP-code: 01000
 
 TODO
 ```
@@ -466,38 +504,25 @@ Content-Length: 220
 
 ## Renew Resource
 
-- Request: POST /{collection}/{id}/processes/renewal
-- Request message: Optional
+- Request: POST /{collection}/{id}/processes/renewals
+- Request message: Renew request
 - Response message: Renew response
 
-Not all EPP object types include support for the renew command. The current-date query parameter MAY be used for date on which the current validity period ends, as described in [@!RFC5731, section 3.2.3]. The new period MAY be added to the request using the unit and value request parameters. The response MUST include the Location header for the renewed object.
-
- **TODO:**: current-date: can also be a HTTP header?
+Not every object resource includes support for the renew command. The response MUST include the Location header for the created renewal process resource.
 
 Example Domain Renew request:
 
 ```http
-POST /rpp/v1/domains/example.nl/processes/renewal?current-date=2024-01-01 HTTP/2
+POST /rpp/v1/domains/example.nl/processes/renewals HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Content-Type: application/rpp+json
+RPP-Cltrid: ABC-12345
 Accept-Language: en
-Content-Length: 0
+Content-Length: 210
 
-```
-
-Example Domain Renew request, using 1 year period:
-
-```http
-POST /rpp/v1/domains/example.nl/processes/renewal?current-date=2024-01-01?unit=y&value=1 HTTP/2
-Host: rpp.example.nl
-Authorization: Bearer <token>
-Accept: application/rpp+json
-Content-Type: application/rpp+json
-Accept-Language: en
-Content-Length: 0
-
+TODO: add renew request data here
 ```
 
 Example Renew response:
@@ -507,12 +532,14 @@ HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Language: en
+RPP-Svtrid: XYZ-12345
+RPP-Cltrid: ABC-12345
 Content-Length: 205
-Location: https://rpp.example.nl/rpp/v1/domains/example.nl
+Location: https://rpp.example.nl/rpp/v1/domains/example.nl/processes/renewals/XYZ-12345
 Content-Type: application/rpp+json
-RPP-code: 1000
+RPP-code: 01000
 
-TODO
+TODO add renew response data here
 ```
 
 ## Transfer Resource
@@ -521,7 +548,7 @@ TODO
 
 ### Start
 
-- Request: POST /{collection}/{id}/processes/transfer
+- Request: POST /{collection}/{id}/processes/transfers
 - Request message: Optional
 - Response message: Status
 
@@ -532,7 +559,7 @@ If the transfer request is successful, then the response MUST include the Locati
 Example request not using object authorization:
 
 ```http
-POST /rpp/v1/domains/example.nl/processes/transfer HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfers HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -545,7 +572,7 @@ Content-Length: 0
 Example request using object authorization:
 
 ```http
-POST /rpp/v1/domains/example.nl/processes/transfer HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfers HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -559,14 +586,17 @@ Content-Length: 0
 Example request using 1 year renewal period, using the `unit` and `value` query parameters:
 
 ```http
-POST /rpp/v1/domains/example.nl/processes/transfer?unit=y&value=1 HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfers HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
-Content-Length: 0
+Content-Length: 23
 
+{
+  "duration": "P2Y"
+}
 ```
 
 Example Transfer response:
@@ -576,12 +606,19 @@ HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Language: en
-Content-Length: 328
+Content-Length: 182
 Content-Type: application/rpp+json
-Location: https://rpp.example.nl/rpp/v1/domains/example.nl/processes/transfer
-RPP-code: 1001
+Location: https://rpp.example.nl/rpp/v1/domains/example.nl/processes/transfers/latest
+RPP-code: 01001
 
-TODO
+{
+  "trStatus": "pending",
+  "reID": "ClientX",
+  "acID": "ClientY",
+  "reDate": "2000-06-06T22:00:00.0Z",
+  "acDate": "2000-06-11T22:00:00.0Z",
+  "exDate": "2002-09-08T22:00:00.0Z
+}
 ```
 
 ### Status
@@ -589,14 +626,14 @@ TODO
 A transfer object may not exist, when no transfer has been initiated for the specified object.
 The client MUST use the HTTP GET method and MUST NOT add content to the HTTP message body.
 
-- Request: GET {collection}/{id}/processes/transfer
+- Request: GET {collection}/{id}/processes/transfers
 - Request message: Optional
 - Response message: Transfer Status response
 
 Example domain name Transfer Status request without authorization information required:
 
 ```http
-GET /rpp/v1/domains/example.nl/processes/transfer HTTP/2
+GET /rpp/v1/domains/example.nl/processes/transfers HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -610,7 +647,7 @@ If the requested transfer object has associated authorization information that i
 Example domain name Transfer Query request using RPP-AuthInfo header:
 
 ```http
-GET /rpp/v1/domains/example.nl/processes/transfer HTTP/2
+GET /rpp/v1/domains/example.nl/processes/transfers HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -625,7 +662,7 @@ If the requested object has associated authorization information linked to anoth
 Example domain name Transfer Query request and authorization using RPP-AuthInfo and the RPP-Roid header:
 
 ```http
-GET /rpp/v1/domains/example.nl/processes/transfer HTTP/2
+GET /rpp/v1/domains/example.nl/processes/transfers HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -645,14 +682,14 @@ Server: Example RPP server v1.0
 Content-Length: 230
 Content-Type: application/rpp+json
 Content-Language: en
-RPP-code: 1000
+RPP-code: 01000
 
 TODO
 ```
 
 ### Cancel
 
-- Request: POST /{collection}/{id}/processes/transfer/cancelation
+- Request: POST /{collection}/{id}/processes/transfers/cancelation
 - Request message: Optional
 - Response message: Status
 
@@ -661,7 +698,7 @@ The new sponsoring client MUST use the HTTP POST method to cancel a requested tr
 Example request:
 
 ```http
-POST /rpp/v1/domains/example.nl/processes/transfer/cancelation HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfers/cancelation HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -679,14 +716,14 @@ Server: Example RPP server v1.0
 Content-Length: 80
 RPP-Svtrid: XYZ-12345
 RPP-Cltrid: ABC-12345
-RPP-code: 1000
+RPP-code: 01000
 
 TODO
 ```
 
 ### Reject
 
-- Request: POST /{collection}/{id}/processes/transfer/rejection
+- Request: POST /{collection}/{id}/processes/transfers/rejection
 - Request message:  None
 - Response message: Status
 
@@ -695,7 +732,7 @@ The currently sponsoring client of the object MUST use the HTTP POST method to r
 Example request:
 
 ```http
-POST /rpp/v1/domains/example.nl/processes/transfer/rejection HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfers/rejection HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -713,7 +750,7 @@ Server: Example RPP server v1.0
 Content-Length: 80
 RPP-Svtrid: XYZ-12345
 RPP-Cltrid: ABC-12345
-RPP-code: 1000
+RPP-code: 01000
 
 TODO
 
@@ -721,7 +758,7 @@ TODO
 
 ### Approve
 
-- Request: POST /{collection}/{id}/processes/transfer/approval
+- Request: POST /{collection}/{id}/processes/transfers/approval
 - Request message: Optional
 - Response message: Status
 
@@ -730,7 +767,7 @@ The currently sponsoring client MUST use the HTTP POST method to approve a trans
 Example Approve request:
 
 ```http
-POST /rpp/v1/domains/example.nl/processes/transfer/approval HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfers/approval HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -749,7 +786,7 @@ Server: Example RPP server v1.0
 Content-Length: 80
 RPP-Svtrid: XYZ-12345
 RPP-Cltrid: ABC-12345
-RPP-code: 1000
+RPP-code: 01000
 
 TODO
 ```
@@ -787,7 +824,7 @@ Server: Example RPP server v1.0
 Content-Length: 80
 RPP-Svtrid: XYZ-12345
 RPP-Cltrid: ABC-12345
-RPP-code: 1000
+RPP-code: 01000
 
 TODO
 ```
