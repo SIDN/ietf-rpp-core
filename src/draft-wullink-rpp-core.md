@@ -386,7 +386,11 @@ Each provisioning object may be related to one or more running processes, such a
 
 All processes related to a provisioning object in RPP MUST exist under the `/{collection}/{id}/processes/{process_name}` path.
 
-The server operator MAY decide for which processes such resources are existing, whether they only exist for the currently running processes or also for completed or cancelled processes. The period for which completed processes remain available for retrieval is defined by server policy.
+The server operator MAY support direct access to process resources using server generated identifier. Such resource MAY be accessible using following URL: `/{collection}/{id}/processes/{process_name}/{process_id}`, where process_id is the process identifier.
+
+A process MAY also expose a resource at `/{collection}/{id}/processes/{process_name}/latest` to access and interact with the latest process instance. In case server offers any access to process information of given process name, the access to the last instance using `/{collection}/{id}/processes/{process_name}/latest` URL is MANDATORY.
+
+The server operator MAY decide which processes such resources exist for, whether they only exist for the currently running processes or also for completed or cancelled processes. The period for which completed processes remain available for retrieval is defined by server policy.
 
 ### Generic proces interface
 
@@ -395,17 +399,11 @@ A generic interface for interacting with the processes is defined as follows:
 #### Starting:
 `POST /{collection}/{id}/processes/{process_name}`
 
-The payload of such a request contains process-specific input information. A started process MAY create a resource at `/{collection}/{id}/processes/{process_name}/latest` to access and interact with the latest process instance. In such case the response MUST be a 201 Created with a `Location` header pointing to the created resource together with the process state representation.
-
-The server operator MAY support direct access to process resources using server generated identifier. Such resource MAY be accessible using following URL: `/{collection}/{id}/processes/{process_name}/{process_id}`, where process_id is the process identifier.
-
-A started process MAY also expose a resource at `/{collection}/{id}/processes/{process_name}/latest` to access and interact with the latest process instance. In case server offers any access to process information of given process name, the access to the last instance using `/{collection}/{id}/processes/{process_name}/latest` URL is MANDATORY.
-
-In both cases the response to a POST request MUST be a 201 Created with with the process state representation and a `Location` header pointing to the created process resource.
+The payload of such a request contains process-specific input information. A started process MAY create a resource to access and interact with the process instance. In such case the response MUST be a 201 Created with a `Location` header pointing to the created resource together with the process state representation. The created resource can be made accessible both using the `latest` mnemonic under a URL `/{collection}/{id}/processes/{process_name}/latest` or using a process id under a URL `/{collection}/{id}/processes/{process_name}/{process_id}`.
 
 When a process is created, executed and immediately completed by the server, a 201 Created response MAY still be provided together with the representation of the process result.
 
-Server MAY decide not to expose any resource for interaction with the created process, in such case a 202 Accepted MUST be provided.
+Server MAY decide not to expose any resource for interaction with the created process, in such case a 200 OK MUST be provided.
 
 Example:
 ```http
@@ -419,7 +417,7 @@ POST /rpp/v1/domains/example.nl/processes/renewals HTTP/2
 
 #### Cancelling:
 
-A client MAY choose to use the "latest" mnemonic to refer to the latest process instance, in such case the request MUST be:
+A client MAY use the "latest" mnemonic to cancel the latest process instance, in such case the request MUST be:
 
 `DELETE /{collection}/{id}/processes/{process_name}/latest`
 
@@ -431,7 +429,7 @@ This request is intended to stop the running process. The server MUST return a 2
 
 #### Status
 
-A client MAY choose to use the "latest" mnemonic to refer to the latest process instance, in such case the request MUST be:
+A client MAY use the "latest" mnemonic to request the latest process instance, in such case the request MUST be:
 
 `GET /{collection}/{id}/processes/{process_name}/latest`
 
@@ -463,7 +461,7 @@ It is up to server policy to define the type of processes and state, running or 
 
 In certain situations a resource creation may require additional process data or implicitly start an asynchronous process with own inputs, lifecycle and state. In these cases, the representation sent to the server MAY contain a combination of object data and process-related data. For example a domain create request contains domain representation data which will be stored with domain object, and domain creation process data such as registration duration or price, which would be part as registration process data, but not directly stored with the domain object.
 
-For the process data to be distinct and consistent with the URL path structure, it MUST be enclosed in the `processes/{process_name}` JSON path when transmitted with the object's representation.
+For the process data in the message body to be distinct and consistent with the URL path structure, it MUST be enclosed in the `processes/{process_name}` JSON path when transmitted with the object's representation.
 
 Structure:
 
