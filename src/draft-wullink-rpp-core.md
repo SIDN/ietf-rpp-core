@@ -382,7 +382,7 @@ TODO
 
 ## Processes Path Segment
 
-Each provisioning object may be related to one or more running processes, such as a transfer or deletion. Each process can have its own transient data, which is distinct from the data of the provisioning object itself. The processes can be started, stopped, or interacted with using their own specific set of representations and operations.
+Each provisioning object may be related to one or more running processes, such as a transfer or deletion. Each process can have its own data, which is distinct from the data of the provisioning object itself. The processes can be started, stopped, or interacted with using their own specific set of representations and operations.
 
 All processes related to a provisioning object in RPP MUST exist under the `/{collection}/{id}/processes/{process_name}` path.
 
