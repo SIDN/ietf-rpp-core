@@ -380,6 +380,127 @@ RPP-code: 01000
 TODO
 ```
 
+## Processes Path Segment
+
+Each provisioning object may be related to one or more running processes, such as a transfer or deletion. Each process can have its own data, which is distinct from the data of the provisioning object itself. The processes can be started, stopped, or interacted with using their own specific set of representations and operations.
+
+All processes related to a provisioning object in RPP MUST exist under the `/{collection}/{id}/processes/{process_name}` path.
+
+The server operator MAY support direct access to process resources using server generated identifier. Such resource MAY be accessible using following URL: `/{collection}/{id}/processes/{process_name}/{process_id}`, where process_id is the process identifier.
+
+A process MAY also expose a resource at `/{collection}/{id}/processes/{process_name}/latest` to access and interact with the latest process instance. In case server offers any access to process information of given process name, the access to the last instance using `/{collection}/{id}/processes/{process_name}/latest` URL is MANDATORY.
+
+The server operator MAY decide which processes such resources exist for, whether they only exist for the currently running processes or also for completed or cancelled processes. The period for which completed processes remain available for retrieval is defined by server policy.
+
+### Generic proces interface
+
+A generic interface for interacting with the processes is defined as follows:
+
+#### Starting:
+`POST /{collection}/{id}/processes/{process_name}`
+
+The payload of such a request contains process-specific input information. A started process MAY create a resource to access and interact with the process instance. In such case the response MUST be a 201 Created with a `Location` header pointing to the created resource together with the process state representation. The created resource can be made accessible both using the `latest` mnemonic under a URL `/{collection}/{id}/processes/{process_name}/latest` or using a process id under a URL `/{collection}/{id}/processes/{process_name}/{process_id}`.
+
+When a process is created, executed and immediately completed by the server, a 201 Created response MAY still be provided together with the representation of the process result.
+
+Server MAY decide not to expose any resource for interaction with the created process, in such case a 200 OK MUST be provided.
+
+Example:
+```http
+POST /rpp/v1/domains/example.nl/processes/renewals HTTP/2
+... other headers removed for bravity ...
+
+{
+    "duration": "P2Y"
+}
+```
+
+#### Cancelling:
+
+A client MAY use the "latest" mnemonic to cancel the latest process instance, in such case the request MUST be:
+
+`DELETE /{collection}/{id}/processes/{process_name}/latest`
+
+If the client wants to cancel a specific process instance, the request MUST be:
+
+`DELETE /{collection}/{id}/processes/{process_name}/{process_id}`
+
+This request is intended to stop the running process. The server MUST return a 204 response if the process has been stopped and the resource is gone, or a 200 response if the process has been stopped but the resource remains.
+
+#### Status
+
+A client MAY use the "latest" mnemonic to request the latest process instance, in such case the request MUST be:
+
+`GET /{collection}/{id}/processes/{process_name}/latest`
+
+If the client wants to retrieve data of a specific process instance, the request MUST be:
+
+`GET /{collection}/{id}/processes/{process_name}/{process_id}`
+
+The request retrieves the representation of the task status. If no task is running, the server MAY return the status of the completed task or return a 404 response.
+
+#### Other operations
+
+Other operations on a process can be performed by adding path segments to the `/{collection}/{id}/processes/{process_name}/latest` or `/{collection}/{id}/processes/{process_name}/{process_id}` URL path.
+
+#### Listing
+
+A server MAY implement a listing facility for some or all, current or past processes.
+
+The following URL structure and HTTP method MAY be exposed by the server and MUST be used by the client to retrieve process list filtered by process name:
+
+`GET /{collection}/{id}/processes/{process_name}/`
+
+The following URL structure and HTTP method MAY be exposed by the server and MUST be used by the client to retrieve full process list independent of the process name:
+
+`GET /{collection}/{id}/processes/`
+
+It is up to server policy to define the type of processes and state, running or completed, made available for the client. A server MAY also choose not implement this end point at all returning either the HTPP status code 404 Not Found or a 501 Not Implemented status code.
+
+### Relation to object representation
+
+In certain situations a resource creation may require additional process data or implicitly start an asynchronous process with own inputs, lifecycle and state. In these cases, the representation sent to the server MAY contain a combination of object data and process-related data. For example a domain create request contains domain representation data which will be stored with domain object, and domain creation process data such as registration duration or price, which would be part as registration process data, but not directly stored with the domain object.
+
+For the process data in the message body to be distinct and consistent with the URL path structure, it MUST be enclosed in the `processes/{process_name}` JSON path when transmitted with the object's representation.
+
+Structure:
+
+```http
+POST /.../{collection}/{id}
+...
+{
+    ... object data ...
+    "processes": {
+        "{process_name}": {
+            ... process data ...
+        }
+    }
+    ...
+}
+```
+
+Example: Domain Create request with 2-year registration:
+
+```http
+POST /rpp/v1/domains HTTP/2
+Host: rpp.example.nl
+Authorization: Bearer <token>
+Accept: application/rpp+json
+Content-Type: application/rpp+json
+Accept-Language: en
+Content-Length: 220
+
+{
+    "name": "example.nl",
+    "processes": {
+        "creation": {
+            "periods": "P2Y"
+        }
+    }
+    ... other domain data ...
+}
+```
+
 ## Renew Resource
 
 - Request: POST /{collection}/{id}/processes/renewals
@@ -426,7 +547,7 @@ TODO add renew response data here
 
 ### Start
 
-- Request: POST /{collection}/{id}/transfer
+- Request: POST /{collection}/{id}/processes/transfers
 - Request message: Optional
 - Response message: Status
 
@@ -437,7 +558,7 @@ If the transfer request is successful, then the response MUST include the Locati
 Example request not using object authorization:
 
 ```http
-POST /rpp/v1/domains/example.nl/transfer HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfers HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -450,7 +571,7 @@ Content-Length: 0
 Example request using object authorization:
 
 ```http
-POST /rpp/v1/domains/example.nl/transfer HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfers HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -464,14 +585,17 @@ Content-Length: 0
 Example request using 1 year renewal period, using the `unit` and `value` query parameters:
 
 ```http
-POST /rpp/v1/domains/example.nl/transfer?unit=y&value=1 HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfers HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
-Content-Length: 0
+Content-Length: 23
 
+{
+  "duration": "P2Y"
+}
 ```
 
 Example Transfer response:
@@ -481,12 +605,19 @@ HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Language: en
-Content-Length: 328
+Content-Length: 182
 Content-Type: application/rpp+json
-Location: https://rpp.example.nl/rpp/v1/domains/example.nl/transfer
+Location: https://rpp.example.nl/rpp/v1/domains/example.nl/processes/transfers/latest
 RPP-code: 01001
 
-TODO
+{
+  "trStatus": "pending",
+  "reID": "ClientX",
+  "acID": "ClientY",
+  "reDate": "2000-06-06T22:00:00.0Z",
+  "acDate": "2000-06-11T22:00:00.0Z",
+  "exDate": "2002-09-08T22:00:00.0Z
+}
 ```
 
 ### Status
@@ -494,14 +625,14 @@ TODO
 A transfer object may not exist, when no transfer has been initiated for the specified object.
 The client MUST use the HTTP GET method and MUST NOT add content to the HTTP message body.
 
-- Request: GET {collection}/{id}/transfer
+- Request: GET {collection}/{id}/processes/transfers
 - Request message: Optional
 - Response message: Transfer Status response
 
 Example domain name Transfer Status request without authorization information required:
 
 ```http
-GET /rpp/v1/domains/example.nl/transfer HTTP/2
+GET /rpp/v1/domains/example.nl/processes/transfers HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -515,7 +646,7 @@ If the requested transfer object has associated authorization information that i
 Example domain name Transfer Query request using RPP-AuthInfo header:
 
 ```http
-GET /rpp/v1/domains/example.nl/transfer HTTP/2
+GET /rpp/v1/domains/example.nl/processes/transfers HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -530,7 +661,7 @@ If the requested object has associated authorization information linked to anoth
 Example domain name Transfer Query request and authorization using RPP-AuthInfo and the RPP-Roid header:
 
 ```http
-GET /rpp/v1/domains/example.nl/transfer HTTP/2
+GET /rpp/v1/domains/example.nl/processes/transfers HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -557,7 +688,7 @@ TODO
 
 ### Cancel
 
-- Request: POST /{collection}/{id}/transfer/cancelation
+- Request: POST /{collection}/{id}/processes/transfers/cancelation
 - Request message: Optional
 - Response message: Status
 
@@ -566,7 +697,7 @@ The new sponsoring client MUST use the HTTP POST method to cancel a requested tr
 Example request:
 
 ```http
-POST /rpp/v1/domains/example.nl/transfer/cancelation HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfers/cancelation HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -591,7 +722,7 @@ TODO
 
 ### Reject
 
-- Request: POST /{collection}/{id}/transfer/rejection
+- Request: POST /{collection}/{id}/processes/transfers/rejection
 - Request message:  None
 - Response message: Status
 
@@ -600,7 +731,7 @@ The currently sponsoring client of the object MUST use the HTTP POST method to r
 Example request:
 
 ```http
-POST /rpp/v1/domains/example.nl/transfer/rejection HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfers/rejection HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -626,7 +757,7 @@ TODO
 
 ### Approve
 
-- Request: POST /{collection}/{id}/transfer/approval
+- Request: POST /{collection}/{id}/processes/transfers/approval
 - Request message: Optional
 - Response message: Status
 
@@ -635,7 +766,7 @@ The currently sponsoring client MUST use the HTTP POST method to approve a trans
 Example Approve request:
 
 ```http
-POST /rpp/v1/domains/example.nl/transfer/approval HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfers/approval HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
