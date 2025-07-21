@@ -45,8 +45,7 @@ This document describes the endpoints for the RESTful Provisioning Protocol, use
 
 This document describes an Application Programming Interface (API) API based on the HTTP protocol [@!RFC2616] and the principles of [@!REST]. Conforming to the REST constraints is generally referred to as being "RESTful". Hence the API is dubbed: "'RESTful Provisioning Protocol" or "RPP" for short.
 
-RPP is data format agnostic, this document describes a framework describing protocol messages in any data format.
-the client uses server-driven content negotiation. Allowing the client to select from a set of representation media types supported by the server, such as JSON [@!RFC8259], XML or [@!YAML].
+The RPP API is designed to be used for the provisioning and management of objects in a shared database, such as domain names, hosts, and entities.
 
 # Terminology
 
@@ -138,10 +137,12 @@ Some EPP result codes, like 01500, 02500, 02501 and 02502 are related to session
 
 # Endpoints
 
-subsequent sections provide details for each endpoint. URLs are assumed to be using the prefix: "/{context-root}/{version}/". Some RPP endpoints do not require a request and/or response message.
+Endpoints are described using URI Templates [@!RFC6570] relative to a discoverable base URL, as recommended by [@!RFC9205]. Some RPP endpoints do not require a request and/or response message.
 
-{c}: An abbreviation for {collection}: this MUST be substituted with "domains", "hosts", "entities" or any other collection of objects.
-{i}: An abbreviation for an object id, this MUST be substituted with the value of a domain name, hostname, contact-id or a message-id or any other defined object.
+The RPP endpoints are defined using the following URI Template syntax:
+
+- {c}: An abbreviation for {collection}: this MUST be substituted with "domains", "hosts", "entities" or another collection of objects.
+- {i}: An abbreviation for an object identifier, this MUST be substituted with the value of a domain name, hostname, contact-id or a message-id or any other defined object.
 
 A RPP client MAY use the HTTP GET method for executing informational request only when no request data has to be added to the HTTP message body. Sending content using an HTTP GET request is discouraged in [@!RFC9110], there exists no generally defined semantics for content received in a GET request. When an RPP object requires additional information, the client MUST use the HTTP POST method and add the query command content to the HTTP message body.
 
@@ -160,7 +161,7 @@ As an extension point the server MAY define and the client MAY use additional HT
 The server MUST respond with the same HTTP status code if the same URL is requested with HEAD and with GET.
 
 ```
-- Request: HEAD|GET /{collection}/{id}/availability
+- Request: HEAD|GET {collection}/{id}/availability
 - Request message: None
 - Response message: Optional availability response
 ```
@@ -168,7 +169,7 @@ The server MUST respond with the same HTTP status code if the same URL is reques
 Example request for a domain name that is not available for provisioning:
 
 ```http
-HEAD /rpp/v1/domains/example.nl HTTP/2
+HEAD domains/example.nl HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept-Language: en
@@ -193,14 +194,14 @@ Content-Length: 0
 
 The Object Info request MUST use the HTTP GET method on a resource identifying an object instance. If the object has authorization information attached then the client MUST use an empty message body and include the RPP-AuthInfo HTTP header. If the authorization is linked to a database object the client MUST also include the RPP-Roid header. The client MAY also use a message body that includes the authorization information, the client MUST then not use the RPP-AuthInfo and RPP-Roid headers.
 
-- Request: GET /{collection}/{id}
+- Request: GET {collection}/{id}
 - Request message: Optional
 - Response message: Info response
 
 Example request for an object not using authorization information.
 
 ```http
-GET /rpp/v1/domains/example.nl HTTP/2
+GET domains/example.nl HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -212,7 +213,7 @@ RPP-Cltrid: ABC-12345
 Example request using RPP-AuthInfo and RPP-Roid headers for an object that has attached authorization information.
 
 ```http
-GET /rpp/v1/domains/example.nl HTTP/2
+GET domains/example.nl HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -250,7 +251,7 @@ The client MUST use the HTTP GET method on the messages resource collection to r
 Example request:
 
 ```http
-GET /rpp/v1/messages HTTP/2
+GET messages HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -284,7 +285,7 @@ The client MUST use the HTTP DELETE method to acknowledge receipt of a message f
 Example request:
 
 ```http
-DELETE /rpp/v1/messages/12345 HTTP/2
+DELETE messages/12345 HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -311,7 +312,7 @@ TODO
 
 ## Create Resource
 
-- Request: POST /{collection}
+- Request: POST {collection}
 - Request message: Object Create request
 - Response message: Object Create response
 
@@ -320,7 +321,7 @@ The client MUST use the HTTP POST method to create a new object resource. If the
 Example Domain Create request:
 
 ```http
-POST /rpp/v1/domains HTTP/2
+POST domains HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -340,7 +341,7 @@ Server: Example RPP server v1.0
 Content-Language: en
 Content-Length: 642
 Content-Type: application/rpp+json
-Location: https://rpp.example.nl/rpp/v1/domains/example.nl
+Location: https://rpp.example.nldomains/example.nl
 RPP-code: 01000
 
 TODO
@@ -348,7 +349,7 @@ TODO
 
 ## Delete Resource
 
-- Request: DELETE /{collection}/{id}
+- Request: DELETE {collection}/{id}
 - Request message: Optional
 - Response message: Status
 
@@ -357,7 +358,7 @@ The client MUST the HTTP DELETE method and a resource identifying a unique objec
 Example Domain Delete request:
 
 ```http
-DELETE /rpp/v1/domains/example.nl HTTP/2
+DELETE domains/example.nl HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -382,7 +383,7 @@ TODO
 
 ## Renew Resource
 
-- Request: POST /{collection}/{id}/renewal
+- Request: POST {collection}/{id}/renewal
 - Request message: Optional
 - Response message: Renew response
 
@@ -393,7 +394,7 @@ Not all EPP object types include support for the renew command. The current-date
 Example Domain Renew request:
 
 ```http
-POST /rpp/v1/domains/example.nl/renewal?current-date=2024-01-01 HTTP/2
+POST domains/example.nl/renewal?current-date=2024-01-01 HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -406,7 +407,7 @@ Content-Length: 0
 Example Domain Renew request, using 1 year period:
 
 ```http
-POST /rpp/v1/domains/example.nl/renewal?current-date=2024-01-01?unit=y&value=1 HTTP/2
+POST domains/example.nl/renewal?current-date=2024-01-01?unit=y&value=1 HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -424,7 +425,7 @@ Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Language: en
 Content-Length: 205
-Location: https://rpp.example.nl/rpp/v1/domains/example.nl
+Location: https://rpp.example.nldomains/example.nl
 Content-Type: application/rpp+json
 RPP-code: 01000
 
@@ -437,7 +438,7 @@ TODO
 
 ### Start
 
-- Request: POST /{collection}/{id}/transfer
+- Request: POST {collection}/{id}/transfer
 - Request message: Optional
 - Response message: Status
 
@@ -448,7 +449,7 @@ If the transfer request is successful, then the response MUST include the Locati
 Example request not using object authorization:
 
 ```http
-POST /rpp/v1/domains/example.nl/transfer HTTP/2
+POST domains/example.nl/transfer HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -461,7 +462,7 @@ Content-Length: 0
 Example request using object authorization:
 
 ```http
-POST /rpp/v1/domains/example.nl/transfer HTTP/2
+POST domains/example.nl/transfer HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -475,7 +476,7 @@ Content-Length: 0
 Example request using 1 year renewal period, using the `unit` and `value` query parameters:
 
 ```http
-POST /rpp/v1/domains/example.nl/transfer?unit=y&value=1 HTTP/2
+POST domains/example.nl/transfer?unit=y&value=1 HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -494,7 +495,7 @@ Server: Example RPP server v1.0
 Content-Language: en
 Content-Length: 328
 Content-Type: application/rpp+json
-Location: https://rpp.example.nl/rpp/v1/domains/example.nl/transfer
+Location: https://rpp.example.nldomains/example.nl/transfer
 RPP-code: 01001
 
 TODO
@@ -512,7 +513,7 @@ The client MUST use the HTTP GET method and MUST NOT add content to the HTTP mes
 Example domain name Transfer Status request without authorization information required:
 
 ```http
-GET /rpp/v1/domains/example.nl/transfer HTTP/2
+GET domains/example.nl/transfer HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -526,7 +527,7 @@ If the requested transfer object has associated authorization information that i
 Example domain name Transfer Query request using RPP-AuthInfo header:
 
 ```http
-GET /rpp/v1/domains/example.nl/transfer HTTP/2
+GET domains/example.nl/transfer HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -541,7 +542,7 @@ If the requested object has associated authorization information linked to anoth
 Example domain name Transfer Query request and authorization using RPP-AuthInfo and the RPP-Roid header:
 
 ```http
-GET /rpp/v1/domains/example.nl/transfer HTTP/2
+GET domains/example.nl/transfer HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -568,7 +569,7 @@ TODO
 
 ### Cancel
 
-- Request: POST /{collection}/{id}/transfer/cancelation
+- Request: POST {collection}/{id}/transfer/cancelation
 - Request message: Optional
 - Response message: Status
 
@@ -577,7 +578,7 @@ The new sponsoring client MUST use the HTTP POST method to cancel a requested tr
 Example request:
 
 ```http
-POST /rpp/v1/domains/example.nl/transfer/cancelation HTTP/2
+POST domains/example.nl/transfer/cancelation HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -602,7 +603,7 @@ TODO
 
 ### Reject
 
-- Request: POST /{collection}/{id}/transfer/rejection
+- Request: POST {collection}/{id}/transfer/rejection
 - Request message:  None
 - Response message: Status
 
@@ -611,7 +612,7 @@ The currently sponsoring client of the object MUST use the HTTP POST method to r
 Example request:
 
 ```http
-POST /rpp/v1/domains/example.nl/transfer/rejection HTTP/2
+POST domains/example.nl/transfer/rejection HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -637,7 +638,7 @@ TODO
 
 ### Approve
 
-- Request: POST /{collection}/{id}/transfer/approval
+- Request: POST {collection}/{id}/transfer/approval
 - Request message: Optional
 - Response message: Status
 
@@ -646,7 +647,7 @@ The currently sponsoring client MUST use the HTTP POST method to approve a trans
 Example Approve request:
 
 ```http
-POST /rpp/v1/domains/example.nl/transfer/approval HTTP/2
+POST domains/example.nl/transfer/approval HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -672,7 +673,7 @@ TODO
 
 ## Update Resource
 
-- Request: PATCH /{collection}/{id}
+- Request: PATCH {collection}/{id}
 - Request message: Object Update message
 - Response message: Status
 
@@ -683,7 +684,7 @@ An object Update request MUST be performed using the HTTP PATCH method. The requ
 Example request:
 
 ```http
-PATCH /rpp/v1/domains/example.nl HTTP/2
+PATCH domains/example.nl HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
