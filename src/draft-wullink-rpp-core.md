@@ -81,10 +81,16 @@ All example requests assume a RPP server using HTTP version 2 is listening on th
 A RPP request does not always require a request message body. The information conveyed by the HTTP method, URL, and request headers may be sufficient for the server to be able to successfully processes a request. However, the client MUST include a request message body when the server requires additional attributes to be present in the request message. The RPP HTTP headers listed below use the "RPP-" prefix, following the recommendations in [@!RFC6648].
 
 - `RPP-Cltrid`:  The client transaction identifier is the equivalent of the `clTRID` element defined in [@!RFC5730] and MUST be used accordingly, when the HTTP message body does not contain an EPP request that includes a cltrid.
-- `RPP-Authorization`: The client MAY use this header to send authorization information in the format `<method> <authorization information>`, similar to the HTTP `Authorization` header. The `<method>` indicates the type of authorization being used. The authorization information MUST be defined as a structured field (dictionary) as described in [@!RFC8941].
-For the EPP Authorization Information using an opaque string based token, the following method is defined and MUST be used: `<method>` = `AuthInfo`. The `<authorization information>` for `AuthInfo` method defines the following fields:
+- `RPP-Authorization`: The client MAY use this header to send authorization information in the format `<method> <authorization information>`, similar to the HTTP `Authorization` header. The `<method>` indicates the type of authorization being used. The header value MUST be defined as a structured field (dictionary) as described in [@!RFC8941].
+For the EPP Authorization Information using an opaque string based token, the following method is defined and MUST be used: `method` = `AuthInfo`. The `<authorization information>` defines the following fields:
  - AuthInfo (REQUIRED): base64 encoded EPP authorization information. Base64 encoding is used to prevent potential problems when non-ascii characters or other characters are present that may conflict with the format rules for structured fields.
  - Roid (OPTIONAL): A Roid as defined in [@!RFC5731], [@!RFC5733], and [@!RFC5730]. This field MAY be REQUIRED in the usage context as defined in [@!RFC5731], [@!RFC5733], and [@!RFC5730].
+ 
+ Example use of the RPP-Authorization header:
+
+ ```http
+ RPP-Authorization: method=AuthInfo, AuthInfo=TXkgU2VjcmV0IFRva2Vu, Roid: REG-XYZ-12345
+ ```
 
 # Response Headers
 
