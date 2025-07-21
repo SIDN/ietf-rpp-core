@@ -89,7 +89,7 @@ For the EPP Authorization Information using an opaque string based token, the fo
  Example use of the RPP-Authorization header:
 
  ```http
- RPP-Authorization: method=AuthInfo, AuthInfo=TXkgU2VjcmV0IFRva2Vu, Roid: REG-XYZ-12345
+ RPP-Authorization: authinfo, token=TXkgU2VjcmV0IFRva2Vu, roid=REG-XYZ-12345
  ```
 
 # Response Headers
