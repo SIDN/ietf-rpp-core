@@ -341,7 +341,7 @@ Server: Example RPP server v1.0
 Content-Language: en
 Content-Length: 642
 Content-Type: application/rpp+json
-Location: https://rpp.example.nldomains/example.nl
+Location: https://rpp.example.nl/domains/example.nl
 RPP-code: 01000
 
 TODO
@@ -425,7 +425,7 @@ Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Language: en
 Content-Length: 205
-Location: https://rpp.example.nldomains/example.nl
+Location: https://rpp.example.nl/domains/example.nl
 Content-Type: application/rpp+json
 RPP-code: 01000
 
@@ -495,7 +495,7 @@ Server: Example RPP server v1.0
 Content-Language: en
 Content-Length: 328
 Content-Type: application/rpp+json
-Location: https://rpp.example.nldomains/example.nl/transfer
+Location: https://rpp.example.nl/domains/example.nl/transfer
 RPP-code: 01001
 
 TODO
