@@ -82,14 +82,15 @@ A RPP request does not always require a request message body. The information co
 
 - `RPP-Cltrid`:  The client transaction identifier is the equivalent of the `clTRID` element defined in [@!RFC5730] and MUST be used accordingly, when the HTTP message body does not contain an EPP request that includes a cltrid.
 - `RPP-Authorization`: The client MAY use this header to send authorization information in the format `<method> <authorization information>`, similar to the HTTP `Authorization` header. The `<method>` indicates the type of authorization being used. The header value MUST be defined as a structured field (dictionary) as described in [@!RFC8941].
-For the EPP Authorization Information using an opaque string based token, the following method is defined and MUST be used: `method` = `AuthInfo`. The `<authorization information>` defines the following fields:
- - AuthInfo (REQUIRED): base64 encoded EPP authorization information. Base64 encoding is used to prevent potential problems when non-ascii characters or other characters are present that may conflict with the format rules for structured fields.
+
+For EPP object authorization information, the `authinfo` method is defined and MUST be used. The `<authorization information>` defines the following fields:
+ - AuthInfo (REQUIRED): Base64 encoded EPP authorization information. Base64 encoding is used to prevent potential problems when non-ascii characters or other characters are present that may conflict with the format rules for structured fields.
  - Roid (OPTIONAL): A Roid as defined in [@!RFC5731], [@!RFC5733], and [@!RFC5730]. This field MAY be REQUIRED in the usage context as defined in [@!RFC5731], [@!RFC5733], and [@!RFC5730].
  
  Example use of the RPP-Authorization header:
 
  ```http
- RPP-Authorization: authinfo, token=TXkgU2VjcmV0IFRva2Vu, roid=REG-XYZ-12345
+ RPP-Authorization: authinfo; value=TXkgU2VjcmV0IFRva2Vu; roid=REG-XYZ-12345
  ```
 
 # Response Headers
