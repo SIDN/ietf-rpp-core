@@ -744,6 +744,7 @@ Due to the stateless nature of RPP, the client MUST include the authentication c
 ## Version 01 to 02
 
 - Merged the RPP-EPP-Code and RPP-Code headers into a single RPP-Code header
+- Update the RPP-Authorization header to match the HTTP Authorization header format
 
 ## Version 00 to 01
 
