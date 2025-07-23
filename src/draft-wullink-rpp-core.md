@@ -81,7 +81,18 @@ All example requests assume a RPP server using HTTP version 2 is listening on th
 A RPP request does not always require a request message body. The information conveyed by the HTTP method, URL, and request headers may be sufficient for the server to be able to successfully processes a request. However, the client MUST include a request message body when the server requires additional attributes to be present in the request message. The RPP HTTP headers listed below use the "RPP-" prefix, following the recommendations in [@!RFC6648].
 
 - `RPP-Cltrid`:  The client transaction identifier is the equivalent of the `clTRID` element defined in [@!RFC5730] and MUST be used accordingly, when the HTTP message body does not contain an EPP request that includes a cltrid.
-- `RPP-Authorization`: The client MAY use this header to send authorization information in the format `<method> <authorization information>`, similar to the HTTP `Authorization` header. The `<method>` indicates the type of authorization being used. For the `eppauthcode` method, the authorization information MUST use a semicolon-separated key/value format: `AuthInfo=<AuthInfo>; Roid=<Roid>`, where `AuthInfo` is REQUIRED and `Roid` is OPTIONAL unless required by the context (as described in [@!RFC5731], [@!RFC5733], and [@!RFC5730]). For other methods, the authorization information format is method-specific and may not use key/value pairs unless otherwise specified.
+- `RPP-Authorization`: The client MAY use this header to send authorization information in the format `<method> <authorization information>`, similar to the HTTP `Authorization` header, defined in [RFC9110, Section 11.6.2]. The `<method>` indicates the type of authorization being used. For EPP object authorization information, for example the authorization information used for domain names described in [RFC5731, Section 2.3], a new `authinfo` method is defined and MUST be used. The `<authorization information>` defines the following comma separated fields:
+ - value (REQUIRED): Base64 encoded EPP password-based authorization information. Base64 encoding is used to prevent problems when special characters are present that may conflict with the format rules for the Authorization header.
+ - roid (OPTIONAL): A Roid as defined in [@!RFC5731], [@!RFC5733], and [@!RFC5730]. The roid is used to identify the object for which the authorization information is provided. If the roid is not provided, then the server MUST assume that the authorization information is linked to the object identified by the URL of the request.
+
+Use of the RPP-Authorization header:
+
+ ```http
+RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu, roid=REG-XYZ-12345
+ ```
+
+The value of the `RPP-Authorization` header is case sensitive. The server MUST reject requests where the case of the header value does not match the expected case.
+The `RPP-Authorization` header is specific to the user agent and MUST NOT be cached, as recommended by [@!RFC9110, Section 16.4.2], the server MUST use the correct HTTP cache directives to prevent caching of the `RPP-Authorization` header.
 
 # Response Headers
 
@@ -853,6 +864,7 @@ Due to the stateless nature of RPP, the client MUST include the authentication c
 ## Version 01 to 02
 
 - Merged the RPP-EPP-Code and RPP-Code headers into a single RPP-Code header
+- Update the RPP-Authorization header to match the HTTP Authorization header format
 
 ## Version 00 to 01
 

@@ -50,11 +50,17 @@ the client uses server-driven content negotiation. Allowing the client to select
 <t>A RPP request does not always require a request message body. The information conveyed by the HTTP method, URL, and request headers may be sufficient for the server to be able to successfully processes a request. However, the client MUST include a request message body when the server requires additional attributes to be present in the request message. The RPP HTTP headers listed below use the &quot;RPP-&quot; prefix, following the recommendations in <xref target="RFC6648"></xref>.</t>
 
 <ul>
-<li><t><tt>RPP-Cltrid</tt>:  The client transaction identifier is the equivalent of the <tt>clTRID</tt> element defined in <xref target="RFC5730"></xref> and MUST be used accordingly, when the HTTP message body does not contain an EPP request that includes a cltrid.</t>
-</li>
-<li><t><tt>RPP-AuthInfo</tt>: The client MAY use this header for sending basic token-based authorization information, as described in <xref target="RFC5731" sectionFormat="of" section="2.6"></xref> and <xref target="RFC5733" sectionFormat="of" section="2.8"></xref>. If the authorization is linked to a contact object then the client MUST also include the RPP-Roid header.</t>
-</li>
-<li><t><tt>RPP-Roid</tt>: If the authorization info, is linked to a database object, the client MAY use this header for the Repository Object IDentifier (ROID), as described in <xref target="RFC5730" sectionFormat="of" section="4.2"></xref>.</t>
+<li><tt>RPP-Cltrid</tt>:  The client transaction identifier is the equivalent of the <tt>clTRID</tt> element defined in <xref target="RFC5730"></xref> and MUST be used accordingly, when the HTTP message body does not contain an EPP request that includes a cltrid.</li>
+<li><t><tt>RPP-Authorization</tt>: The client MAY use this header to send authorization information in the format <tt>&lt;method&gt; &lt;authorization information&gt;</tt>, similar to the HTTP <tt>Authorization</tt> header. The <tt>&lt;method&gt;</tt> indicates the type of authorization being used. The authorization information MUST be defined as a structured field (dictionary) as described in <xref target="RFC8941"></xref>.
+For the EPP Authorization Information using plain password the following method is defined and MUST be used:
+<tt>&lt;method&gt;</tt> = <tt>AuthInfo</tt>
+The <tt>&lt;authorization information&gt;</tt> for <tt>AuthInfo</tt> method defines the following fields:</t>
+
+<ul spacing="compact">
+<li>AuthInfo (REQUIRED): base64 encoded EPP authorization information. Base64 encoding is used to prevent potential problems when non-ascii characters or other characters are present that may conflict with the format rules for structured field.</li>
+<li>Roid (OPTIONAL): A Roid as defined in <xref target="RFC5731"></xref>, <xref target="RFC5733"></xref>, and <xref target="RFC5730"></xref>. This field MAY be REQUIRED in the usage context as defined in <xref target="RFC5731"></xref>, <xref target="RFC5733"></xref>, and <xref target="RFC5730"></xref>.</li>
+</ul></li>
+<li><t><tt>RPP-Authorization</tt>: The client MAY use this header to send authorization information in the format <tt>&lt;method&gt; &lt;authorization information&gt;</tt>, similar to the HTTP <tt>Authorization</tt> header. The <tt>&lt;method&gt;</tt> indicates the type of authorization being used. The authorization information MUST be defined as a structured field (dictionary) as described in <xref target="RFC8941"></xref>. For the EPP <tt>AuthInfo</tt> method this format MUST be used: <tt>AuthInfo=&lt;Base64(AuthInfo)&gt;; Roid=&lt;Roid&gt;</tt>, where <tt>AuthInfo</tt> is REQUIRED and MUST be encoded using base64, to prevent potential problems when non-ascii characters or other characters are present that may conflict with the format rules for structured field. The <tt>Roid</tt> is OPTIONAL unless required by the context (as described in <xref target="RFC5731"></xref>, <xref target="RFC5733"></xref>, and <xref target="RFC5730"></xref>). For other methods, the authorization information format is method-specific and may not use key/value pairs unless otherwise specified.</t>
 </li>
 </ul>
 </section>
@@ -67,15 +73,116 @@ the client uses server-driven content negotiation. Allowing the client to select
 </li>
 <li><t><tt>RPP-Cltrid</tt>: This header is the equivalent of the &quot;clTRID&quot; element defined in <xref target="RFC5730"></xref> and MUST be used accordingly when the RPP response does not contain an EPP response in the HTTP message body. If the contents of the HTTP message body contains a &quot;clTRID&quot; value, then both values MUST be consistent.</t>
 </li>
-<li><t><tt>RPP-Code</tt>: This header is the equivalent of the EPP result code defined in <xref target="RFC5730"></xref> and MUST be used accordingly. This header MUST be added to all responses, except for the Greeting, and MAY be used by the client for easy access to the EPP result code, without having to parse the HTTP response message body.</t>
-</li>
-<li><t><tt>RPP-EPP-Code</tt>: An optional that MAY be used when RPP is used as a frontend service for an EPP service. The header can be used by the client for easy access to the EPP result code, without having to parse the HTTP response message body.</t>
-</li>
-<li><t><tt>RPP-Check-Avail</tt>: An alternative for the &quot;avail&quot; attribute of the object:name element in an Object Check response and MUST be used accordingly. The server does not return a HTTP message body in response to a RPP Object Check (HEAD) request.</t>
-</li>
-<li><t><tt>RPP-Queue-Size</tt>: Return the number of unacknowledged messages in the client message queue. The server MAY include this header in all RPP responses.</t>
+<li><t><tt>RPP-Code</tt>: This header is the equivalent of the EPP result code defined in <xref target="RFC5730"></xref> and MUST be used accordingly. This header MUST be added to all responses and MAY be used by the client for easy access to the result code, without having to parse the HTTP response message body.</t>
 </li>
 </ul>
+<t>For the EPP codes related to session management (1500, 2500, 2501 and 2502) there are no corresponding RPP codes.</t>
+<t>In order for RPP to be backwards compatible with EPP, RPP will use 5-digit coding of the result codes, where first digit will denote origin specification of the result codes.</t>
+<t>For <xref target="RFC5730"></xref> Result Codes the leading digit MUST be &quot;0&quot;.
+For RPP result codes the leading digit MUST be &quot;1&quot;. For avoidance of confusion RPP MUST not define new codes with the same semantic meaning as already defined in EPP.</t>
+<t>For RPP codes the remaining 4 digits MUST keep the same semantics as <xref target="RFC5730"></xref> Result Codes.</t>
+
+<ul spacing="compact">
+<li><tt>RPP-Queue-Size</tt>: Return the number of unacknowledged messages in the client message queue. The server MAY include this header in all RPP responses.</li>
+</ul>
+</section>
+
+<section anchor="error-handling-and-relation-between-http-status-codes-and-rpp-codes"><name>Error handling and relation between HTTP status codes and RPP codes</name>
+<t>RPP leverages standard HTTP status codes to reflect the outcome of RPP operations. The RPP result codes are based on the EPP result codes defined in <xref target="RFC5730"></xref>. This allows clients to handle responses generically using common HTTP patterns. While the HTTP status code provides the primary, high-level outcome, the specific RPP result code MUST still be provided in the <tt>RPP-Code</tt> HTTP header for detailed diagnostics.</t>
+<t>The mapping strategy is to use the most specific HTTP code that accurately reflects the operation's result.</t>
+<t>For common and well-defined outcomes, a specific HTTP status code is used. For example, an attempt to access a non-existent resource (EPP code 2302) MUST return 404 Not Found, and an attempt to create a resource that already exists (EPP code 2303) MUST return 409 Conflict. This allows a client to handle these common situations based on the HTTP code alone.</t>
+<t>For all other failures, a generic HTTP status code is used. Client-side errors (e.g., syntax, parameter, or policy violations) MUST return 400 Bad Request. Server-side failures MUST return 500 Internal Server Error.</t>
+<t>The server MUST return HTTP status codes, following the mapping rules in Table 1.</t>
+<t>Table 1: RPP result code and HTTP Status-Code mapping.</t>
+<table>
+<thead>
+<tr>
+<th>HTTP Status-Code</th>
+<th>Description</th>
+<th>Corresponding RPP result code(s)</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Success (2xx)</td>
+<td></td>
+<td></td>
+</tr>
+
+<tr>
+<td>200 OK</td>
+<td>The request was successful (e.g., for GET or UPDATE).</td>
+<td>01000 (in all cases not specified otherwise),01300,01301</td>
+</tr>
+
+<tr>
+<td>201 Created</td>
+<td>The resource was created successfully.</td>
+<td>01000 for resource creating requests (POST/PUT)</td>
+</tr>
+
+<tr>
+<td>202 Accepted</td>
+<td>The request was accepted for asynchronous processing.</td>
+<td>01001</td>
+</tr>
+
+<tr>
+<td>204 No Content</td>
+<td>The resource was deleted successfully.</td>
+<td>01000 for DELETE</td>
+</tr>
+
+<tr>
+<td>Client Errors (4xx)</td>
+<td></td>
+<td></td>
+</tr>
+
+<tr>
+<td>400 Bad Request</td>
+<td>Generic client-side error (syntax, parameters, policy).</td>
+<td>02000-02005,02104-02106,02300-02301,02304-02308</td>
+</tr>
+
+<tr>
+<td>403 Forbidden</td>
+<td>Authentication or authorization failed.</td>
+<td>02200-02202</td>
+</tr>
+
+<tr>
+<td>404 Not Found</td>
+<td>The requested resource does not exist.</td>
+<td>02303</td>
+</tr>
+
+<tr>
+<td>409 Conflict</td>
+<td>The resource could not be created because it already exists.</td>
+<td>02302</td>
+</tr>
+
+<tr>
+<td>Server Errors (5xx)</td>
+<td></td>
+<td></td>
+</tr>
+
+<tr>
+<td>500 Internal Server Error</td>
+<td>Generic server-side error; command failed.</td>
+<td>02400</td>
+</tr>
+
+<tr>
+<td>501 Not Implemented</td>
+<td>The requested command or feature is not implemented.</td>
+<td>02100-02103</td>
+</tr>
+</tbody>
+</table><t>Some EPP result codes, like 01500, 02500, 02501 and 02502 are related to session management and therefore not applicable to a sessionless RPP protocol.</t>
 </section>
 
 <section anchor="endpoints"><name>Endpoints</name>
@@ -84,16 +191,20 @@ the client uses server-driven content negotiation. Allowing the client to select
 {i}: An abbreviation for an object id, this MUST be substituted with the value of a domain name, hostname, contact-id or a message-id or any other defined object.</t>
 <t>A RPP client MAY use the HTTP GET method for executing informational request only when no request data has to be added to the HTTP message body. Sending content using an HTTP GET request is discouraged in <xref target="RFC9110"></xref>, there exists no generally defined semantics for content received in a GET request. When an RPP object requires additional information, the client MUST use the HTTP POST method and add the query command content to the HTTP message body.</t>
 
-<section anchor="check-for-existence"><name>Check for Existence</name>
+<section anchor="availability-for-creation"><name>Availability for Creation</name>
+<t>The Availability for Creation endpoint is used to check whether an object can be successfully provisioned. Two distinct methods are defined for checking the availability of provisioning of an object, the first method uses the HEAD method for a quick check to find out if the object can be provisioned. The second method uses the GET method to retrieve additional information about the object's availability for provisioning, for example about pricing or additional requirements to be able to provision the requested object.</t>
+<t>When the client uses the HTTP HEAD method, the server MUST respond with an HTTP status code 200 (OK) if the object can be provisioned or with an HTTP status code 404 (Not Found) if the object cannot be provisioned.</t>
+<t>When the client uses the HTTP GET method, the server MUST respond with an HTTP status code 200 (OK) if the object can be provisioned. The server MUST include a message body containing more detailed availability information, for example about pricing or additional requirements to be able to provision the requested object. The message body MAY be and empty JSON object if no additional information is applicable.</t>
+<t>If the object cannot be provisioned then the server MUST return an HTTP status code 404 (Not Found) and include a problem statement in the message body.</t>
+<t>As an extension point the server MAY define and the client MAY use additional HTTP query parameters to further specify the check operation or the kind of response information that shall be returned. For example Registry Fee Extension <xref target="RFC8748"></xref> defines a possibility to request certain currency, only certain commands or periods. Such functionality would add query parameters, which could be used with GET request to receive additional pricing information with the response. HEAD request would not be affected in this case.</t>
+<t>The server MUST respond with the same HTTP status code if the same URL is requested with HEAD and with GET.</t>
 
-<ul spacing="compact">
-<li>Request: HEAD /{collection}/{id}</li>
-<li>Request message: None</li>
-<li>Response message: None</li>
-</ul>
-<t>The HTTP HEAD method MUST be used for object existence check. The response MUST contain the <tt>RPP-Check-Avail</tt> header. The value of the <tt>RPP-Check-Avail</tt> header MUST be false or true, depending on whether the object can be provisioned.</t>
-<t>The Check endpoint MUST be limited to checking only a single object-id per request, to allow the server to effiently load balance requests.</t>
-<t>Example request for a domain name:</t>
+<artwork><![CDATA[- Request: HEAD|GET /{collection}/{id}/availability
+- Request message: None
+- Response message: Optional availability response
+]]>
+</artwork>
+<t>Example request for a domain name that is not available for provisioning:</t>
 
 <sourcecode type="http"><![CDATA[HEAD /rpp/v1/domains/example.nl HTTP/2
 Host: rpp.example.nl
@@ -105,13 +216,12 @@ RPP-Cltrid: ABC-12345
 </sourcecode>
 <t>Example response:</t>
 
-<sourcecode type="http"><![CDATA[HTTP/2 200 OK
+<sourcecode type="http"><![CDATA[HTTP/2 404 Not Found
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 RPP-Cltrid: ABC-12345
 RPP-Svtrid: XYZ-12345
-RPP-Check-Avail: false
-RPP-result-code: 1000
+RPP-code: 01000
 Content-Length: 0
 
 ]]>
@@ -158,7 +268,7 @@ Server: Example RPP server v1.0
 Content-Length: 424
 Content-Type: application/rpp+json
 Content-Language: en
-RPP-code: 1000
+RPP-code: 01000
 
 TODO: JSON message here
 ]]>
@@ -193,7 +303,7 @@ Server: Example RPP server v1.0
 Content-Length: 312
 Content-Type: application/rpp+json
 Content-Language: en
-RPP-code: 1301
+RPP-code: 01301
 
 TODO
 ]]>
@@ -225,7 +335,7 @@ RPP-Cltrid: ABC-12345
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Language: en
-RPP-code: 1000
+RPP-code: 01000
 RPP-Queue-Size: 0
 RPP-Svtrid: XYZ-12345
 RPP-Cltrid: ABC-12345
@@ -266,7 +376,7 @@ Content-Language: en
 Content-Length: 642
 Content-Type: application/rpp+json
 Location: https://rpp.example.nl/rpp/v1/domains/example.nl
-RPP-code: 1000
+RPP-code: 01000
 
 TODO
 ]]>
@@ -300,7 +410,7 @@ Server: Example RPP server v1.0
 Content-Length: 80
 RPP-Svtrid: XYZ-12345
 RPP-Cltrid: ABC-12345
-RPP-code: 1000
+RPP-code: 01000
 
 TODO
 ]]>
@@ -349,7 +459,7 @@ Content-Language: en
 Content-Length: 205
 Location: https://rpp.example.nl/rpp/v1/domains/example.nl
 Content-Type: application/rpp+json
-RPP-code: 1000
+RPP-code: 01000
 
 TODO
 ]]>
@@ -414,7 +524,7 @@ Content-Language: en
 Content-Length: 328
 Content-Type: application/rpp+json
 Location: https://rpp.example.nl/rpp/v1/domains/example.nl/transfer
-RPP-code: 1001
+RPP-code: 01001
 
 TODO
 ]]>
@@ -476,7 +586,7 @@ Server: Example RPP server v1.0
 Content-Length: 230
 Content-Type: application/rpp+json
 Content-Language: en
-RPP-code: 1000
+RPP-code: 01000
 
 TODO
 ]]>
@@ -510,7 +620,7 @@ Server: Example RPP server v1.0
 Content-Length: 80
 RPP-Svtrid: XYZ-12345
 RPP-Cltrid: ABC-12345
-RPP-code: 1000
+RPP-code: 01000
 
 TODO
 ]]>
@@ -544,7 +654,7 @@ Server: Example RPP server v1.0
 Content-Length: 80
 RPP-Svtrid: XYZ-12345
 RPP-Cltrid: ABC-12345
-RPP-code: 1000
+RPP-code: 01000
 
 TODO
 
@@ -580,7 +690,7 @@ Server: Example RPP server v1.0
 Content-Length: 80
 RPP-Svtrid: XYZ-12345
 RPP-Cltrid: ABC-12345
-RPP-code: 1000
+RPP-code: 01000
 
 TODO
 ]]>
@@ -618,7 +728,7 @@ Server: Example RPP server v1.0
 Content-Length: 80
 RPP-Svtrid: XYZ-12345
 RPP-Cltrid: ABC-12345
-RPP-code: 1000
+RPP-code: 01000
 
 TODO
 ]]>
@@ -646,6 +756,13 @@ TODO
 
 <section anchor="change-history"><name>Change History</name>
 
+<section anchor="version-01-to-02"><name>Version 01 to 02</name>
+
+<ul spacing="compact">
+<li>Merged the RPP-EPP-Code and RPP-Code headers into a single RPP-Code header</li>
+</ul>
+</section>
+
 <section anchor="version-00-to-01"><name>Version 00 to 01</name>
 
 <ul spacing="compact">
@@ -669,6 +786,7 @@ TODO
 </middle>
 
 <back>
+<references><name>References</name>
 <references><name>Normative References</name>
 <reference anchor="REST" target="http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm">
   <front>
@@ -692,6 +810,7 @@ TODO
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7519.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7617.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8259.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8941.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9110.xml"/>
 <reference anchor="YAML" target="https://yaml.org/spec/1.2.2/">
   <front>
@@ -702,6 +821,10 @@ TODO
     <date year="2000"></date>
   </front>
 </reference>
+</references>
+<references><name>Informative References</name>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8748.xml"/>
+</references>
 </references>
 
 </back>

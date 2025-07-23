@@ -5,8 +5,8 @@
 Network Working Group                                         M. Wullink
 Internet-Draft                                                 SIDN Labs
 Intended status: Standards Track                              P. Kowalik
-Expires: 8 January 2026                                            DENIC
-                                                             7 July 2025
+Expires: 21 January 2026                                           DENIC
+                                                            20 July 2025
 
 
                   RESTful Provisioning Protocol (RPP)
@@ -33,7 +33,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 January 2026.
+   This Internet-Draft will expire on 21 January 2026.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Wullink & Kowalik        Expires 8 January 2026                 [Page 1]
+Wullink & Kowalik        Expires 21 January 2026                [Page 1]
 
 Internet-Draft        RESTful Provisioning Protocol            July 2025
 
@@ -64,32 +64,37 @@ Table of Contents
    2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   3
    3.  Conventions Used in This Document . . . . . . . . . . . . . .   3
    4.  Request Headers . . . . . . . . . . . . . . . . . . . . . . .   4
-   5.  Response Headers  . . . . . . . . . . . . . . . . . . . . . .   4
-   6.  Endpoints . . . . . . . . . . . . . . . . . . . . . . . . . .   5
-     6.1.  Check for Existence . . . . . . . . . . . . . . . . . . .   5
-     6.2.  Resource Information  . . . . . . . . . . . . . . . . . .   6
-     6.3.  Poll for Messages . . . . . . . . . . . . . . . . . . . .   7
-     6.4.  Delete Message  . . . . . . . . . . . . . . . . . . . . .   8
-     6.5.  Create Resource . . . . . . . . . . . . . . . . . . . . .   9
-     6.6.  Delete Resource . . . . . . . . . . . . . . . . . . . . .  10
-     6.7.  Renew Resource  . . . . . . . . . . . . . . . . . . . . .  10
-     6.8.  Transfer Resource . . . . . . . . . . . . . . . . . . . .  11
-       6.8.1.  Start . . . . . . . . . . . . . . . . . . . . . . . .  11
-       6.8.2.  Status  . . . . . . . . . . . . . . . . . . . . . . .  13
-       6.8.3.  Cancel  . . . . . . . . . . . . . . . . . . . . . . .  14
-       6.8.4.  Reject  . . . . . . . . . . . . . . . . . . . . . . .  15
-       6.8.5.  Approve . . . . . . . . . . . . . . . . . . . . . . .  15
-     6.9.  Update Resource . . . . . . . . . . . . . . . . . . . . .  16
-   7.  Extension Framework . . . . . . . . . . . . . . . . . . . . .  17
-   8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  17
-   9.  Internationalization Considerations . . . . . . . . . . . . .  17
-   10. Security Considerations . . . . . . . . . . . . . . . . . . .  17
-   11. Change History  . . . . . . . . . . . . . . . . . . . . . . .  17
-     11.1.  Version 00 to 01 . . . . . . . . . . . . . . . . . . . .  17
-     11.2.  Version 00 (draft-rpp-core) to 00
-            (draft-wullink-rpp-core) . . . . . . . . . . . . . . . .  17
-   12. Normative References  . . . . . . . . . . . . . . . . . . . .  18
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  19
+   5.  Response Headers  . . . . . . . . . . . . . . . . . . . . . .   5
+   6.  Error handling and relation between HTTP status codes and RPP
+           codes . . . . . . . . . . . . . . . . . . . . . . . . . .   6
+   7.  Endpoints . . . . . . . . . . . . . . . . . . . . . . . . . .   8
+     7.1.  Availability for Creation . . . . . . . . . . . . . . . .   9
+     7.2.  Resource Information  . . . . . . . . . . . . . . . . . .  10
+     7.3.  Poll for Messages . . . . . . . . . . . . . . . . . . . .  11
+     7.4.  Delete Message  . . . . . . . . . . . . . . . . . . . . .  12
+     7.5.  Create Resource . . . . . . . . . . . . . . . . . . . . .  13
+     7.6.  Delete Resource . . . . . . . . . . . . . . . . . . . . .  13
+     7.7.  Renew Resource  . . . . . . . . . . . . . . . . . . . . .  14
+     7.8.  Transfer Resource . . . . . . . . . . . . . . . . . . . .  15
+       7.8.1.  Start . . . . . . . . . . . . . . . . . . . . . . . .  15
+       7.8.2.  Status  . . . . . . . . . . . . . . . . . . . . . . .  16
+       7.8.3.  Cancel  . . . . . . . . . . . . . . . . . . . . . . .  18
+       7.8.4.  Reject  . . . . . . . . . . . . . . . . . . . . . . .  18
+       7.8.5.  Approve . . . . . . . . . . . . . . . . . . . . . . .  19
+     7.9.  Update Resource . . . . . . . . . . . . . . . . . . . . .  20
+   8.  Extension Framework . . . . . . . . . . . . . . . . . . . . .  21
+   9.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  21
+   10. Internationalization Considerations . . . . . . . . . . . . .  21
+   11. Security Considerations . . . . . . . . . . . . . . . . . . .  21
+   12. Change History  . . . . . . . . . . . . . . . . . . . . . . .  21
+     12.1.  Version 01 to 02 . . . . . . . . . . . . . . . . . . . .  21
+     12.2.  Version 00 to 01 . . . . . . . . . . . . . . . . . . . .  21
+     12.3.  Version 00 (draft-rpp-core) to 00
+            (draft-wullink-rpp-core) . . . . . . . . . . . . . . . .  21
+   13. References  . . . . . . . . . . . . . . . . . . . . . . . . .  22
+     13.1.  Normative References . . . . . . . . . . . . . . . . . .  22
+     13.2.  Informative References . . . . . . . . . . . . . . . . .  23
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  24
 
 1.  Introduction
 
@@ -99,20 +104,21 @@ Table of Contents
    as being "RESTful".  Hence the API is dubbed: "'RESTful Provisioning
    Protocol" or "RPP" for short.
 
+
+
+
+
+
+Wullink & Kowalik        Expires 21 January 2026                [Page 2]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2025
+
+
    RPP is data format agnostic, this document describes a framework
    describing protocol messages in any data format. the client uses
    server-driven content negotiation.  Allowing the client to select
    from a set of representation media types supported by the server,
    such as JSON [RFC8259], XML or [YAML].
-
-
-
-
-
-Wullink & Kowalik        Expires 8 January 2026                 [Page 2]
-
-Internet-Draft        RESTful Provisioning Protocol            July 2025
-
 
 2.  Terminology
 
@@ -159,13 +165,7 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
 
 
 
-
-
-
-
-
-
-Wullink & Kowalik        Expires 8 January 2026                 [Page 3]
+Wullink & Kowalik        Expires 21 January 2026                [Page 3]
 
 Internet-Draft        RESTful Provisioning Protocol            July 2025
 
@@ -185,15 +185,62 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
       accordingly, when the HTTP message body does not contain an EPP
       request that includes a cltrid.
 
-   -  RPP-AuthInfo: The client MAY use this header for sending basic
-      token-based authorization information, as described in Section 2.6
-      of [RFC5731] and Section 2.8 of [RFC5733].  If the authorization
-      is linked to a contact object then the client MUST also include
-      the RPP-Roid header.
+   -  RPP-Authorization: The client MAY use this header to send
+      authorization information in the format <method> <authorization
+      information>, similar to the HTTP Authorization header.  The
+      <method> indicates the type of authorization being used.  The
+      authorization information MUST be defined as a structured field
+      (dictionary) as described in [RFC8941].  For the EPP Authorization
+      Information using plain password the following method is defined
+      and MUST be used: <method> = AuthInfo The <authorization
+      information> for AuthInfo method defines the following fields:
 
-   -  RPP-Roid: If the authorization info, is linked to a database
-      object, the client MAY use this header for the Repository Object
-      IDentifier (ROID), as described in Section 4.2 of [RFC5730].
+      -  AuthInfo (REQUIRED): base64 encoded EPP authorization
+         information.  Base64 encoding is used to prevent potential
+         problems when non-ascii characters or other characters are
+         present that may conflict with the format rules for structured
+         field.
+      -  Roid (OPTIONAL): A Roid as defined in [RFC5731], [RFC5733], and
+         [RFC5730].  This field MAY be REQUIRED in the usage context as
+         defined in [RFC5731], [RFC5733], and [RFC5730].
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wullink & Kowalik        Expires 21 January 2026                [Page 4]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2025
+
+
+   -  RPP-Authorization: The client MAY use this header to send
+      authorization information in the format <method> <authorization
+      information>, similar to the HTTP Authorization header.  The
+      <method> indicates the type of authorization being used.  The
+      authorization information MUST be defined as a structured field
+      (dictionary) as described in [RFC8941].  For the EPP AuthInfo
+      method this format MUST be used: AuthInfo=<Base64(AuthInfo)>;
+      Roid=<Roid>, where AuthInfo is REQUIRED and MUST be encoded using
+      base64, to prevent potential problems when non-ascii characters or
+      other characters are present that may conflict with the format
+      rules for structured field.  The Roid is OPTIONAL unless required
+      by the context (as described in [RFC5731], [RFC5733], and
+      [RFC5730]).  For other methods, the authorization information
+      format is method-specific and may not use key/value pairs unless
+      otherwise specified.
 
 5.  Response Headers
 
@@ -216,37 +263,163 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
       body.  If the contents of the HTTP message body contains a
       "clTRID" value, then both values MUST be consistent.
 
+   -  RPP-Code: This header is the equivalent of the EPP result code
+      defined in [RFC5730] and MUST be used accordingly.  This header
+      MUST be added to all responses and MAY be used by the client for
+      easy access to the result code, without having to parse the HTTP
+      response message body.
+
+   For the EPP codes related to session management (1500, 2500, 2501 and
+   2502) there are no corresponding RPP codes.
 
 
 
 
 
-Wullink & Kowalik        Expires 8 January 2026                 [Page 4]
+
+Wullink & Kowalik        Expires 21 January 2026                [Page 5]
 
 Internet-Draft        RESTful Provisioning Protocol            July 2025
 
 
-   -  RPP-Code: This header is the equivalent of the EPP result code
-      defined in [RFC5730] and MUST be used accordingly.  This header
-      MUST be added to all responses, except for the Greeting, and MAY
-      be used by the client for easy access to the EPP result code,
-      without having to parse the HTTP response message body.
+   In order for RPP to be backwards compatible with EPP, RPP will use
+   5-digit coding of the result codes, where first digit will denote
+   origin specification of the result codes.
 
-   -  RPP-EPP-Code: An optional that MAY be used when RPP is used as a
-      frontend service for an EPP service.  The header can be used by
-      the client for easy access to the EPP result code, without having
-      to parse the HTTP response message body.
+   For [RFC5730] Result Codes the leading digit MUST be "0".  For RPP
+   result codes the leading digit MUST be "1".  For avoidance of
+   confusion RPP MUST not define new codes with the same semantic
+   meaning as already defined in EPP.
 
-   -  RPP-Check-Avail: An alternative for the "avail" attribute of the
-      object:name element in an Object Check response and MUST be used
-      accordingly.  The server does not return a HTTP message body in
-      response to a RPP Object Check (HEAD) request.
+   For RPP codes the remaining 4 digits MUST keep the same semantics as
+   [RFC5730] Result Codes.
 
    -  RPP-Queue-Size: Return the number of unacknowledged messages in
       the client message queue.  The server MAY include this header in
       all RPP responses.
 
-6.  Endpoints
+6.  Error handling and relation between HTTP status codes and RPP codes
+
+   RPP leverages standard HTTP status codes to reflect the outcome of
+   RPP operations.  The RPP result codes are based on the EPP result
+   codes defined in [RFC5730].  This allows clients to handle responses
+   generically using common HTTP patterns.  While the HTTP status code
+   provides the primary, high-level outcome, the specific RPP result
+   code MUST still be provided in the RPP-Code HTTP header for detailed
+   diagnostics.
+
+   The mapping strategy is to use the most specific HTTP code that
+   accurately reflects the operation's result.
+
+   For common and well-defined outcomes, a specific HTTP status code is
+   used.  For example, an attempt to access a non-existent resource (EPP
+   code 2302) MUST return 404 Not Found, and an attempt to create a
+   resource that already exists (EPP code 2303) MUST return 409
+   Conflict.  This allows a client to handle these common situations
+   based on the HTTP code alone.
+
+   For all other failures, a generic HTTP status code is used.  Client-
+   side errors (e.g., syntax, parameter, or policy violations) MUST
+   return 400 Bad Request.  Server-side failures MUST return 500
+   Internal Server Error.
+
+   The server MUST return HTTP status codes, following the mapping rules
+   in Table 1.
+
+   Table 1: RPP result code and HTTP Status-Code mapping.
+
+
+
+
+
+
+Wullink & Kowalik        Expires 21 January 2026                [Page 6]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2025
+
+
+   +===========+==============+===============================================+
+   |HTTP       |Description   |Corresponding RPP result code(s)               |
+   |Status-Code|              |                                               |
+   +===========+==============+===============================================+
+   |Success    |              |                                               |
+   |(2xx)      |              |                                               |
+   +-----------+--------------+-----------------------------------------------+
+   |200 OK     |The request   |01000 (in all cases not specified              |
+   |           |was successful|otherwise),01300,01301                         |
+   |           |(e.g., for GET|                                               |
+   |           |or UPDATE).   |                                               |
+   +-----------+--------------+-----------------------------------------------+
+   |201 Created|The resource  |01000 for resource creating requests (POST/PUT)|
+   |           |was created   |                                               |
+   |           |successfully. |                                               |
+   +-----------+--------------+-----------------------------------------------+
+   |202        |The request   |01001                                          |
+   |Accepted   |was accepted  |                                               |
+   |           |for           |                                               |
+   |           |asynchronous  |                                               |
+   |           |processing.   |                                               |
+   +-----------+--------------+-----------------------------------------------+
+   |204 No     |The resource  |01000 for DELETE                               |
+   |Content    |was deleted   |                                               |
+   |           |successfully. |                                               |
+   +-----------+--------------+-----------------------------------------------+
+   |Client     |              |                                               |
+   |Errors     |              |                                               |
+   |(4xx)      |              |                                               |
+   +-----------+--------------+-----------------------------------------------+
+   |400 Bad    |Generic       |02000-02005,02104-02106,02300-02301,02304-02308|
+   |Request    |client-side   |                                               |
+   |           |error (syntax,|                                               |
+   |           |parameters,   |                                               |
+   |           |policy).      |                                               |
+   +-----------+--------------+-----------------------------------------------+
+   |403        |Authentication|02200-02202                                    |
+   |Forbidden  |or            |                                               |
+   |           |authorization |                                               |
+   |           |failed.       |                                               |
+   +-----------+--------------+-----------------------------------------------+
+   |404 Not    |The requested |02303                                          |
+   |Found      |resource does |                                               |
+   |           |not exist.    |                                               |
+   +-----------+--------------+-----------------------------------------------+
+   |409        |The resource  |02302                                          |
+   |Conflict   |could not be  |                                               |
+   |           |created       |                                               |
+
+
+
+Wullink & Kowalik        Expires 21 January 2026                [Page 7]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2025
+
+
+   |           |because it    |                                               |
+   |           |already       |                                               |
+   |           |exists.       |                                               |
+   +-----------+--------------+-----------------------------------------------+
+   |Server     |              |                                               |
+   |Errors     |              |                                               |
+   |(5xx)      |              |                                               |
+   +-----------+--------------+-----------------------------------------------+
+   |500        |Generic       |02400                                          |
+   |Internal   |server-side   |                                               |
+   |Server     |error; command|                                               |
+   |Error      |failed.       |                                               |
+   +-----------+--------------+-----------------------------------------------+
+   |501 Not    |The requested |02100-02103                                    |
+   |Implemented|command or    |                                               |
+   |           |feature is not|                                               |
+   |           |implemented.  |                                               |
+   +-----------+--------------+-----------------------------------------------+
+
+                                  Table 1
+
+   Some EPP result codes, like 01500, 02500, 02501 and 02502 are related
+   to session management and therefore not applicable to a sessionless
+   RPP protocol.
+
+7.  Endpoints
 
    subsequent sections provide details for each endpoint.  URLs are
    assumed to be using the prefix: "/{context-root}/{version}/".  Some
@@ -266,32 +439,72 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
    information, the client MUST use the HTTP POST method and add the
    query command content to the HTTP message body.
 
-6.1.  Check for Existence
-
-   -  Request: HEAD /{collection}/{id}
-   -  Request message: None
-   -  Response message: None
 
 
 
 
 
 
-Wullink & Kowalik        Expires 8 January 2026                 [Page 5]
+Wullink & Kowalik        Expires 21 January 2026                [Page 8]
 
 Internet-Draft        RESTful Provisioning Protocol            July 2025
 
 
-   The HTTP HEAD method MUST be used for object existence check.  The
-   response MUST contain the RPP-Check-Avail header.  The value of the
-   RPP-Check-Avail header MUST be false or true, depending on whether
-   the object can be provisioned.
+7.1.  Availability for Creation
 
-   The Check endpoint MUST be limited to checking only a single object-
-   id per request, to allow the server to effiently load balance
-   requests.
+   The Availability for Creation endpoint is used to check whether an
+   object can be successfully provisioned.  Two distinct methods are
+   defined for checking the availability of provisioning of an object,
+   the first method uses the HEAD method for a quick check to find out
+   if the object can be provisioned.  The second method uses the GET
+   method to retrieve additional information about the object's
+   availability for provisioning, for example about pricing or
+   additional requirements to be able to provision the requested object.
 
-   Example request for a domain name:
+   When the client uses the HTTP HEAD method, the server MUST respond
+   with an HTTP status code 200 (OK) if the object can be provisioned or
+   with an HTTP status code 404 (Not Found) if the object cannot be
+   provisioned.
+
+   When the client uses the HTTP GET method, the server MUST respond
+   with an HTTP status code 200 (OK) if the object can be provisioned.
+   The server MUST include a message body containing more detailed
+   availability information, for example about pricing or additional
+   requirements to be able to provision the requested object.  The
+   message body MAY be and empty JSON object if no additional
+   information is applicable.
+
+   If the object cannot be provisioned then the server MUST return an
+   HTTP status code 404 (Not Found) and include a problem statement in
+   the message body.
+
+   As an extension point the server MAY define and the client MAY use
+   additional HTTP query parameters to further specify the check
+   operation or the kind of response information that shall be returned.
+   For example Registry Fee Extension [RFC8748] defines a possibility to
+   request certain currency, only certain commands or periods.  Such
+   functionality would add query parameters, which could be used with
+   GET request to receive additional pricing information with the
+   response.  HEAD request would not be affected in this case.
+
+   The server MUST respond with the same HTTP status code if the same
+   URL is requested with HEAD and with GET.
+
+   - Request: HEAD|GET /{collection}/{id}/availability
+   - Request message: None
+   - Response message: Optional availability response
+
+   Example request for a domain name that is not available for
+   provisioning:
+
+
+
+
+
+Wullink & Kowalik        Expires 21 January 2026                [Page 9]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2025
+
 
    HEAD /rpp/v1/domains/example.nl HTTP/2
    Host: rpp.example.nl
@@ -301,16 +514,15 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
 
    Example response:
 
-   HTTP/2 200 OK
+   HTTP/2 404 Not Found
    Date: Wed, 24 Jan 2024 12:00:00 UTC
    Server: Example RPP server v1.0
    RPP-Cltrid: ABC-12345
    RPP-Svtrid: XYZ-12345
-   RPP-Check-Avail: false
-   RPP-result-code: 1000
+   RPP-code: 01000
    Content-Length: 0
 
-6.2.  Resource Information
+7.2.  Resource Information
 
    The Object Info request MUST use the HTTP GET method on a resource
    identifying an object instance.  If the object has authorization
@@ -327,17 +539,6 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
 
    Example request for an object not using authorization information.
 
-
-
-
-
-
-
-Wullink & Kowalik        Expires 8 January 2026                 [Page 6]
-
-Internet-Draft        RESTful Provisioning Protocol            July 2025
-
-
    GET /rpp/v1/domains/example.nl HTTP/2
    Host: rpp.example.nl
    Authorization: Bearer <token>
@@ -347,6 +548,19 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
 
    Example request using RPP-AuthInfo and RPP-Roid headers for an object
    that has attached authorization information.
+
+
+
+
+
+
+
+
+
+Wullink & Kowalik        Expires 21 January 2026               [Page 10]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2025
+
 
    GET /rpp/v1/domains/example.nl HTTP/2
    Host: rpp.example.nl
@@ -365,11 +579,11 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
    Content-Length: 424
    Content-Type: application/rpp+json
    Content-Language: en
-   RPP-code: 1000
+   RPP-code: 01000
 
    TODO: JSON message here
 
-6.3.  Poll for Messages
+7.3.  Poll for Messages
 
    The messages endpoint is used for retrieving messages stored on the
    server for the client to process.
@@ -383,17 +597,6 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
 
    Example request:
 
-
-
-
-
-
-
-Wullink & Kowalik        Expires 8 January 2026                 [Page 7]
-
-Internet-Draft        RESTful Provisioning Protocol            July 2025
-
-
    GET /rpp/v1/messages HTTP/2
    Host: rpp.example.nl
    Authorization: Bearer <token>
@@ -403,17 +606,29 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
 
    Example response:
 
+
+
+
+
+
+
+
+Wullink & Kowalik        Expires 21 January 2026               [Page 11]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2025
+
+
    HTTP/2 200 OK
    Date: Wed, 24 Jan 2024 12:00:00 UTC
    Server: Example RPP server v1.0
    Content-Length: 312
    Content-Type: application/rpp+json
    Content-Language: en
-   RPP-code: 1301
+   RPP-code: 01301
 
    TODO
 
-6.4.  Delete Message
+7.4.  Delete Message
 
    -  Request: DELETE /messages/{id}
    -  Request message: None
@@ -439,22 +654,11 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
 
    Example response:
 
-
-
-
-
-
-
-Wullink & Kowalik        Expires 8 January 2026                 [Page 8]
-
-Internet-Draft        RESTful Provisioning Protocol            July 2025
-
-
    HTTP/2 200 OK
    Date: Wed, 24 Jan 2024 12:00:00 UTC
    Server: Example RPP server v1.0
    Content-Language: en
-   RPP-code: 1000
+   RPP-code: 01000
    RPP-Queue-Size: 0
    RPP-Svtrid: XYZ-12345
    RPP-Cltrid: ABC-12345
@@ -462,7 +666,15 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
 
    TODO
 
-6.5.  Create Resource
+
+
+
+Wullink & Kowalik        Expires 21 January 2026               [Page 12]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2025
+
+
+7.5.  Create Resource
 
    -  Request: POST /{collection}
    -  Request message: Object Create request
@@ -495,18 +707,11 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
    Content-Length: 642
    Content-Type: application/rpp+json
    Location: https://rpp.example.nl/rpp/v1/domains/example.nl
-   RPP-code: 1000
+   RPP-code: 01000
 
    TODO
 
-
-
-Wullink & Kowalik        Expires 8 January 2026                 [Page 9]
-
-Internet-Draft        RESTful Provisioning Protocol            July 2025
-
-
-6.6.  Delete Resource
+7.6.  Delete Resource
 
    -  Request: DELETE /{collection}/{id}
    -  Request message: Optional
@@ -517,6 +722,13 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
    (OK) if the resource was deleted successfully.
 
    Example Domain Delete request:
+
+
+
+Wullink & Kowalik        Expires 21 January 2026               [Page 13]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2025
+
 
    DELETE /rpp/v1/domains/example.nl HTTP/2
    Host: rpp.example.nl
@@ -533,11 +745,11 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
    Content-Length: 80
    RPP-Svtrid: XYZ-12345
    RPP-Cltrid: ABC-12345
-   RPP-code: 1000
+   RPP-code: 01000
 
    TODO
 
-6.7.  Renew Resource
+7.7.  Renew Resource
 
    -  Request: POST /{collection}/{id}/renewal
    -  Request message: Optional
@@ -554,14 +766,6 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
 
    Example Domain Renew request:
 
-
-
-
-Wullink & Kowalik        Expires 8 January 2026                [Page 10]
-
-Internet-Draft        RESTful Provisioning Protocol            July 2025
-
-
    POST /rpp/v1/domains/example.nl/renewal?current-date=2024-01-01 HTTP/2
    Host: rpp.example.nl
    Authorization: Bearer <token>
@@ -571,6 +775,16 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
    Content-Length: 0
 
    Example Domain Renew request, using 1 year period:
+
+
+
+
+
+
+Wullink & Kowalik        Expires 21 January 2026               [Page 14]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2025
+
 
    POST /rpp/v1/domains/example.nl/renewal?current-date=2024-01-01?unit=y&value=1 HTTP/2
    Host: rpp.example.nl
@@ -589,11 +803,11 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
    Content-Length: 205
    Location: https://rpp.example.nl/rpp/v1/domains/example.nl
    Content-Type: application/rpp+json
-   RPP-code: 1000
+   RPP-code: 01000
 
    TODO
 
-6.8.  Transfer Resource
+7.8.  Transfer Resource
 
    The Transfer command is mapped to a nested resource, named
    "transfer".  The semantics of the HTTP DELETE method are determined
@@ -602,21 +816,11 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
    client of the object.  For the new sponsoring client the DELETE
    method is defined as "cancel transfer".
 
-6.8.1.  Start
+7.8.1.  Start
 
    -  Request: POST /{collection}/{id}/transfer
    -  Request message: Optional
    -  Response message: Status
-
-
-
-
-
-
-Wullink & Kowalik        Expires 8 January 2026                [Page 11]
-
-Internet-Draft        RESTful Provisioning Protocol            July 2025
-
 
    In order to initiate a new object transfer process, the client MUST
    use the HTTP POST method on a unique resource to create a new
@@ -627,6 +831,16 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
    the Location header for the object being transferred.
 
    Example request not using object authorization:
+
+
+
+
+
+
+Wullink & Kowalik        Expires 21 January 2026               [Page 15]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2025
+
 
    POST /rpp/v1/domains/example.nl/transfer HTTP/2
    Host: rpp.example.nl
@@ -660,20 +874,6 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
 
    Example Transfer response:
 
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik        Expires 8 January 2026                [Page 12]
-
-Internet-Draft        RESTful Provisioning Protocol            July 2025
-
-
    HTTP/2 200 OK
    Date: Wed, 24 Jan 2024 12:00:00 UTC
    Server: Example RPP server v1.0
@@ -681,15 +881,22 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
    Content-Length: 328
    Content-Type: application/rpp+json
    Location: https://rpp.example.nl/rpp/v1/domains/example.nl/transfer
-   RPP-code: 1001
+   RPP-code: 01001
 
    TODO
 
-6.8.2.  Status
+7.8.2.  Status
 
    A transfer object may not exist, when no transfer has been initiated
    for the specified object.  The client MUST use the HTTP GET method
    and MUST NOT add content to the HTTP message body.
+
+
+
+Wullink & Kowalik        Expires 21 January 2026               [Page 16]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2025
+
 
    -  Request: GET {collection}/{id}/transfer
    -  Request message: Optional
@@ -720,16 +927,6 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
    RPP-Cltrid: ABC-12345
    RPP-AuthInfo: secret-token
 
-
-
-
-
-
-Wullink & Kowalik        Expires 8 January 2026                [Page 13]
-
-Internet-Draft        RESTful Provisioning Protocol            July 2025
-
-
    If the requested object has associated authorization information
    linked to another database object, then the HTTP GET method MUST be
    used and both the RPP-AuthInfo and the RPP-Roid header MUST be
@@ -749,17 +946,25 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
 
    Example Transfer Query response:
 
+
+
+
+Wullink & Kowalik        Expires 21 January 2026               [Page 17]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2025
+
+
    HTTP/2 200 OK
    Date: Wed, 24 Jan 2024 12:00:00 UTC
    Server: Example RPP server v1.0
    Content-Length: 230
    Content-Type: application/rpp+json
    Content-Language: en
-   RPP-code: 1000
+   RPP-code: 01000
 
    TODO
 
-6.8.3.  Cancel
+7.8.3.  Cancel
 
    -  Request: POST /{collection}/{id}/transfer/cancelation
    -  Request message: Optional
@@ -779,24 +984,17 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
 
    Example response:
 
-
-
-Wullink & Kowalik        Expires 8 January 2026                [Page 14]
-
-Internet-Draft        RESTful Provisioning Protocol            July 2025
-
-
    HTTP/2 200 OK
    Date: Wed, 24 Jan 2024 12:00:00 UTC
    Server: Example RPP server v1.0
    Content-Length: 80
    RPP-Svtrid: XYZ-12345
    RPP-Cltrid: ABC-12345
-   RPP-code: 1000
+   RPP-code: 01000
 
    TODO
 
-6.8.4.  Reject
+7.8.4.  Reject
 
    -  Request: POST /{collection}/{id}/transfer/rejection
    -  Request message: None
@@ -804,6 +1002,13 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
 
    The currently sponsoring client of the object MUST use the HTTP POST
    method to reject a started transfer process.
+
+
+
+Wullink & Kowalik        Expires 21 January 2026               [Page 18]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2025
+
 
    Example request:
 
@@ -822,11 +1027,11 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
    Content-Length: 80
    RPP-Svtrid: XYZ-12345
    RPP-Cltrid: ABC-12345
-   RPP-code: 1000
+   RPP-code: 01000
 
    TODO
 
-6.8.5.  Approve
+7.8.5.  Approve
 
    -  Request: POST /{collection}/{id}/transfer/approval
    -  Request message: Optional
@@ -834,13 +1039,6 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
 
    The currently sponsoring client MUST use the HTTP POST method to
    approve a transfer requested by the new sponsoring client.
-
-
-
-Wullink & Kowalik        Expires 8 January 2026                [Page 15]
-
-Internet-Draft        RESTful Provisioning Protocol            July 2025
-
 
    Example Approve request:
 
@@ -854,17 +1052,31 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
 
    Example Approve response:
 
+
+
+
+
+
+
+
+
+
+Wullink & Kowalik        Expires 21 January 2026               [Page 19]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2025
+
+
    HTTP/2 200 OK
    Date: Wed, 24 Jan 2024 12:00:00 UTC
    Server: Example RPP server v1.0
    Content-Length: 80
    RPP-Svtrid: XYZ-12345
    RPP-Cltrid: ABC-12345
-   RPP-code: 1000
+   RPP-code: 01000
 
    TODO
 
-6.9.  Update Resource
+7.9.  Update Resource
 
    -  Request: PATCH /{collection}/{id}
    -  Request message: Object Update message
@@ -890,37 +1102,39 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
 
    Example response:
 
-
-
-
-Wullink & Kowalik        Expires 8 January 2026                [Page 16]
-
-Internet-Draft        RESTful Provisioning Protocol            July 2025
-
-
    HTTP/2 200 OK
    Date: Wed, 24 Jan 2024 12:00:00 UTC
    Server: Example RPP server v1.0
    Content-Length: 80
    RPP-Svtrid: XYZ-12345
    RPP-Cltrid: ABC-12345
-   RPP-code: 1000
+   RPP-code: 01000
 
    TODO
 
-7.  Extension Framework
+
+
+
+
+
+Wullink & Kowalik        Expires 21 January 2026               [Page 20]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2025
+
+
+8.  Extension Framework
 
    TODO
 
-8.  IANA Considerations
+9.  IANA Considerations
 
    TODO
 
-9.  Internationalization Considerations
+10.  Internationalization Considerations
 
    TODO
 
-10.  Security Considerations
+11.  Security Considerations
 
    RPP relies on the security of the underlying HTTP [RFC9110]
    transport, hence the best common practices for securing HTTP also
@@ -936,33 +1150,40 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
    using JSON Web Tokens (JWT) [RFC7519] or Basic authentication
    [RFC7617].
 
-11.  Change History
+12.  Change History
 
-11.1.  Version 00 to 01
+12.1.  Version 01 to 02
+
+   -  Merged the RPP-EPP-Code and RPP-Code headers into a single RPP-
+      Code header
+
+12.2.  Version 00 to 01
 
    -  Updated "Request Headers" and "Response Headers" section
    -  Changed transfer resource URL and HTTP method for reject, approve
       and cancel, in order to make the API easier to use
 
-11.2.  Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)
-
-
-
-
-Wullink & Kowalik        Expires 8 January 2026                [Page 17]
-
-Internet-Draft        RESTful Provisioning Protocol            July 2025
-
+12.3.  Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)
 
    -  Renamed the document name to "draft-wullink-rpp-core"
    -  Removed sections: Design Considerations, Resource Naming
       Convention, Session Management, HTTP Layer, Content Negotiation,
       Object Filtering, Error Handling
    -  Renamed Commands section to Endpoints
+
+
+
+Wullink & Kowalik        Expires 21 January 2026               [Page 21]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2025
+
+
    -  Removed text about extensions
    -  Changed naming to be less EPP like and more RDAP like
 
-12.  Normative References
+13.  References
+
+13.1.  Normative References
 
    [REST]     Fielding, R., "Architectural Styles and the Design of
               Network-based Software Architectures", 2000,
@@ -1005,7 +1226,10 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
 
 
 
-Wullink & Kowalik        Expires 8 January 2026                [Page 18]
+
+
+
+Wullink & Kowalik        Expires 21 January 2026               [Page 22]
 
 Internet-Draft        RESTful Provisioning Protocol            July 2025
 
@@ -1038,6 +1262,10 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
               DOI 10.17487/RFC8259, December 2017,
               <https://www.rfc-editor.org/info/rfc8259>.
 
+   [RFC8941]  Nottingham, M. and P. Kamp, "Structured Field Values for
+              HTTP", RFC 8941, DOI 10.17487/RFC8941, February 2021,
+              <https://www.rfc-editor.org/info/rfc8941>.
+
    [RFC9110]  Fielding, R., Ed., Nottingham, M., Ed., and J. Reschke,
               Ed., "HTTP Semantics", STD 97, RFC 9110,
               DOI 10.17487/RFC9110, June 2022,
@@ -1045,6 +1273,22 @@ Internet-Draft        RESTful Provisioning Protocol            July 2025
 
    [YAML]     YAML Language Development Team, "YAML: YAML Ain't Markup
               Language", 2000, <https://yaml.org/spec/1.2.2/>.
+
+13.2.  Informative References
+
+   [RFC8748]  Carney, R., Brown, G., and J. Frakes, "Registry Fee
+              Extension for the Extensible Provisioning Protocol (EPP)",
+              RFC 8748, DOI 10.17487/RFC8748, March 2020,
+              <https://www.rfc-editor.org/info/rfc8748>.
+
+
+
+
+
+Wullink & Kowalik        Expires 21 January 2026               [Page 23]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2025
+
 
 Authors' Addresses
 
@@ -1061,4 +1305,40 @@ Authors' Addresses
 
 
 
-Wullink & Kowalik        Expires 8 January 2026                [Page 19]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wullink & Kowalik        Expires 21 January 2026               [Page 24]
