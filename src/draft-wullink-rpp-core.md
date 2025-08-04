@@ -80,7 +80,18 @@ All example requests assume a RPP server using HTTP version 2 is listening on th
 A RPP request does not always require a request message body. The information conveyed by the HTTP method, URL, and request headers may be sufficient for the server to be able to successfully processes a request. However, the client MUST include a request message body when the server requires additional attributes to be present in the request message. The RPP HTTP headers listed below use the "RPP-" prefix, following the recommendations in [@!RFC6648].
 
 - `RPP-Cltrid`:  The client transaction identifier is the equivalent of the `clTRID` element defined in [@!RFC5730] and MUST be used accordingly, when the HTTP message body does not contain an EPP request that includes a cltrid.
-- `RPP-Authorization`: The client MAY use this header to send authorization information in the format `<method> <authorization information>`, similar to the HTTP `Authorization` header. The `<method>` indicates the type of authorization being used. For the `eppauthcode` method, the authorization information MUST use a semicolon-separated key/value format: `AuthInfo=<AuthInfo>; Roid=<Roid>`, where `AuthInfo` is REQUIRED and `Roid` is OPTIONAL unless required by the context (as described in [@!RFC5731], [@!RFC5733], and [@!RFC5730]). For other methods, the authorization information format is method-specific and may not use key/value pairs unless otherwise specified.
+- `RPP-Authorization`: The client MAY use this header to send authorization information in the format `<method> <authorization information>`, similar to the HTTP `Authorization` header, defined in [RFC9110, Section 11.6.2]. The `<method>` indicates the type of authorization being used. For EPP object authorization information, for example the authorization information used for domain names described in [RFC5731, Section 2.3], a new `authinfo` method is defined and MUST be used. The `<authorization information>` defines the following comma separated fields:
+ - value (REQUIRED): Base64 encoded EPP password-based authorization information. Base64 encoding is used to prevent problems when special characters are present that may conflict with the format rules for the Authorization header.
+ - roid (OPTIONAL): A Roid as defined in [@!RFC5731], [@!RFC5733], and [@!RFC5730]. The roid is used to identify the object for which the authorization information is provided. If the roid is not provided, then the server MUST assume that the authorization information is linked to the object identified by the URL of the request.
+
+Use of the RPP-Authorization header:
+
+ ```http
+RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu, roid=REG-XYZ-12345
+ ```
+
+The value of the `RPP-Authorization` header is case sensitive. The server MUST reject requests where the case of the header value does not match the expected case.
+The `RPP-Authorization` header is specific to the user agent and MUST NOT be cached, as recommended by [@!RFC9110, Section 16.4.2], the server MUST use the correct HTTP cache directives to prevent caching of the `RPP-Authorization` header.
 
 # Response Headers
 
@@ -169,7 +180,7 @@ The server MUST respond with the same HTTP status code if the same URL is reques
 Example request for a domain name that is not available for provisioning:
 
 ```http
-HEAD domains/example.nl HTTP/2
+HEAD domains/example.nl/availability HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept-Language: en
@@ -192,7 +203,7 @@ Content-Length: 0
 
 ## Resource Information
 
-The Object Info request MUST use the HTTP GET method on a resource identifying an object instance. If the object has authorization information attached then the client MUST use an empty message body and include the RPP-AuthInfo HTTP header. If the authorization is linked to a database object the client MUST also include the RPP-Roid header. The client MAY also use a message body that includes the authorization information, the client MUST then not use the RPP-AuthInfo and RPP-Roid headers.
+The Object Info request MUST use the HTTP GET method on a resource identifying an object instance. If the object has authorization information attached then the client MUST use an empty message body and include the RPP-Authorization HTTP header. If the authorization is linked to a database object the client MUST also include the roid in the RPP-Authorization header. The client MAY also use a message body that includes the authorization information, the client MUST then not use the RPP-Authorization header.
 
 - Request: GET {collection}/{id}
 - Request message: Optional
@@ -210,7 +221,7 @@ RPP-Cltrid: ABC-12345
 
 ```
 
-Example request using RPP-AuthInfo and RPP-Roid headers for an object that has attached authorization information.
+Example request using RPP-Authorization header for an object that has attached authorization information.
 
 ```http
 GET domains/example.nl HTTP/2
@@ -219,8 +230,7 @@ Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
-RPP-AuthInfo: secret-token
-RPP-Roid: REG-XYZ-12345
+RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 
 ```
 
@@ -381,40 +391,148 @@ RPP-code: 01000
 TODO
 ```
 
+## Processes Path Segment
+
+Each provisioning object may be related to one or more running processes, such as a transfer or deletion. Each process can have its own data, which is distinct from the data of the provisioning object itself. The processes can be started, stopped, or interacted with using their own specific set of representations and operations.
+
+All processes related to a provisioning object in RPP MUST exist under the `/{collection}/{id}/processes/{process_name}` path.
+
+The server operator MAY support direct access to process resources using server generated identifier. Such resource MAY be accessible using following URL: `/{collection}/{id}/processes/{process_name}/{process_id}`, where process_id is the process identifier.
+
+A process MAY also expose a resource at `/{collection}/{id}/processes/{process_name}/latest` to access and interact with the latest process instance. In case server offers any access to process information of given process name, the access to the last instance using `/{collection}/{id}/processes/{process_name}/latest` URL is MANDATORY.
+
+The server operator MAY decide which processes such resources exist for, whether they only exist for the currently running processes or also for completed or cancelled processes. The period for which completed processes remain available for retrieval is defined by server policy.
+
+### Generic proces interface
+
+A generic interface for interacting with the processes is defined as follows:
+
+#### Starting:
+`POST /{collection}/{id}/processes/{process_name}`
+
+The payload of such a request contains process-specific input information. A started process MAY create a resource to access and interact with the process instance. In such case the response MUST be a 201 Created with a `Location` header pointing to the created resource together with the process state representation. The created resource can be made accessible both using the `latest` mnemonic under a URL `/{collection}/{id}/processes/{process_name}/latest` or using a process id under a URL `/{collection}/{id}/processes/{process_name}/{process_id}`.
+
+When a process is created, executed and immediately completed by the server, a 201 Created response MAY still be provided together with the representation of the process result.
+
+Server MAY decide not to expose any resource for interaction with the created process, in such case a 200 OK MUST be provided.
+
+Example:
+```http
+POST /rpp/v1/domains/example.nl/processes/renewals HTTP/2
+... other headers removed for bravity ...
+
+{
+    "duration": "P2Y"
+}
+```
+
+#### Cancelling:
+
+A client MAY use the "latest" mnemonic to cancel the latest process instance, in such case the request MUST be:
+
+`DELETE /{collection}/{id}/processes/{process_name}/latest`
+
+If the client wants to cancel a specific process instance, the request MUST be:
+
+`DELETE /{collection}/{id}/processes/{process_name}/{process_id}`
+
+This request is intended to stop the running process. The server MUST return a 204 response if the process has been stopped and the resource is gone, or a 200 response if the process has been stopped but the resource remains.
+
+#### Status
+
+A client MAY use the "latest" mnemonic to request the latest process instance, in such case the request MUST be:
+
+`GET /{collection}/{id}/processes/{process_name}/latest`
+
+If the client wants to retrieve data of a specific process instance, the request MUST be:
+
+`GET /{collection}/{id}/processes/{process_name}/{process_id}`
+
+The request retrieves the representation of the task status. If no task is running, the server MAY return the status of the completed task or return a 404 response.
+
+#### Other operations
+
+Other operations on a process can be performed by adding path segments to the `/{collection}/{id}/processes/{process_name}/latest` or `/{collection}/{id}/processes/{process_name}/{process_id}` URL path.
+
+#### Listing
+
+A server MAY implement a listing facility for some or all, current or past processes.
+
+The following URL structure and HTTP method MAY be exposed by the server and MUST be used by the client to retrieve process list filtered by process name:
+
+`GET /{collection}/{id}/processes/{process_name}/`
+
+The following URL structure and HTTP method MAY be exposed by the server and MUST be used by the client to retrieve full process list independent of the process name:
+
+`GET /{collection}/{id}/processes/`
+
+It is up to server policy to define the type of processes and state, running or completed, made available for the client. A server MAY also choose not implement this end point at all returning either the HTPP status code 404 Not Found or a 501 Not Implemented status code.
+
+### Relation to object representation
+
+In certain situations a resource creation may require additional process data or implicitly start an asynchronous process with own inputs, lifecycle and state. In these cases, the representation sent to the server MAY contain a combination of object data and process-related data. For example a domain create request contains domain representation data which will be stored with domain object, and domain creation process data such as registration duration or price, which would be part as registration process data, but not directly stored with the domain object.
+
+For the process data in the message body to be distinct and consistent with the URL path structure, it MUST be enclosed in the `processes/{process_name}` JSON path when transmitted with the object's representation.
+
+Structure:
+
+```http
+POST /.../{collection}/{id}
+...
+{
+    ... object data ...
+    "processes": {
+        "{process_name}": {
+            ... process data ...
+        }
+    }
+    ...
+}
+```
+
+Example: Domain Create request with 2-year registration:
+
+```http
+POST /rpp/v1/domains HTTP/2
+Host: rpp.example.nl
+Authorization: Bearer <token>
+Accept: application/rpp+json
+Content-Type: application/rpp+json
+Accept-Language: en
+Content-Length: 220
+
+{
+    "name": "example.nl",
+    "processes": {
+        "creation": {
+            "periods": "P2Y"
+        }
+    }
+    ... other domain data ...
+}
+```
+
 ## Renew Resource
 
-- Request: POST {collection}/{id}/renewal
-- Request message: Optional
+- Request: POST /{collection}/{id}/processes/renewals
+- Request message: Renew request
 - Response message: Renew response
 
-Not all EPP object types include support for the renew command. The current-date query parameter MAY be used for date on which the current validity period ends, as described in [@!RFC5731, section 3.2.3]. The new period MAY be added to the request using the unit and value request parameters. The response MUST include the Location header for the renewed object.
-
- **TODO:**: current-date: can also be a HTTP header?
+Not every object resource includes support for the renew command. The response MUST include the Location header for the created renewal process resource.
 
 Example Domain Renew request:
 
 ```http
-POST domains/example.nl/renewal?current-date=2024-01-01 HTTP/2
+POST /rpp/v1/domains/example.nl/processes/renewals HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Content-Type: application/rpp+json
+RPP-Cltrid: ABC-12345
 Accept-Language: en
-Content-Length: 0
+Content-Length: 210
 
-```
-
-Example Domain Renew request, using 1 year period:
-
-```http
-POST domains/example.nl/renewal?current-date=2024-01-01?unit=y&value=1 HTTP/2
-Host: rpp.example.nl
-Authorization: Bearer <token>
-Accept: application/rpp+json
-Content-Type: application/rpp+json
-Accept-Language: en
-Content-Length: 0
-
+TODO: add renew request data here
 ```
 
 Example Renew response:
@@ -424,12 +542,14 @@ HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Language: en
+RPP-Svtrid: XYZ-12345
+RPP-Cltrid: ABC-12345
 Content-Length: 205
-Location: https://rpp.example.nl/domains/example.nl
+Location: https://rpp.example.nl/rpp/v1/domains/example.nl/processes/renewals/XYZ-12345
 Content-Type: application/rpp+json
 RPP-code: 01000
 
-TODO
+TODO add renew response data here
 ```
 
 ## Transfer Resource
@@ -438,7 +558,7 @@ TODO
 
 ### Start
 
-- Request: POST {collection}/{id}/transfer
+- Request: POST /{collection}/{id}/processes/transfers
 - Request message: Optional
 - Response message: Status
 
@@ -449,7 +569,7 @@ If the transfer request is successful, then the response MUST include the Locati
 Example request not using object authorization:
 
 ```http
-POST domains/example.nl/transfer HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfers HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -462,12 +582,12 @@ Content-Length: 0
 Example request using object authorization:
 
 ```http
-POST domains/example.nl/transfer HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfers HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
 RPP-Cltrid: ABC-12345
-RPP-AuthInfo: secret-token
+RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 Accept-Language: en
 Content-Length: 0
 
@@ -476,14 +596,17 @@ Content-Length: 0
 Example request using 1 year renewal period, using the `unit` and `value` query parameters:
 
 ```http
-POST domains/example.nl/transfer?unit=y&value=1 HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfers HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
-Content-Length: 0
+Content-Length: 23
 
+{
+  "duration": "P2Y"
+}
 ```
 
 Example Transfer response:
@@ -493,12 +616,19 @@ HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Language: en
-Content-Length: 328
+Content-Length: 182
 Content-Type: application/rpp+json
-Location: https://rpp.example.nl/domains/example.nl/transfer
+Location: https://rpp.example.nl/rpp/v1/domains/example.nl/processes/transfers/latest
 RPP-code: 01001
 
-TODO
+{
+  "trStatus": "pending",
+  "reID": "ClientX",
+  "acID": "ClientY",
+  "reDate": "2000-06-06T22:00:00.0Z",
+  "acDate": "2000-06-11T22:00:00.0Z",
+  "exDate": "2002-09-08T22:00:00.0Z
+}
 ```
 
 ### Status
@@ -506,14 +636,14 @@ TODO
 A transfer object may not exist, when no transfer has been initiated for the specified object.
 The client MUST use the HTTP GET method and MUST NOT add content to the HTTP message body.
 
-- Request: GET {collection}/{id}/transfer
+- Request: GET {collection}/{id}/processes/transfers
 - Request message: Optional
 - Response message: Transfer Status response
 
 Example domain name Transfer Status request without authorization information required:
 
 ```http
-GET domains/example.nl/transfer HTTP/2
+GET /rpp/v1/domains/example.nl/processes/transfers HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -522,33 +652,32 @@ RPP-Cltrid: ABC-12345
 
 ```
 
-If the requested transfer object has associated authorization information that is not linked to another database object, then the HTTP GET method MUST be used and the authorization information MUST be included using the RPP-AuthInfo header.
+If the requested transfer object has associated authorization information that is not linked to another database object, then the HTTP GET method MUST be used and the authorization information MUST be included using the RPP-Authorization header.
 
-Example domain name Transfer Query request using RPP-AuthInfo header:
+Example domain name Transfer Query request using RPP-Authorization header:
 
 ```http
-GET domains/example.nl/transfer HTTP/2
+GET /rpp/v1/domains/example.nl/processes/transfers HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
-RPP-AuthInfo: secret-token
+RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 
 ```
 
-If the requested object has associated authorization information linked to another database object, then the HTTP GET method MUST be used and both the RPP-AuthInfo and the RPP-Roid header MUST be included.
+If the requested object has associated authorization information linked to another database object, then the HTTP GET method MUST be used and the RPP-Authorization header MUST be included.
 
-Example domain name Transfer Query request and authorization using RPP-AuthInfo and the RPP-Roid header:
+Example domain name Transfer Query request and authorization using RPP-Authorization header:
 
 ```http
-GET domains/example.nl/transfer HTTP/2
+GET /rpp/v1/domains/example.nl/processes/transfers HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
-RPP-AuthInfo: secret-token
-RPP-Roid: REG-XYZ-12345
+RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 Content-Length: 0
 
 ```
@@ -569,7 +698,7 @@ TODO
 
 ### Cancel
 
-- Request: POST {collection}/{id}/transfer/cancelation
+- Request: POST /{collection}/{id}/processes/transfers/cancelation
 - Request message: Optional
 - Response message: Status
 
@@ -578,7 +707,7 @@ The new sponsoring client MUST use the HTTP POST method to cancel a requested tr
 Example request:
 
 ```http
-POST domains/example.nl/transfer/cancelation HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfers/cancelation HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -603,7 +732,7 @@ TODO
 
 ### Reject
 
-- Request: POST {collection}/{id}/transfer/rejection
+- Request: POST /{collection}/{id}/processes/transfers/rejection
 - Request message:  None
 - Response message: Status
 
@@ -612,7 +741,7 @@ The currently sponsoring client of the object MUST use the HTTP POST method to r
 Example request:
 
 ```http
-POST domains/example.nl/transfer/rejection HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfers/rejection HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -638,7 +767,7 @@ TODO
 
 ### Approve
 
-- Request: POST {collection}/{id}/transfer/approval
+- Request: POST /{collection}/{id}/processes/transfers/approval
 - Request message: Optional
 - Response message: Status
 
@@ -647,7 +776,7 @@ The currently sponsoring client MUST use the HTTP POST method to approve a trans
 Example Approve request:
 
 ```http
-POST domains/example.nl/transfer/approval HTTP/2
+POST /rpp/v1/domains/example.nl/processes/transfers/approval HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -734,6 +863,7 @@ Due to the stateless nature of RPP, the client MUST include the authentication c
 ## Version 01 to 02
 
 - Merged the RPP-EPP-Code and RPP-Code headers into a single RPP-Code header
+- Update the RPP-Authorization header to match the HTTP Authorization header format
 
 ## Version 00 to 01
 
