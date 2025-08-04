@@ -218,7 +218,7 @@ Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
-RPP-Authorization: AuthInfo=secret-token
+RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 
 ```
 
@@ -465,7 +465,7 @@ Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
 RPP-Cltrid: ABC-12345
-RPP-Authorization: AuthInfo=secret-token
+RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 Accept-Language: en
 Content-Length: 0
 
@@ -531,7 +531,7 @@ Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
-RPP-Authorization: AuthInfo=secret-token
+RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 
 ```
 
@@ -545,7 +545,7 @@ Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
-RPP-Authorization: AuthInfo=secret-token
+RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 Content-Length: 0
 
 ```
