@@ -179,7 +179,7 @@ The server MUST respond with the same HTTP status code if the same URL is reques
 Example request for a domain name that is not available for provisioning:
 
 ```http
-HEAD /rpp/v1/domains/example.nl HTTP/2
+HEAD /rpp/v1/domains/example.nl/availability HTTP/2
 Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept-Language: en
@@ -202,7 +202,7 @@ Content-Length: 0
 
 ## Resource Information
 
-The Object Info request MUST use the HTTP GET method on a resource identifying an object instance. If the object has authorization information attached then the client MUST use an empty message body and include the RPP-AuthInfo HTTP header. If the authorization is linked to a database object the client MUST also include the RPP-Roid header. The client MAY also use a message body that includes the authorization information, the client MUST then not use the RPP-AuthInfo and RPP-Roid headers.
+The Object Info request MUST use the HTTP GET method on a resource identifying an object instance. If the object has authorization information attached then the client MUST use an empty message body and include the RPP-Authorization HTTP header. If the authorization is linked to a database object the client MUST also include the roid in the RPP-Authorization header. The client MAY also use a message body that includes the authorization information, the client MUST then not use the RPP-Authorization header.
 
 - Request: GET /{collection}/{id}
 - Request message: Optional
@@ -220,7 +220,7 @@ RPP-Cltrid: ABC-12345
 
 ```
 
-Example request using RPP-AuthInfo and RPP-Roid headers for an object that has attached authorization information.
+Example request using RPP-Authorization header for an object that has attached authorization information.
 
 ```http
 GET /rpp/v1/domains/example.nl HTTP/2
@@ -229,8 +229,7 @@ Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
-RPP-AuthInfo: secret-token
-RPP-Roid: REG-XYZ-12345
+RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 
 ```
 
@@ -587,7 +586,7 @@ Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
 RPP-Cltrid: ABC-12345
-RPP-AuthInfo: secret-token
+RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 Accept-Language: en
 Content-Length: 0
 
@@ -652,9 +651,9 @@ RPP-Cltrid: ABC-12345
 
 ```
 
-If the requested transfer object has associated authorization information that is not linked to another database object, then the HTTP GET method MUST be used and the authorization information MUST be included using the RPP-AuthInfo header.
+If the requested transfer object has associated authorization information that is not linked to another database object, then the HTTP GET method MUST be used and the authorization information MUST be included using the RPP-Authorization header.
 
-Example domain name Transfer Query request using RPP-AuthInfo header:
+Example domain name Transfer Query request using RPP-Authorization header:
 
 ```http
 GET /rpp/v1/domains/example.nl/processes/transfers HTTP/2
@@ -663,13 +662,13 @@ Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
-RPP-AuthInfo: secret-token
+RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 
 ```
 
-If the requested object has associated authorization information linked to another database object, then the HTTP GET method MUST be used and both the RPP-AuthInfo and the RPP-Roid header MUST be included.
+If the requested object has associated authorization information linked to another database object, then the HTTP GET method MUST be used and the RPP-Authorization header MUST be included.
 
-Example domain name Transfer Query request and authorization using RPP-AuthInfo and the RPP-Roid header:
+Example domain name Transfer Query request and authorization using RPP-Authorization header:
 
 ```http
 GET /rpp/v1/domains/example.nl/processes/transfers HTTP/2
@@ -677,8 +676,7 @@ Host: rpp.example.nl
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
-RPP-AuthInfo: secret-token
-RPP-Roid: REG-XYZ-12345
+RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 Content-Length: 0
 
 ```
