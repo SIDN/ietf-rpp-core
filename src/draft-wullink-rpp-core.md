@@ -73,7 +73,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT","SHOULD", "SH
 
 In examples, lines starting with "C:" represent data sent by a RPP client and lines starting with "S:" represent data returned by a RPP server. Indentation and white space in examples are provided only to illustrate element relationships and are not REQUIRED features of the protocol.
 
-All example requests assume a RPP server using HTTP version 2 is listening on the standard HTTPS port on host rppp.example.org. An authorization token has been provided by an out of band process and MUST be used by the client to authenticate each request.
+All example requests assume a RPP server using HTTP version 2 is listening on the standard HTTPS port on host rpp.example. An authorization token has been provided by an out of band process and MUST be used by the client to authenticate each request.
 
 # Request Headers
 
@@ -181,7 +181,7 @@ Example request for a domain name that is not available for provisioning:
 
 ```http
 HEAD domains/example.org/availability HTTP/2
-Host: rpp.example.org
+Host: rpp.example
 Authorization: Bearer <token>
 Accept-Language: en
 RPP-Cltrid: ABC-12345
@@ -213,7 +213,7 @@ Example request for an object not using authorization information.
 
 ```http
 GET domains/example.org HTTP/2
-Host: rpp.example.org
+Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
@@ -225,7 +225,7 @@ Example request using RPP-Authorization header for an object that has attached a
 
 ```http
 GET domains/example.org HTTP/2
-Host: rpp.example.org
+Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
@@ -262,7 +262,7 @@ Example request:
 
 ```http
 GET messages HTTP/2
-Host: rpp.example.org
+Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
@@ -296,7 +296,7 @@ Example request:
 
 ```http
 DELETE messages/12345 HTTP/2
-Host: rpp.example.org
+Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
@@ -332,7 +332,7 @@ Example Domain Create request:
 
 ```http
 POST domains HTTP/2
-Host: rpp.example.org
+Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Content-Type: application/rpp+json
@@ -351,7 +351,7 @@ Server: Example RPP server v1.0
 Content-Language: en
 Content-Length: 642
 Content-Type: application/rpp+json
-Location: https://rpp.example.org/domains/example.org
+Location: https://rpp.example/domains/example.org
 RPP-code: 01000
 
 TODO
@@ -369,7 +369,7 @@ Example Domain Delete request:
 
 ```http
 DELETE domains/example.org HTTP/2
-Host: rpp.example.org
+Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
@@ -494,7 +494,7 @@ Example: Domain Create request with 2-year registration:
 
 ```http
 POST /rpp/v1/domains HTTP/2
-Host: rpp.example.org
+Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Content-Type: application/rpp+json
@@ -524,7 +524,7 @@ Example Domain Renew request:
 
 ```http
 POST /rpp/v1/domains/example.org/processes/renewals HTTP/2
-Host: rpp.example.org
+Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Content-Type: application/rpp+json
@@ -545,7 +545,7 @@ Content-Language: en
 RPP-Svtrid: XYZ-12345
 RPP-Cltrid: ABC-12345
 Content-Length: 205
-Location: https://rpp.example.org/rpp/v1/domains/example.org/processes/renewals/XYZ-12345
+Location: https://rpp.example/rpp/v1/domains/example.org/processes/renewals/XYZ-12345
 Content-Type: application/rpp+json
 RPP-code: 01000
 
@@ -570,7 +570,7 @@ Example request not using object authorization:
 
 ```http
 POST /rpp/v1/domains/example.org/processes/transfers HTTP/2
-Host: rpp.example.org
+Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
@@ -583,7 +583,7 @@ Example request using object authorization:
 
 ```http
 POST /rpp/v1/domains/example.org/processes/transfers HTTP/2
-Host: rpp.example.org
+Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
 RPP-Cltrid: ABC-12345
@@ -597,7 +597,7 @@ Example request using 1 year renewal period, using the `unit` and `value` query 
 
 ```http
 POST /rpp/v1/domains/example.org/processes/transfers HTTP/2
-Host: rpp.example.org
+Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
@@ -618,7 +618,7 @@ Server: Example RPP server v1.0
 Content-Language: en
 Content-Length: 182
 Content-Type: application/rpp+json
-Location: https://rpp.example.org/rpp/v1/domains/example.org/processes/transfers/latest
+Location: https://rpp.example/rpp/v1/domains/example.org/processes/transfers/latest
 RPP-code: 01001
 
 {
@@ -644,7 +644,7 @@ Example domain name Transfer Status request without authorization information re
 
 ```http
 GET /rpp/v1/domains/example.org/processes/transfers HTTP/2
-Host: rpp.example.org
+Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
@@ -658,7 +658,7 @@ Example domain name Transfer Query request using RPP-Authorization header:
 
 ```http
 GET /rpp/v1/domains/example.org/processes/transfers HTTP/2
-Host: rpp.example.org
+Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
@@ -673,7 +673,7 @@ Example domain name Transfer Query request and authorization using RPP-Authoriza
 
 ```http
 GET /rpp/v1/domains/example.org/processes/transfers HTTP/2
-Host: rpp.example.org
+Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
@@ -708,7 +708,7 @@ Example request:
 
 ```http
 POST /rpp/v1/domains/example.org/processes/transfers/cancelation HTTP/2
-Host: rpp.example.org
+Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
@@ -742,7 +742,7 @@ Example request:
 
 ```http
 POST /rpp/v1/domains/example.org/processes/transfers/rejection HTTP/2
-Host: rpp.example.org
+Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
@@ -777,7 +777,7 @@ Example Approve request:
 
 ```http
 POST /rpp/v1/domains/example.org/processes/transfers/approval HTTP/2
-Host: rpp.example.org
+Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Accept-Language: en
@@ -814,7 +814,7 @@ Example request:
 
 ```http
 PATCH domains/example.org HTTP/2
-Host: rpp.example.org
+Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Content-Type: application/rpp+json
