@@ -33,6 +33,13 @@ organization = "DENIC"
   email = "pawel.kowalik@denic.de"
   uri = "https://denic.de/"
 
+[[author]]
+fullname="Q Misell"
+organization = "AS207960 Cyfyngedig"
+  [author.address]
+  email = "q@as207960.net"
+  uri = "https://magicalcodewit.ch"
+
 %%%
 
 .# Abstract
@@ -145,6 +152,52 @@ Table 1: RPP result code and HTTP Status-Code mapping.
 | 501 Not Implemented | The requested command or feature is not implemented. | 02100-02103 |
 
 Some EPP result codes, like 01500, 02500, 02501 and 02502 are related to session management and therefore not applicable to a sessionless RPP protocol.
+
+# Problem Detail responses for errors
+
+When an error occurs that prevents processing of the requested action, an RPP server MUST respond using a Problem Detail
+document [@!RFC9457] detailing what went wrong, or what was not acceptable to the server.
+The `type` field MUST be the `urn:ietf:params:rpp:problem` URN.
+The `status` field MUST reflect the HTTP status code.
+The document MUST contain an `errors` element, as a list of objects detailing individual errors.
+
+This document consists of the following fields:
+
+`type`
+: (required, string) This field SHOULD be a URN under the `urn:ietf:params:rpp:code:` namespace using the RPP response
+code; e.g. with a code of `02005` the `type` field is `urn:ietf:params:rpp:code:02005`.
+Implementations MAY use other URIs, for more specificity about custom error types.
+
+`detail`
+: (required, string) A human-readable description of the error.
+
+`values`
+: (optional, list of objects) References to which values in the original request were not acceptable to the server.
+
+The `values` objects consist of the following fields:
+
+`path`
+: (required, string) The JSONPath [@!RFC9535] to the value referenced
+
+`reason`
+: (optional, string) A human-readable description of why the value was not acceptable
+
+Implementations MAY add extension fields to the `errors` document to convey additional information about the
+causes of the error. For example, to indicate the account balance on a billing failure, the following could be sent:
+
+```json
+{
+  "type": "urn:ietf:params:rpp:problem",
+  "title": "Billing failure",
+  "status": 405,
+  "errors": [{
+    "type": "urn:ietf:params:rpp:code:02104",
+    "detail": "Not enough balance on account to create domain",
+    "balance": 10.0,
+    "action_cost": 25.0
+  }]
+}
+```
 
 # Endpoints
 
@@ -844,7 +897,14 @@ TODO
 
 # IANA Considerations
 
-TODO
+## URN Sub-namespace for RPP (urn:ietf:params:rpp)
+
+The IANA is requested to add the following value to the "IETF URN Sub-namespace for Registered Protocol Parameter 
+Identifiers" registry, following the template in [@!RFC3553]:
+
+Registered Parameter Identifier: rpp  
+Reference:  This Document  
+IANA Registry Reference: [@!RFC5730]
 
 # Internationalization Considerations
 
