@@ -33,13 +33,6 @@ organization = "DENIC"
   email = "pawel.kowalik@denic.de"
   uri = "https://denic.de/"
 
-[[author]]
-fullname="Q Misell"
-organization = "AS207960 Cyfyngedig"
-  [author.address]
-  email = "q@as207960.net"
-  uri = "https://magicalcodewit.ch"
-
 %%%
 
 .# Abstract
@@ -806,6 +799,14 @@ Due to the stateless nature of RPP, the client MUST include the authentication c
 - Renamed Commands section to Endpoints
 - Removed text about extensions
 - Changed naming to be less EPP like and more RDAP like
+- 
+
+# Acknowledgements
+
+The authors would like to thank the following people for their helpful text contributions, comments and suggestions.
+
+- Q Misell, AS207960 Cyfyngedig
+
 
 {backmatter}
 
