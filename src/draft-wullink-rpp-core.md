@@ -867,7 +867,7 @@ Due to the stateless nature of RPP, the client MUST include the authentication c
 - Update the RPP-Authorization header to match the HTTP Authorization header format
 - Added new process path segment and process representations
 - Added use of Problem Detail [@!RFC9457] for error responses
-- Updated the Check request to now use an "availability" path segment and suppor both GET and HEAD methods
+- Updated the Check request to now use an "availability" path segment and support both GET and HEAD methods
 
 
 ## Version 00 to 01
