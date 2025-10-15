@@ -9,7 +9,7 @@ TocDepth = 4
 
 [seriesInfo]
 name = "Internet-Draft"
-value = "draft-wullink-rpp-core-01"
+value = "draft-wullink-rpp-core-02"
 stream = "IETF"
 status = "standard"
 
@@ -915,9 +915,13 @@ Due to the stateless nature of RPP, the client MUST include the authentication c
 
 ## Version 01 to 02
 
-- Changed domain name used for hostnames from "*.example.org" to "*.example"
+- Updated the examples, changed from "*.example.org" to "*.example"
 - Merged the RPP-EPP-Code and RPP-Code headers into a single RPP-Code header
 - Update the RPP-Authorization header to match the HTTP Authorization header format
+- Added new process path segment and process representations
+- Added use of Problem Detail [@!RFC9457] for error responses
+- Updated the Check request to now use an "availability" path segment and support both GET and HEAD methods
+
 
 ## Version 00 to 01
 
