@@ -10,7 +10,7 @@ Expires: 2 May 2026                                                DENIC
 
 
                   RESTful Provisioning Protocol (RPP)
-                       draft-wullink-rpp-core-02
+                       draft-wullink-rpp-core-03
 
 Abstract
 
