@@ -156,6 +156,9 @@ The document MUST contain an `errors` element, as a list of objects detailing in
 
 This document consists of the following fields:
 
+`type`
+: (required, string) This field contains an URI, referencing more information about the error type.
+
 `detail`
 : (required, string) A human-readable description of the error.
 
@@ -182,6 +185,7 @@ Example Problem Detail response for a billing failure, no JSONPaths specified:
 
 ```json
 {
+  "type": "https://rpp.example/problems/billing/billing-failure",
   "detail": "Billing failure",
   "errors": [{
     "type": "urn:ietf:params:rpp:code:02104",
@@ -196,6 +200,7 @@ Example Problem Detail response for domain create request containing an invalid 
 
 ```json
 {
+  "type": "https://rpp.example/problems/domains/domain-name-validation",
   "detail": "Domain name validation failed",
   "errors": [{
     "type": "urn:ietf:params:rpp:code:02005",
