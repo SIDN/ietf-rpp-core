@@ -11,7 +11,7 @@
        This document describes the endpoints for the RESTful Provisioning Protocol, used for the provisioning and management of objects in a shared database. 
     " name="description">
 <meta content="xml2rfc 3.18.2" name="generator">
-<meta content="draft-wullink-rpp-core-01" name="ietf.draft">
+<meta content="draft-wullink-rpp-core-02" name="ietf.draft">
 <!-- Generator version information:
   xml2rfc 3.18.2
     Python 3.11.12
@@ -1205,11 +1205,11 @@ li > p:last-of-type:only-child {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">RESTful Provisioning Protocol</td>
-<td class="right">July 2025</td>
+<td class="right">October 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Wullink &amp; Kowalik</td>
-<td class="center">Expires 21 January 2026</td>
+<td class="center">Expires 2 May 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1219,15 +1219,15 @@ li > p:last-of-type:only-child {
 <dt class="label-workgroup">Workgroup:</dt>
 <dd class="workgroup">Network Working Group</dd>
 <dt class="label-internet-draft">Internet-Draft:</dt>
-<dd class="internet-draft">draft-wullink-rpp-core-01</dd>
+<dd class="internet-draft">draft-wullink-rpp-core-02</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-07-20" class="published">20 July 2025</time>
+<time datetime="2025-10-29" class="published">29 October 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-01-21">21 January 2026</time></dd>
+<dd class="expires"><time datetime="2026-05-02">2 May 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1265,7 +1265,7 @@ li > p:last-of-type:only-child {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 21 January 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 2 May 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1313,93 +1313,132 @@ li > p:last-of-type:only-child {
             <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-error-handling-and-relation" class="internal xref">Error handling and relation between HTTP status codes and RPP codes</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-endpoints" class="internal xref">Endpoints</a></p>
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-problem-detail-responses-fo" class="internal xref">Problem Detail responses for errors</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-endpoints" class="internal xref">Endpoints</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
-                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-availability-for-creation" class="internal xref">Availability for Creation</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-availability-for-creation" class="internal xref">Availability for Creation</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
-                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-resource-information" class="internal xref">Resource Information</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-resource-information" class="internal xref">Resource Information</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3">
-                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-poll-for-messages" class="internal xref">Poll for Messages</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.3">
+                <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="auto internal xref">8.3</a>.  <a href="#name-poll-for-messages" class="internal xref">Poll for Messages</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.4">
-                <p id="section-toc.1-1.7.2.4.1"><a href="#section-7.4" class="auto internal xref">7.4</a>.  <a href="#name-delete-message" class="internal xref">Delete Message</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.4">
+                <p id="section-toc.1-1.8.2.4.1"><a href="#section-8.4" class="auto internal xref">8.4</a>.  <a href="#name-delete-message" class="internal xref">Delete Message</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.5">
-                <p id="section-toc.1-1.7.2.5.1"><a href="#section-7.5" class="auto internal xref">7.5</a>.  <a href="#name-create-resource" class="internal xref">Create Resource</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.5">
+                <p id="section-toc.1-1.8.2.5.1"><a href="#section-8.5" class="auto internal xref">8.5</a>.  <a href="#name-create-resource" class="internal xref">Create Resource</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.6">
-                <p id="section-toc.1-1.7.2.6.1"><a href="#section-7.6" class="auto internal xref">7.6</a>.  <a href="#name-delete-resource" class="internal xref">Delete Resource</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.6">
+                <p id="section-toc.1-1.8.2.6.1"><a href="#section-8.6" class="auto internal xref">8.6</a>.  <a href="#name-delete-resource" class="internal xref">Delete Resource</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.7">
-                <p id="section-toc.1-1.7.2.7.1"><a href="#section-7.7" class="auto internal xref">7.7</a>.  <a href="#name-renew-resource" class="internal xref">Renew Resource</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.8">
-                <p id="section-toc.1-1.7.2.8.1"><a href="#section-7.8" class="auto internal xref">7.8</a>.  <a href="#name-transfer-resource" class="internal xref">Transfer Resource</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.7">
+                <p id="section-toc.1-1.8.2.7.1"><a href="#section-8.7" class="auto internal xref">8.7</a>.  <a href="#name-processes-path-segment" class="internal xref">Processes Path Segment</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.8.2.1">
-                    <p id="section-toc.1-1.7.2.8.2.1.1"><a href="#section-7.8.1" class="auto internal xref">7.8.1</a>.  <a href="#name-start" class="internal xref">Start</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.7.2.1">
+                    <p id="section-toc.1-1.8.2.7.2.1.1"><a href="#section-8.7.1" class="auto internal xref">8.7.1</a>.  <a href="#name-generic-proces-interface" class="internal xref">Generic proces interface</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.7.2.1.2.1">
+                        <p id="section-toc.1-1.8.2.7.2.1.2.1.1"><a href="#section-8.7.1.1" class="auto internal xref">8.7.1.1</a>.  <a href="#name-starting" class="internal xref">Starting:</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.8.2.2">
-                    <p id="section-toc.1-1.7.2.8.2.2.1"><a href="#section-7.8.2" class="auto internal xref">7.8.2</a>.  <a href="#name-status" class="internal xref">Status</a></p>
+                      <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.7.2.1.2.2">
+                        <p id="section-toc.1-1.8.2.7.2.1.2.2.1"><a href="#section-8.7.1.2" class="auto internal xref">8.7.1.2</a>.  <a href="#name-cancelling" class="internal xref">Cancelling:</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.8.2.3">
-                    <p id="section-toc.1-1.7.2.8.2.3.1"><a href="#section-7.8.3" class="auto internal xref">7.8.3</a>.  <a href="#name-cancel" class="internal xref">Cancel</a></p>
+                      <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.7.2.1.2.3">
+                        <p id="section-toc.1-1.8.2.7.2.1.2.3.1"><a href="#section-8.7.1.3" class="auto internal xref">8.7.1.3</a>.  <a href="#name-status" class="internal xref">Status</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.8.2.4">
-                    <p id="section-toc.1-1.7.2.8.2.4.1"><a href="#section-7.8.4" class="auto internal xref">7.8.4</a>.  <a href="#name-reject" class="internal xref">Reject</a></p>
+                      <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.7.2.1.2.4">
+                        <p id="section-toc.1-1.8.2.7.2.1.2.4.1"><a href="#section-8.7.1.4" class="auto internal xref">8.7.1.4</a>.  <a href="#name-other-operations" class="internal xref">Other operations</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.8.2.5">
-                    <p id="section-toc.1-1.7.2.8.2.5.1"><a href="#section-7.8.5" class="auto internal xref">7.8.5</a>.  <a href="#name-approve" class="internal xref">Approve</a></p>
+                      <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.7.2.1.2.5">
+                        <p id="section-toc.1-1.8.2.7.2.1.2.5.1"><a href="#section-8.7.1.5" class="auto internal xref">8.7.1.5</a>.  <a href="#name-listing" class="internal xref">Listing</a></p>
+</li>
+                    </ul>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.7.2.2">
+                    <p id="section-toc.1-1.8.2.7.2.2.1"><a href="#section-8.7.2" class="auto internal xref">8.7.2</a>.  <a href="#name-relation-to-object-represen" class="internal xref">Relation to object representation</a></p>
 </li>
                 </ul>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.9">
-                <p id="section-toc.1-1.7.2.9.1"><a href="#section-7.9" class="auto internal xref">7.9</a>.  <a href="#name-update-resource" class="internal xref">Update Resource</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.8">
+                <p id="section-toc.1-1.8.2.8.1"><a href="#section-8.8" class="auto internal xref">8.8</a>.  <a href="#name-renew-resource" class="internal xref">Renew Resource</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.9">
+                <p id="section-toc.1-1.8.2.9.1"><a href="#section-8.9" class="auto internal xref">8.9</a>.  <a href="#name-transfer-resource" class="internal xref">Transfer Resource</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.9.2.1">
+                    <p id="section-toc.1-1.8.2.9.2.1.1"><a href="#section-8.9.1" class="auto internal xref">8.9.1</a>.  <a href="#name-start" class="internal xref">Start</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.9.2.2">
+                    <p id="section-toc.1-1.8.2.9.2.2.1"><a href="#section-8.9.2" class="auto internal xref">8.9.2</a>.  <a href="#name-status-2" class="internal xref">Status</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.9.2.3">
+                    <p id="section-toc.1-1.8.2.9.2.3.1"><a href="#section-8.9.3" class="auto internal xref">8.9.3</a>.  <a href="#name-cancel" class="internal xref">Cancel</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.9.2.4">
+                    <p id="section-toc.1-1.8.2.9.2.4.1"><a href="#section-8.9.4" class="auto internal xref">8.9.4</a>.  <a href="#name-reject" class="internal xref">Reject</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.9.2.5">
+                    <p id="section-toc.1-1.8.2.9.2.5.1"><a href="#section-8.9.5" class="auto internal xref">8.9.5</a>.  <a href="#name-approve" class="internal xref">Approve</a></p>
+</li>
+                </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.10">
+                <p id="section-toc.1-1.8.2.10.1"><a href="#section-8.10" class="auto internal xref">8.10</a>. <a href="#name-update-resource" class="internal xref">Update Resource</a></p>
 </li>
             </ul>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-extension-framework" class="internal xref">Extension Framework</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-extension-framework" class="internal xref">Extension Framework</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-internationalization-consid" class="internal xref">Internationalization Considerations</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-change-history" class="internal xref">Change History</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1">
-                <p id="section-toc.1-1.12.2.1.1"><a href="#section-12.1" class="auto internal xref">12.1</a>.  <a href="#name-version-01-to-02" class="internal xref">Version 01 to 02</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.2">
-                <p id="section-toc.1-1.12.2.2.1"><a href="#section-12.2" class="auto internal xref">12.2</a>.  <a href="#name-version-00-to-01" class="internal xref">Version 00 to 01</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.3">
-                <p id="section-toc.1-1.12.2.3.1"><a href="#section-12.3" class="auto internal xref">12.3</a>.  <a href="#name-version-00-draft-rpp-core-t" class="internal xref">Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.1">
+                <p id="section-toc.1-1.10.2.1.1"><a href="#section-10.1" class="auto internal xref">10.1</a>.  <a href="#name-urn-sub-namespace-for-rpp-u" class="internal xref">URN Sub-namespace for RPP (urn:ietf:params:rpp)</a></p>
 </li>
             </ul>
 </li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-internationalization-consid" class="internal xref">Internationalization Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
+            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+</li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
-            <p id="section-toc.1-1.13.1"><a href="#section-13" class="auto internal xref">13</a>. <a href="#name-references" class="internal xref">References</a></p>
+            <p id="section-toc.1-1.13.1"><a href="#section-13" class="auto internal xref">13</a>. <a href="#name-change-history" class="internal xref">Change History</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.1">
-                <p id="section-toc.1-1.13.2.1.1"><a href="#section-13.1" class="auto internal xref">13.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+                <p id="section-toc.1-1.13.2.1.1"><a href="#section-13.1" class="auto internal xref">13.1</a>.  <a href="#name-version-01-to-02" class="internal xref">Version 01 to 02</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.2">
-                <p id="section-toc.1-1.13.2.2.1"><a href="#section-13.2" class="auto internal xref">13.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+                <p id="section-toc.1-1.13.2.2.1"><a href="#section-13.2" class="auto internal xref">13.2</a>.  <a href="#name-version-00-to-01" class="internal xref">Version 00 to 01</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.3">
+                <p id="section-toc.1-1.13.2.3.1"><a href="#section-13.3" class="auto internal xref">13.3</a>.  <a href="#name-version-00-draft-rpp-core-t" class="internal xref">Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
-            <p id="section-toc.1-1.14.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.14.1"><a href="#section-14" class="auto internal xref">14</a>. <a href="#name-acknowledgements" class="internal xref">Acknowledgements</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15">
+            <p id="section-toc.1-1.15.1"><a href="#section-15" class="auto internal xref">15</a>. <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15.2.1">
+                <p id="section-toc.1-1.15.2.1.1"><a href="#section-15.1" class="auto internal xref">15.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15.2.2">
+                <p id="section-toc.1-1.15.2.2.1"><a href="#section-15.2" class="auto internal xref">15.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16">
+            <p id="section-toc.1-1.16.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1411,8 +1450,7 @@ li > p:last-of-type:only-child {
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
 <p id="section-1-1">This document describes an Application Programming Interface (API) API based on the HTTP protocol <span>[<a href="#RFC2616" class="cite xref">RFC2616</a>]</span> and the principles of <span>[<a href="#REST" class="cite xref">REST</a>]</span>. Conforming to the REST constraints is generally referred to as being "RESTful". Hence the API is dubbed: "'RESTful Provisioning Protocol" or "RPP" for short.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">RPP is data format agnostic, this document describes a framework describing protocol messages in any data format.
-the client uses server-driven content negotiation. Allowing the client to select from a set of representation media types supported by the server, such as JSON <span>[<a href="#RFC8259" class="cite xref">RFC8259</a>]</span>, XML or <span>[<a href="#YAML" class="cite xref">YAML</a>]</span>.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-2">The RPP API is designed to be used for the provisioning and management of objects in a shared database, such as domain names, hosts, and entities.<a href="#section-1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="terminology">
@@ -1438,7 +1476,7 @@ the client uses server-driven content negotiation. Allowing the client to select
       </h2>
 <p id="section-3-1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT","SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span>.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <p id="section-3-2">In examples, lines starting with "C:" represent data sent by a RPP client and lines starting with "S:" represent data returned by a RPP server. Indentation and white space in examples are provided only to illustrate element relationships and are not REQUIRED features of the protocol.<a href="#section-3-2" class="pilcrow">¶</a></p>
-<p id="section-3-3">All example requests assume a RPP server using HTTP version 2 is listening on the standard HTTPS port on host rppp.example.nl. An authorization token has been provided by an out of band process and MUST be used by the client to authenticate each request.<a href="#section-3-3" class="pilcrow">¶</a></p>
+<p id="section-3-3">All example requests assume a RPP server using HTTP version 2 is listening on the standard HTTPS port on host rpp.example. An authorization token has been provided by an out of band process and MUST be used by the client to authenticate each request.<a href="#section-3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="request-headers">
@@ -1447,26 +1485,28 @@ the client uses server-driven content negotiation. Allowing the client to select
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-request-headers" class="section-name selfRef">Request Headers</a>
       </h2>
 <p id="section-4-1">A RPP request does not always require a request message body. The information conveyed by the HTTP method, URL, and request headers may be sufficient for the server to be able to successfully processes a request. However, the client MUST include a request message body when the server requires additional attributes to be present in the request message. The RPP HTTP headers listed below use the "RPP-" prefix, following the recommendations in <span>[<a href="#RFC6648" class="cite xref">RFC6648</a>]</span>.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-4-2.1">
+<ul class="compact">
+<li class="compact" id="section-4-2.1">
           <code>RPP-Cltrid</code>:  The client transaction identifier is the equivalent of the <code>clTRID</code> element defined in <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> and MUST be used accordingly, when the HTTP message body does not contain an EPP request that includes a cltrid.<a href="#section-4-2.1" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="section-4-2.2">
-          <p id="section-4-2.2.1"><code>RPP-Authorization</code>: The client MAY use this header to send authorization information in the format <code>&lt;method&gt; &lt;authorization information&gt;</code>, similar to the HTTP <code>Authorization</code> header. The <code>&lt;method&gt;</code> indicates the type of authorization being used. The authorization information MUST be defined as a structured field (dictionary) as described in <span>[<a href="#RFC8941" class="cite xref">RFC8941</a>]</span>.
-For the EPP Authorization Information using plain password the following method is defined and MUST be used:
-<code>&lt;method&gt;</code> = <code>AuthInfo</code>
-The <code>&lt;authorization information&gt;</code> for <code>AuthInfo</code> method defines the following fields:<a href="#section-4-2.2.1" class="pilcrow">¶</a></p>
-<ul class="compact normal">
-<li class="compact normal" id="section-4-2.2.2.1">AuthInfo (REQUIRED): base64 encoded EPP authorization information. Base64 encoding is used to prevent potential problems when non-ascii characters or other characters are present that may conflict with the format rules for structured field.<a href="#section-4-2.2.2.1" class="pilcrow">¶</a>
+        <li class="compact" id="section-4-2.2">
+          <p id="section-4-2.2.1"><code>RPP-Authorization</code>: The client MAY use this header to send authorization information in the format <code>&lt;method&gt; &lt;authorization information&gt;</code>, similar to the HTTP <code>Authorization</code> header, defined in [RFC9110, Section 11.6.2]. The <code>&lt;method&gt;</code> indicates the type of authorization being used. For EPP object authorization information, for example the authorization information used for domain names described in [RFC5731, Section 2.3], a new <code>authinfo</code> method is defined and MUST be used. The <code>&lt;authorization information&gt;</code> defines the following comma separated fields:<a href="#section-4-2.2.1" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="section-4-2.2.2.1">value (REQUIRED): Base64 encoded EPP password-based authorization information. Base64 encoding is used to prevent problems when special characters are present that may conflict with the format rules for the Authorization header.<a href="#section-4-2.2.2.1" class="pilcrow">¶</a>
 </li>
-            <li class="compact normal" id="section-4-2.2.2.2">Roid (OPTIONAL): A Roid as defined in <span>[<a href="#RFC5731" class="cite xref">RFC5731</a>]</span>, <span>[<a href="#RFC5733" class="cite xref">RFC5733</a>]</span>, and <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>. This field MAY be REQUIRED in the usage context as defined in <span>[<a href="#RFC5731" class="cite xref">RFC5731</a>]</span>, <span>[<a href="#RFC5733" class="cite xref">RFC5733</a>]</span>, and <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>.<a href="#section-4-2.2.2.2" class="pilcrow">¶</a>
+            <li class="compact" id="section-4-2.2.2.2">roid (OPTIONAL): A Roid as defined in <span>[<a href="#RFC5731" class="cite xref">RFC5731</a>]</span>, <span>[<a href="#RFC5733" class="cite xref">RFC5733</a>]</span>, and <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>. The roid is used to identify the object for which the authorization information is provided. If the roid is not provided, then the server MUST assume that the authorization information is linked to the object identified by the URL of the request.<a href="#section-4-2.2.2.2" class="pilcrow">¶</a>
 </li>
           </ul>
 </li>
-        <li class="normal" id="section-4-2.3">
-          <p id="section-4-2.3.1"><code>RPP-Authorization</code>: The client MAY use this header to send authorization information in the format <code>&lt;method&gt; &lt;authorization information&gt;</code>, similar to the HTTP <code>Authorization</code> header. The <code>&lt;method&gt;</code> indicates the type of authorization being used. The authorization information MUST be defined as a structured field (dictionary) as described in <span>[<a href="#RFC8941" class="cite xref">RFC8941</a>]</span>. For the EPP <code>AuthInfo</code> method this format MUST be used: <code>AuthInfo=&lt;Base64(AuthInfo)&gt;; Roid=&lt;Roid&gt;</code>, where <code>AuthInfo</code> is REQUIRED and MUST be encoded using base64, to prevent potential problems when non-ascii characters or other characters are present that may conflict with the format rules for structured field. The <code>Roid</code> is OPTIONAL unless required by the context (as described in <span>[<a href="#RFC5731" class="cite xref">RFC5731</a>]</span>, <span>[<a href="#RFC5733" class="cite xref">RFC5733</a>]</span>, and <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>). For other methods, the authorization information format is method-specific and may not use key/value pairs unless otherwise specified.<a href="#section-4-2.3.1" class="pilcrow">¶</a></p>
-</li>
       </ul>
+<p id="section-4-3">Use of the RPP-Authorization header:<a href="#section-4-3" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-4-4">
+<pre>RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu, roid=REG-XYZ-12345
+
+</pre><a href="#section-4-4" class="pilcrow">¶</a>
+</div>
+<p id="section-4-5">The value of the <code>RPP-Authorization</code> header is case sensitive. The server MUST reject requests where the case of the header value does not match the expected case.
+The <code>RPP-Authorization</code> header is specific to the user agent and MUST NOT be cached, as recommended by <a href="https://rfc-editor.org/rfc/rfc9110#appendix-Section%2016.4.2" class="relref">Section 16.4.2</a>, the server MUST use the correct HTTP cache directives to prevent caching of the <code>RPP-Authorization</code> header.<a href="#section-4-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="response-headers">
@@ -1589,46 +1629,108 @@ For RPP result codes the leading digit MUST be "1". For avoidance of confusion R
 <p id="section-6-8">Some EPP result codes, like 01500, 02500, 02501 and 02502 are related to session management and therefore not applicable to a sessionless RPP protocol.<a href="#section-6-8" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="endpoints">
+<div id="problem-detail-responses-for-errors">
 <section id="section-7">
-      <h2 id="name-endpoints">
-<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-endpoints" class="section-name selfRef">Endpoints</a>
+      <h2 id="name-problem-detail-responses-fo">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-problem-detail-responses-fo" class="section-name selfRef">Problem Detail responses for errors</a>
       </h2>
-<p id="section-7-1">subsequent sections provide details for each endpoint. URLs are assumed to be using the prefix: "/{context-root}/{version}/". Some RPP endpoints do not require a request and/or response message.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<p id="section-7-2">{c}: An abbreviation for {collection}: this MUST be substituted with "domains", "hosts", "entities" or any other collection of objects.
-{i}: An abbreviation for an object id, this MUST be substituted with the value of a domain name, hostname, contact-id or a message-id or any other defined object.<a href="#section-7-2" class="pilcrow">¶</a></p>
-<p id="section-7-3">A RPP client MAY use the HTTP GET method for executing informational request only when no request data has to be added to the HTTP message body. Sending content using an HTTP GET request is discouraged in <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span>, there exists no generally defined semantics for content received in a GET request. When an RPP object requires additional information, the client MUST use the HTTP POST method and add the query command content to the HTTP message body.<a href="#section-7-3" class="pilcrow">¶</a></p>
+<p id="section-7-1">When an error occurs that prevents processing of the requested action, an RPP server MUST respond using a Problem Detail
+document <span>[<a href="#RFC9457" class="cite xref">RFC9457</a>]</span> detailing what went wrong, or what was not acceptable to the server.
+The <code>type</code> field MUST be the <code>urn:ietf:params:rpp:problem</code> URN.
+The <code>status</code> field MUST reflect the HTTP status code.
+The document MUST contain an <code>errors</code> element, as a list of objects detailing individual errors.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-2">This document consists of the following fields:<a href="#section-7-2" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlCompact dlParallel" id="section-7-3">
+        <dt id="section-7-3.1"><code>type</code></dt>
+        <dd style="margin-left: 1.5em" id="section-7-3.2">(required, string) This field SHOULD be a URN under the <code>urn:ietf:params:rpp:code:</code> namespace using the RPP response
+code; e.g. with a code of <code>02005</code> the <code>type</code> field is <code>urn:ietf:params:rpp:code:02005</code>.
+Implementations MAY use other URIs, for more specificity about custom error types.<a href="#section-7-3.2" class="pilcrow">¶</a>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-7-3.3"><code>detail</code></dt>
+        <dd style="margin-left: 1.5em" id="section-7-3.4">(required, string) A human-readable description of the error.<a href="#section-7-3.4" class="pilcrow">¶</a>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-7-3.5"><code>values</code></dt>
+        <dd style="margin-left: 1.5em" id="section-7-3.6">(optional, list of objects) References to which values in the original request were not acceptable to the server.<a href="#section-7-3.6" class="pilcrow">¶</a>
+</dd>
+      <dd class="break"></dd>
+</dl>
+<p id="section-7-4">The <code>values</code> objects consist of the following fields:<a href="#section-7-4" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlCompact dlParallel" id="section-7-5">
+        <dt id="section-7-5.1"><code>path</code></dt>
+        <dd style="margin-left: 1.5em" id="section-7-5.2">(required, string) The JSONPath <span>[<a href="#RFC9535" class="cite xref">RFC9535</a>]</span> to the value referenced<a href="#section-7-5.2" class="pilcrow">¶</a>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-7-5.3"><code>reason</code></dt>
+        <dd style="margin-left: 1.5em" id="section-7-5.4">(optional, string) A human-readable description of why the value was not acceptable<a href="#section-7-5.4" class="pilcrow">¶</a>
+</dd>
+      <dd class="break"></dd>
+</dl>
+<p id="section-7-6">Implementations MAY add extension fields to the <code>errors</code> document to convey additional information about the
+causes of the error. For example, to indicate the account balance on a billing failure, the following could be sent:<a href="#section-7-6" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="section-7-7">
+<pre>{
+  "type": "urn:ietf:params:rpp:problem",
+  "title": "Billing failure",
+  "status": 405,
+  "errors": [{
+    "type": "urn:ietf:params:rpp:code:02104",
+    "detail": "Not enough balance on account to create domain",
+    "balance": 10.0,
+    "action_cost": 25.0
+  }]
+}
+
+</pre><a href="#section-7-7" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="endpoints">
+<section id="section-8">
+      <h2 id="name-endpoints">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-endpoints" class="section-name selfRef">Endpoints</a>
+      </h2>
+<p id="section-8-1">Endpoints are described using URI Templates <span>[<a href="#RFC6570" class="cite xref">RFC6570</a>]</span> relative to a discoverable base URL, as recommended by <span>[<a href="#RFC9205" class="cite xref">RFC9205</a>]</span>. Some RPP endpoints do not require a request and/or response message.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-2">The RPP endpoints are defined using the following URI Template syntax:<a href="#section-8-2" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="section-8-3.1">{c}: An abbreviation for {collection}: this MUST be substituted with "domains", "hosts", "entities" or another collection of objects.<a href="#section-8-3.1" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-8-3.2">{i}: An abbreviation for an object identifier, this MUST be substituted with the value of a domain name, hostname, contact-id or a message-id or any other defined object.<a href="#section-8-3.2" class="pilcrow">¶</a>
+</li>
+      </ul>
+<p id="section-8-4">A RPP client MAY use the HTTP GET method for executing informational request only when no request data has to be added to the HTTP message body. Sending content using an HTTP GET request is discouraged in <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span>, there exists no generally defined semantics for content received in a GET request. When an RPP object requires additional information, the client MUST use the HTTP POST method and add the query command content to the HTTP message body.<a href="#section-8-4" class="pilcrow">¶</a></p>
 <div id="availability-for-creation">
-<section id="section-7.1">
+<section id="section-8.1">
         <h3 id="name-availability-for-creation">
-<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-availability-for-creation" class="section-name selfRef">Availability for Creation</a>
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-availability-for-creation" class="section-name selfRef">Availability for Creation</a>
         </h3>
-<p id="section-7.1-1">The Availability for Creation endpoint is used to check whether an object can be successfully provisioned. Two distinct methods are defined for checking the availability of provisioning of an object, the first method uses the HEAD method for a quick check to find out if the object can be provisioned. The second method uses the GET method to retrieve additional information about the object's availability for provisioning, for example about pricing or additional requirements to be able to provision the requested object.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
-<p id="section-7.1-2">When the client uses the HTTP HEAD method, the server MUST respond with an HTTP status code 200 (OK) if the object can be provisioned or with an HTTP status code 404 (Not Found) if the object cannot be provisioned.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
-<p id="section-7.1-3">When the client uses the HTTP GET method, the server MUST respond with an HTTP status code 200 (OK) if the object can be provisioned. The server MUST include a message body containing more detailed availability information, for example about pricing or additional requirements to be able to provision the requested object. The message body MAY be and empty JSON object if no additional information is applicable.<a href="#section-7.1-3" class="pilcrow">¶</a></p>
-<p id="section-7.1-4">If the object cannot be provisioned then the server MUST return an HTTP status code 404 (Not Found) and include a problem statement in the message body.<a href="#section-7.1-4" class="pilcrow">¶</a></p>
-<p id="section-7.1-5">As an extension point the server MAY define and the client MAY use additional HTTP query parameters to further specify the check operation or the kind of response information that shall be returned. For example Registry Fee Extension <span>[<a href="#RFC8748" class="cite xref">RFC8748</a>]</span> defines a possibility to request certain currency, only certain commands or periods. Such functionality would add query parameters, which could be used with GET request to receive additional pricing information with the response. HEAD request would not be affected in this case.<a href="#section-7.1-5" class="pilcrow">¶</a></p>
-<p id="section-7.1-6">The server MUST respond with the same HTTP status code if the same URL is requested with HEAD and with GET.<a href="#section-7.1-6" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-7.1-7">
-<pre>- Request: HEAD|GET /{collection}/{id}/availability
+<p id="section-8.1-1">The Availability for Creation endpoint is used to check whether an object can be successfully provisioned. Two distinct methods are defined for checking the availability of provisioning of an object, the first method uses the HEAD method for a quick check to find out if the object can be provisioned. The second method uses the GET method to retrieve additional information about the object's availability for provisioning, for example about pricing or additional requirements to be able to provision the requested object.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1-2">When the client uses the HTTP HEAD method, the server MUST respond with an HTTP status code 200 (OK) if the object can be provisioned or with an HTTP status code 404 (Not Found) if the object cannot be provisioned.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
+<p id="section-8.1-3">When the client uses the HTTP GET method, the server MUST respond with an HTTP status code 200 (OK) if the object can be provisioned. The server MUST include a message body containing more detailed availability information, for example about pricing or additional requirements to be able to provision the requested object. The message body MAY be and empty JSON object if no additional information is applicable.<a href="#section-8.1-3" class="pilcrow">¶</a></p>
+<p id="section-8.1-4">If the object cannot be provisioned then the server MUST return an HTTP status code 404 (Not Found) and include a problem statement in the message body.<a href="#section-8.1-4" class="pilcrow">¶</a></p>
+<p id="section-8.1-5">As an extension point the server MAY define and the client MAY use additional HTTP query parameters to further specify the check operation or the kind of response information that shall be returned. For example Registry Fee Extension <span>[<a href="#RFC8748" class="cite xref">RFC8748</a>]</span> defines a possibility to request certain currency, only certain commands or periods. Such functionality would add query parameters, which could be used with GET request to receive additional pricing information with the response. HEAD request would not be affected in this case.<a href="#section-8.1-5" class="pilcrow">¶</a></p>
+<p id="section-8.1-6">The server MUST respond with the same HTTP status code if the same URL is requested with HEAD and with GET.<a href="#section-8.1-6" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-8.1-7">
+<pre>- Request: HEAD|GET {collection}/{id}/availability
 - Request message: None
 - Response message: Optional availability response
 
-</pre><a href="#section-7.1-7" class="pilcrow">¶</a>
+</pre><a href="#section-8.1-7" class="pilcrow">¶</a>
 </div>
-<p id="section-7.1-8">Example request for a domain name that is not available for provisioning:<a href="#section-7.1-8" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.1-9">
-<pre>HEAD /rpp/v1/domains/example.nl HTTP/2
-Host: rpp.example.nl
+<p id="section-8.1-8">Example request for a domain name that is not available for provisioning:<a href="#section-8.1-8" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.1-9">
+<pre>HEAD domains/foo.example/availability HTTP/2
+Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
 
-</pre><a href="#section-7.1-9" class="pilcrow">¶</a>
+</pre><a href="#section-8.1-9" class="pilcrow">¶</a>
 </div>
-<p id="section-7.1-10">Example response:<a href="#section-7.1-10" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.1-11">
+<p id="section-8.1-10">Example response:<a href="#section-8.1-10" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.1-11">
 <pre>HTTP/2 404 Not Found
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
@@ -1638,52 +1740,51 @@ RPP-code: 01000
 Content-Length: 0
 
 
-</pre><a href="#section-7.1-11" class="pilcrow">¶</a>
+</pre><a href="#section-8.1-11" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 <div id="resource-information">
-<section id="section-7.2">
+<section id="section-8.2">
         <h3 id="name-resource-information">
-<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-resource-information" class="section-name selfRef">Resource Information</a>
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-resource-information" class="section-name selfRef">Resource Information</a>
         </h3>
-<p id="section-7.2-1">The Object Info request MUST use the HTTP GET method on a resource identifying an object instance. If the object has authorization information attached then the client MUST use an empty message body and include the RPP-AuthInfo HTTP header. If the authorization is linked to a database object the client MUST also include the RPP-Roid header. The client MAY also use a message body that includes the authorization information, the client MUST then not use the RPP-AuthInfo and RPP-Roid headers.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+<p id="section-8.2-1">The Object Info request MUST use the HTTP GET method on a resource identifying an object instance. If the object has authorization information attached then the client MUST use an empty message body and include the RPP-Authorization HTTP header. If the authorization is linked to a database object the client MUST also include the roid in the RPP-Authorization header. The client MAY also use a message body that includes the authorization information, the client MUST then not use the RPP-Authorization header.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
 <ul class="compact">
-<li class="compact" id="section-7.2-2.1">Request: GET /{collection}/{id}<a href="#section-7.2-2.1" class="pilcrow">¶</a>
+<li class="compact" id="section-8.2-2.1">Request: GET {collection}/{id}<a href="#section-8.2-2.1" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-7.2-2.2">Request message: Optional<a href="#section-7.2-2.2" class="pilcrow">¶</a>
+          <li class="compact" id="section-8.2-2.2">Request message: Optional<a href="#section-8.2-2.2" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-7.2-2.3">Response message: Info response<a href="#section-7.2-2.3" class="pilcrow">¶</a>
+          <li class="compact" id="section-8.2-2.3">Response message: Info response<a href="#section-8.2-2.3" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-7.2-3">Example request for an object not using authorization information.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.2-4">
-<pre>GET /rpp/v1/domains/example.nl HTTP/2
-Host: rpp.example.nl
+<p id="section-8.2-3">Example request for an object not using authorization information.<a href="#section-8.2-3" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.2-4">
+<pre>GET domains/foo.example HTTP/2
+Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
 
-</pre><a href="#section-7.2-4" class="pilcrow">¶</a>
+</pre><a href="#section-8.2-4" class="pilcrow">¶</a>
 </div>
-<p id="section-7.2-5">Example request using RPP-AuthInfo and RPP-Roid headers for an object that has attached authorization information.<a href="#section-7.2-5" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.2-6">
-<pre>GET /rpp/v1/domains/example.nl HTTP/2
-Host: rpp.example.nl
+<p id="section-8.2-5">Example request using RPP-Authorization header for an object that has attached authorization information.<a href="#section-8.2-5" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.2-6">
+<pre>GET domains/foo.example HTTP/2
+Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
-RPP-AuthInfo: secret-token
-RPP-Roid: REG-XYZ-12345
+RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 
 
-</pre><a href="#section-7.2-6" class="pilcrow">¶</a>
+</pre><a href="#section-8.2-6" class="pilcrow">¶</a>
 </div>
-<p id="section-7.2-7">Example Info response:<a href="#section-7.2-7" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.2-8">
+<p id="section-8.2-7">Example Info response:<a href="#section-8.2-7" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.2-8">
 <pre>HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
@@ -1694,39 +1795,39 @@ RPP-code: 01000
 
 TODO: JSON message here
 
-</pre><a href="#section-7.2-8" class="pilcrow">¶</a>
+</pre><a href="#section-8.2-8" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 <div id="poll-for-messages">
-<section id="section-7.3">
+<section id="section-8.3">
         <h3 id="name-poll-for-messages">
-<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-poll-for-messages" class="section-name selfRef">Poll for Messages</a>
+<a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-poll-for-messages" class="section-name selfRef">Poll for Messages</a>
         </h3>
-<p id="section-7.3-1">The messages endpoint is used for retrieving messages stored on the server for the client to process.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
+<p id="section-8.3-1">The messages endpoint is used for retrieving messages stored on the server for the client to process.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
 <ul class="compact">
-<li class="compact" id="section-7.3-2.1">Request: GET /messages<a href="#section-7.3-2.1" class="pilcrow">¶</a>
+<li class="compact" id="section-8.3-2.1">Request: GET /messages<a href="#section-8.3-2.1" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-7.3-2.2">Request message: None<a href="#section-7.3-2.2" class="pilcrow">¶</a>
+          <li class="compact" id="section-8.3-2.2">Request message: None<a href="#section-8.3-2.2" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-7.3-2.3">Response message: Poll response<a href="#section-7.3-2.3" class="pilcrow">¶</a>
+          <li class="compact" id="section-8.3-2.3">Response message: Poll response<a href="#section-8.3-2.3" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-7.3-3">The client MUST use the HTTP GET method on the messages resource collection to request the message at the head of the queue.<a href="#section-7.3-3" class="pilcrow">¶</a></p>
-<p id="section-7.3-4">Example request:<a href="#section-7.3-4" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.3-5">
-<pre>GET /rpp/v1/messages HTTP/2
-Host: rpp.example.nl
+<p id="section-8.3-3">The client MUST use the HTTP GET method on the messages resource collection to request the message at the head of the queue.<a href="#section-8.3-3" class="pilcrow">¶</a></p>
+<p id="section-8.3-4">Example request:<a href="#section-8.3-4" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.3-5">
+<pre>GET messages HTTP/2
+Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
 
-</pre><a href="#section-7.3-5" class="pilcrow">¶</a>
+</pre><a href="#section-8.3-5" class="pilcrow">¶</a>
 </div>
-<p id="section-7.3-6">Example response:<a href="#section-7.3-6" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.3-7">
+<p id="section-8.3-6">Example response:<a href="#section-8.3-6" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.3-7">
 <pre>HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
@@ -1737,38 +1838,38 @@ RPP-code: 01301
 
 TODO
 
-</pre><a href="#section-7.3-7" class="pilcrow">¶</a>
+</pre><a href="#section-8.3-7" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 <div id="delete-message">
-<section id="section-7.4">
+<section id="section-8.4">
         <h3 id="name-delete-message">
-<a href="#section-7.4" class="section-number selfRef">7.4. </a><a href="#name-delete-message" class="section-name selfRef">Delete Message</a>
+<a href="#section-8.4" class="section-number selfRef">8.4. </a><a href="#name-delete-message" class="section-name selfRef">Delete Message</a>
         </h3>
 <ul class="compact">
-<li class="compact" id="section-7.4-1.1">Request: DELETE /messages/{id}<a href="#section-7.4-1.1" class="pilcrow">¶</a>
+<li class="compact" id="section-8.4-1.1">Request: DELETE /messages/{id}<a href="#section-8.4-1.1" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-7.4-1.2">Request message: None<a href="#section-7.4-1.2" class="pilcrow">¶</a>
+          <li class="compact" id="section-8.4-1.2">Request message: None<a href="#section-8.4-1.2" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-7.4-1.3">Response message: Poll Ack response<a href="#section-7.4-1.3" class="pilcrow">¶</a>
+          <li class="compact" id="section-8.4-1.3">Response message: Poll Ack response<a href="#section-8.4-1.3" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-7.4-2">The client MUST use the HTTP DELETE method to acknowledge receipt of a message from the queue. The "msgID" attribute of a received RPP Poll message MUST be included in the message resource URL, using the {id} path element. The server MUST use RPP headers to return the RPP result code and the number of messages left in the queue. The server MUST NOT add content to the HTTP message body of a successful response, the server may add content to the message body of an error response.<a href="#section-7.4-2" class="pilcrow">¶</a></p>
-<p id="section-7.4-3">Example request:<a href="#section-7.4-3" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.4-4">
-<pre>DELETE /rpp/v1/messages/12345 HTTP/2
-Host: rpp.example.nl
+<p id="section-8.4-2">The client MUST use the HTTP DELETE method to acknowledge receipt of a message from the queue. The "msgID" attribute of a received RPP Poll message MUST be included in the message resource URL, using the {id} path element. The server MUST use RPP headers to return the RPP result code and the number of messages left in the queue. The server MUST NOT add content to the HTTP message body of a successful response, the server may add content to the message body of an error response.<a href="#section-8.4-2" class="pilcrow">¶</a></p>
+<p id="section-8.4-3">Example request:<a href="#section-8.4-3" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.4-4">
+<pre>DELETE messages/12345 HTTP/2
+Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
 
-</pre><a href="#section-7.4-4" class="pilcrow">¶</a>
+</pre><a href="#section-8.4-4" class="pilcrow">¶</a>
 </div>
-<p id="section-7.4-5">Example response:<a href="#section-7.4-5" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.4-6">
+<p id="section-8.4-5">Example response:<a href="#section-8.4-5" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.4-6">
 <pre>HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
@@ -1781,28 +1882,28 @@ Content-Length: 145
 
 TODO
 
-</pre><a href="#section-7.4-6" class="pilcrow">¶</a>
+</pre><a href="#section-8.4-6" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 <div id="create-resource">
-<section id="section-7.5">
+<section id="section-8.5">
         <h3 id="name-create-resource">
-<a href="#section-7.5" class="section-number selfRef">7.5. </a><a href="#name-create-resource" class="section-name selfRef">Create Resource</a>
+<a href="#section-8.5" class="section-number selfRef">8.5. </a><a href="#name-create-resource" class="section-name selfRef">Create Resource</a>
         </h3>
 <ul class="compact">
-<li class="compact" id="section-7.5-1.1">Request: POST /{collection}<a href="#section-7.5-1.1" class="pilcrow">¶</a>
+<li class="compact" id="section-8.5-1.1">Request: POST {collection}<a href="#section-8.5-1.1" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-7.5-1.2">Request message: Object Create request<a href="#section-7.5-1.2" class="pilcrow">¶</a>
+          <li class="compact" id="section-8.5-1.2">Request message: Object Create request<a href="#section-8.5-1.2" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-7.5-1.3">Response message: Object Create response<a href="#section-7.5-1.3" class="pilcrow">¶</a>
+          <li class="compact" id="section-8.5-1.3">Response message: Object Create response<a href="#section-8.5-1.3" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-7.5-2">The client MUST use the HTTP POST method to create a new object resource. If the RPP request results in a newly created object, then the server MUST return HTTP status code 200 (OK). The server MUST add the "Location" header to the response, the value of this header MUST be the URL for the newly created resource.<a href="#section-7.5-2" class="pilcrow">¶</a></p>
-<p id="section-7.5-3">Example Domain Create request:<a href="#section-7.5-3" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.5-4">
-<pre>POST /rpp/v1/domains HTTP/2
-Host: rpp.example.nl
+<p id="section-8.5-2">The client MUST use the HTTP POST method to create a new object resource. If the RPP request results in a newly created object, then the server MUST return HTTP status code 200 (OK). The server MUST add the "Location" header to the response, the value of this header MUST be the URL for the newly created resource.<a href="#section-8.5-2" class="pilcrow">¶</a></p>
+<p id="section-8.5-3">Example Domain Create request:<a href="#section-8.5-3" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.5-4">
+<pre>POST domains HTTP/2
+Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 Content-Type: application/rpp+json
@@ -1811,53 +1912,53 @@ Content-Length: 220
 
 TODO
 
-</pre><a href="#section-7.5-4" class="pilcrow">¶</a>
+</pre><a href="#section-8.5-4" class="pilcrow">¶</a>
 </div>
-<p id="section-7.5-5">Example Domain Create response:<a href="#section-7.5-5" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.5-6">
+<p id="section-8.5-5">Example Domain Create response:<a href="#section-8.5-5" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.5-6">
 <pre>HTTP/2 200
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Language: en
 Content-Length: 642
 Content-Type: application/rpp+json
-Location: https://rpp.example.nl/rpp/v1/domains/example.nl
+Location: https://rpp.example/domains/foo.example
 RPP-code: 01000
 
 TODO
 
-</pre><a href="#section-7.5-6" class="pilcrow">¶</a>
+</pre><a href="#section-8.5-6" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 <div id="delete-resource">
-<section id="section-7.6">
+<section id="section-8.6">
         <h3 id="name-delete-resource">
-<a href="#section-7.6" class="section-number selfRef">7.6. </a><a href="#name-delete-resource" class="section-name selfRef">Delete Resource</a>
+<a href="#section-8.6" class="section-number selfRef">8.6. </a><a href="#name-delete-resource" class="section-name selfRef">Delete Resource</a>
         </h3>
 <ul class="compact">
-<li class="compact" id="section-7.6-1.1">Request: DELETE /{collection}/{id}<a href="#section-7.6-1.1" class="pilcrow">¶</a>
+<li class="compact" id="section-8.6-1.1">Request: DELETE {collection}/{id}<a href="#section-8.6-1.1" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-7.6-1.2">Request message: Optional<a href="#section-7.6-1.2" class="pilcrow">¶</a>
+          <li class="compact" id="section-8.6-1.2">Request message: Optional<a href="#section-8.6-1.2" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-7.6-1.3">Response message: Status<a href="#section-7.6-1.3" class="pilcrow">¶</a>
+          <li class="compact" id="section-8.6-1.3">Response message: Status<a href="#section-8.6-1.3" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-7.6-2">The client MUST the HTTP DELETE method and a resource identifying a unique object instance. The server MUST return HTTP status code 200 (OK) if the resource was deleted successfully.<a href="#section-7.6-2" class="pilcrow">¶</a></p>
-<p id="section-7.6-3">Example Domain Delete request:<a href="#section-7.6-3" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.6-4">
-<pre>DELETE /rpp/v1/domains/example.nl HTTP/2
-Host: rpp.example.nl
+<p id="section-8.6-2">The client MUST the HTTP DELETE method and a resource identifying a unique object instance. The server MUST return HTTP status code 200 (OK) if the resource was deleted successfully.<a href="#section-8.6-2" class="pilcrow">¶</a></p>
+<p id="section-8.6-3">Example Domain Delete request:<a href="#section-8.6-3" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.6-4">
+<pre>DELETE domains/foo.example HTTP/2
+Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
 
-</pre><a href="#section-7.6-4" class="pilcrow">¶</a>
+</pre><a href="#section-8.6-4" class="pilcrow">¶</a>
 </div>
-<p id="section-7.6-5">Example Domain Delete response:<a href="#section-7.6-5" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.6-6">
+<p id="section-8.6-5">Example Domain Delete response:<a href="#section-8.6-5" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.6-6">
 <pre>HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
@@ -1868,93 +1969,217 @@ RPP-code: 01000
 
 TODO
 
-</pre><a href="#section-7.6-6" class="pilcrow">¶</a>
+</pre><a href="#section-8.6-6" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="processes-path-segment">
+<section id="section-8.7">
+        <h3 id="name-processes-path-segment">
+<a href="#section-8.7" class="section-number selfRef">8.7. </a><a href="#name-processes-path-segment" class="section-name selfRef">Processes Path Segment</a>
+        </h3>
+<p id="section-8.7-1">Each provisioning object may be related to one or more running processes, such as a transfer or deletion. Each process can have its own data, which is distinct from the data of the provisioning object itself. The processes can be started, stopped, or interacted with using their own specific set of representations and operations.<a href="#section-8.7-1" class="pilcrow">¶</a></p>
+<p id="section-8.7-2">All processes related to a provisioning object in RPP MUST exist under the <code>/{collection}/{id}/processes/{process_name}</code> path.<a href="#section-8.7-2" class="pilcrow">¶</a></p>
+<p id="section-8.7-3">The server operator MAY support direct access to process resources using server generated identifier. Such resource MAY be accessible using following URL: <code>/{collection}/{id}/processes/{process_name}/{process_id}</code>, where process_id is the process identifier.<a href="#section-8.7-3" class="pilcrow">¶</a></p>
+<p id="section-8.7-4">A process MAY also expose a resource at <code>/{collection}/{id}/processes/{process_name}/latest</code> to access and interact with the latest process instance. In case server offers any access to process information of given process name, the access to the last instance using <code>/{collection}/{id}/processes/{process_name}/latest</code> URL is MANDATORY.<a href="#section-8.7-4" class="pilcrow">¶</a></p>
+<p id="section-8.7-5">The server operator MAY decide which processes such resources exist for, whether they only exist for the currently running processes or also for completed or cancelled processes. The period for which completed processes remain available for retrieval is defined by server policy.<a href="#section-8.7-5" class="pilcrow">¶</a></p>
+<div id="generic-proces-interface">
+<section id="section-8.7.1">
+          <h4 id="name-generic-proces-interface">
+<a href="#section-8.7.1" class="section-number selfRef">8.7.1. </a><a href="#name-generic-proces-interface" class="section-name selfRef">Generic proces interface</a>
+          </h4>
+<p id="section-8.7.1-1">A generic interface for interacting with the processes is defined as follows:<a href="#section-8.7.1-1" class="pilcrow">¶</a></p>
+<div id="starting">
+<section id="section-8.7.1.1">
+            <h5 id="name-starting">
+<a href="#section-8.7.1.1" class="section-number selfRef">8.7.1.1. </a><a href="#name-starting" class="section-name selfRef">Starting:</a>
+            </h5>
+<p id="section-8.7.1.1-1"><code>POST /{collection}/{id}/processes/{process_name}</code><a href="#section-8.7.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.7.1.1-2">The payload of such a request contains process-specific input information. A started process MAY create a resource to access and interact with the process instance. In such case the response MUST be a 201 Created with a <code>Location</code> header pointing to the created resource together with the process state representation. The created resource can be made accessible both using the <code>latest</code> mnemonic under a URL <code>/{collection}/{id}/processes/{process_name}/latest</code> or using a process id under a URL <code>/{collection}/{id}/processes/{process_name}/{process_id}</code>.<a href="#section-8.7.1.1-2" class="pilcrow">¶</a></p>
+<p id="section-8.7.1.1-3">When a process is created, executed and immediately completed by the server, a 201 Created response MAY still be provided together with the representation of the process result.<a href="#section-8.7.1.1-3" class="pilcrow">¶</a></p>
+<p id="section-8.7.1.1-4">Server MAY decide not to expose any resource for interaction with the created process, in such case a 200 OK MUST be provided.<a href="#section-8.7.1.1-4" class="pilcrow">¶</a></p>
+<p id="section-8.7.1.1-5">Example:<a href="#section-8.7.1.1-5" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.7.1.1-6">
+<pre>POST /rpp/v1/domains/foo.example/processes/renewals HTTP/2
+... other headers removed for bravity ...
+
+{
+    "duration": "P2Y"
+}
+
+</pre><a href="#section-8.7.1.1-6" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="cancelling">
+<section id="section-8.7.1.2">
+            <h5 id="name-cancelling">
+<a href="#section-8.7.1.2" class="section-number selfRef">8.7.1.2. </a><a href="#name-cancelling" class="section-name selfRef">Cancelling:</a>
+            </h5>
+<p id="section-8.7.1.2-1">A client MAY use the "latest" mnemonic to cancel the latest process instance, in such case the request MUST be:<a href="#section-8.7.1.2-1" class="pilcrow">¶</a></p>
+<p id="section-8.7.1.2-2"><code>DELETE /{collection}/{id}/processes/{process_name}/latest</code><a href="#section-8.7.1.2-2" class="pilcrow">¶</a></p>
+<p id="section-8.7.1.2-3">If the client wants to cancel a specific process instance, the request MUST be:<a href="#section-8.7.1.2-3" class="pilcrow">¶</a></p>
+<p id="section-8.7.1.2-4"><code>DELETE /{collection}/{id}/processes/{process_name}/{process_id}</code><a href="#section-8.7.1.2-4" class="pilcrow">¶</a></p>
+<p id="section-8.7.1.2-5">This request is intended to stop the running process. The server MUST return a 204 response if the process has been stopped and the resource is gone, or a 200 response if the process has been stopped but the resource remains.<a href="#section-8.7.1.2-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="status">
+<section id="section-8.7.1.3">
+            <h5 id="name-status">
+<a href="#section-8.7.1.3" class="section-number selfRef">8.7.1.3. </a><a href="#name-status" class="section-name selfRef">Status</a>
+            </h5>
+<p id="section-8.7.1.3-1">A client MAY use the "latest" mnemonic to request the latest process instance, in such case the request MUST be:<a href="#section-8.7.1.3-1" class="pilcrow">¶</a></p>
+<p id="section-8.7.1.3-2"><code>GET /{collection}/{id}/processes/{process_name}/latest</code><a href="#section-8.7.1.3-2" class="pilcrow">¶</a></p>
+<p id="section-8.7.1.3-3">If the client wants to retrieve data of a specific process instance, the request MUST be:<a href="#section-8.7.1.3-3" class="pilcrow">¶</a></p>
+<p id="section-8.7.1.3-4"><code>GET /{collection}/{id}/processes/{process_name}/{process_id}</code><a href="#section-8.7.1.3-4" class="pilcrow">¶</a></p>
+<p id="section-8.7.1.3-5">The request retrieves the representation of the task status. If no task is running, the server MAY return the status of the completed task or return a 404 response.<a href="#section-8.7.1.3-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="other-operations">
+<section id="section-8.7.1.4">
+            <h5 id="name-other-operations">
+<a href="#section-8.7.1.4" class="section-number selfRef">8.7.1.4. </a><a href="#name-other-operations" class="section-name selfRef">Other operations</a>
+            </h5>
+<p id="section-8.7.1.4-1">Other operations on a process can be performed by adding path segments to the <code>/{collection}/{id}/processes/{process_name}/latest</code> or <code>/{collection}/{id}/processes/{process_name}/{process_id}</code> URL path.<a href="#section-8.7.1.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="listing">
+<section id="section-8.7.1.5">
+            <h5 id="name-listing">
+<a href="#section-8.7.1.5" class="section-number selfRef">8.7.1.5. </a><a href="#name-listing" class="section-name selfRef">Listing</a>
+            </h5>
+<p id="section-8.7.1.5-1">A server MAY implement a listing facility for some or all, current or past processes.<a href="#section-8.7.1.5-1" class="pilcrow">¶</a></p>
+<p id="section-8.7.1.5-2">The following URL structure and HTTP method MAY be exposed by the server and MUST be used by the client to retrieve process list filtered by process name:<a href="#section-8.7.1.5-2" class="pilcrow">¶</a></p>
+<p id="section-8.7.1.5-3"><code>GET /{collection}/{id}/processes/{process_name}/</code><a href="#section-8.7.1.5-3" class="pilcrow">¶</a></p>
+<p id="section-8.7.1.5-4">The following URL structure and HTTP method MAY be exposed by the server and MUST be used by the client to retrieve full process list independent of the process name:<a href="#section-8.7.1.5-4" class="pilcrow">¶</a></p>
+<p id="section-8.7.1.5-5"><code>GET /{collection}/{id}/processes/</code><a href="#section-8.7.1.5-5" class="pilcrow">¶</a></p>
+<p id="section-8.7.1.5-6">It is up to server policy to define the type of processes and state, running or completed, made available for the client. A server MAY also choose not implement this end point at all returning either the HTPP status code 404 Not Found or a 501 Not Implemented status code.<a href="#section-8.7.1.5-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="relation-to-object-representation">
+<section id="section-8.7.2">
+          <h4 id="name-relation-to-object-represen">
+<a href="#section-8.7.2" class="section-number selfRef">8.7.2. </a><a href="#name-relation-to-object-represen" class="section-name selfRef">Relation to object representation</a>
+          </h4>
+<p id="section-8.7.2-1">In certain situations a resource creation may require additional process data or implicitly start an asynchronous process with own inputs, lifecycle and state. In these cases, the representation sent to the server MAY contain a combination of object data and process-related data. For example a domain create request contains domain representation data which will be stored with domain object, and domain creation process data such as registration duration or price, which would be part as registration process data, but not directly stored with the domain object.<a href="#section-8.7.2-1" class="pilcrow">¶</a></p>
+<p id="section-8.7.2-2">For the process data in the message body to be distinct and consistent with the URL path structure, it MUST be enclosed in the <code>processes/{process_name}</code> JSON path when transmitted with the object's representation.<a href="#section-8.7.2-2" class="pilcrow">¶</a></p>
+<p id="section-8.7.2-3">Structure:<a href="#section-8.7.2-3" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.7.2-4">
+<pre>POST /.../{collection}/{id}
+...
+{
+    ... object data ...
+    "processes": {
+        "{process_name}": {
+            ... process data ...
+        }
+    }
+    ...
+}
+
+</pre><a href="#section-8.7.2-4" class="pilcrow">¶</a>
+</div>
+<p id="section-8.7.2-5">Example: Domain Create request with 2-year registration:<a href="#section-8.7.2-5" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.7.2-6">
+<pre>POST /rpp/v1/domains HTTP/2
+Host: rpp.example
+Authorization: Bearer &lt;token&gt;
+Accept: application/rpp+json
+Content-Type: application/rpp+json
+Accept-Language: en
+Content-Length: 220
+
+{
+    "name": "foo.example",
+    "processes": {
+        "creation": {
+            "periods": "P2Y"
+        }
+    }
+    ... other domain data ...
+}
+
+</pre><a href="#section-8.7.2-6" class="pilcrow">¶</a>
+</div>
+</section>
 </div>
 </section>
 </div>
 <div id="renew-resource">
-<section id="section-7.7">
+<section id="section-8.8">
         <h3 id="name-renew-resource">
-<a href="#section-7.7" class="section-number selfRef">7.7. </a><a href="#name-renew-resource" class="section-name selfRef">Renew Resource</a>
+<a href="#section-8.8" class="section-number selfRef">8.8. </a><a href="#name-renew-resource" class="section-name selfRef">Renew Resource</a>
         </h3>
 <ul class="compact">
-<li class="compact" id="section-7.7-1.1">Request: POST /{collection}/{id}/renewal<a href="#section-7.7-1.1" class="pilcrow">¶</a>
+<li class="compact" id="section-8.8-1.1">Request: POST /{collection}/{id}/processes/renewals<a href="#section-8.8-1.1" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-7.7-1.2">Request message: Optional<a href="#section-7.7-1.2" class="pilcrow">¶</a>
+          <li class="compact" id="section-8.8-1.2">Request message: Renew request<a href="#section-8.8-1.2" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-7.7-1.3">Response message: Renew response<a href="#section-7.7-1.3" class="pilcrow">¶</a>
+          <li class="compact" id="section-8.8-1.3">Response message: Renew response<a href="#section-8.8-1.3" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-7.7-2">Not all EPP object types include support for the renew command. The current-date query parameter MAY be used for date on which the current validity period ends, as described in <span><a href="https://rfc-editor.org/rfc/rfc5731#section-3.2.3" class="relref">Section 3.2.3</a> of [<a href="#RFC5731" class="cite xref">RFC5731</a>]</span>. The new period MAY be added to the request using the unit and value request parameters. The response MUST include the Location header for the renewed object.<a href="#section-7.7-2" class="pilcrow">¶</a></p>
-<p id="section-7.7-3"><strong>TODO:</strong>: current-date: can also be a HTTP header?<a href="#section-7.7-3" class="pilcrow">¶</a></p>
-<p id="section-7.7-4">Example Domain Renew request:<a href="#section-7.7-4" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.7-5">
-<pre>POST /rpp/v1/domains/example.nl/renewal?current-date=2024-01-01 HTTP/2
-Host: rpp.example.nl
+<p id="section-8.8-2">Not every object resource includes support for the renew command. The response MUST include the Location header for the created renewal process resource.<a href="#section-8.8-2" class="pilcrow">¶</a></p>
+<p id="section-8.8-3">Example Domain Renew request:<a href="#section-8.8-3" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.8-4">
+<pre>POST /rpp/v1/domains/foo.example/processes/renewals HTTP/2
+Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 Content-Type: application/rpp+json
+RPP-Cltrid: ABC-12345
 Accept-Language: en
-Content-Length: 0
+Content-Length: 210
 
+TODO: add renew request data here
 
-</pre><a href="#section-7.7-5" class="pilcrow">¶</a>
+</pre><a href="#section-8.8-4" class="pilcrow">¶</a>
 </div>
-<p id="section-7.7-6">Example Domain Renew request, using 1 year period:<a href="#section-7.7-6" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.7-7">
-<pre>POST /rpp/v1/domains/example.nl/renewal?current-date=2024-01-01?unit=y&amp;value=1 HTTP/2
-Host: rpp.example.nl
-Authorization: Bearer &lt;token&gt;
-Accept: application/rpp+json
-Content-Type: application/rpp+json
-Accept-Language: en
-Content-Length: 0
-
-
-</pre><a href="#section-7.7-7" class="pilcrow">¶</a>
-</div>
-<p id="section-7.7-8">Example Renew response:<a href="#section-7.7-8" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.7-9">
+<p id="section-8.8-5">Example Renew response:<a href="#section-8.8-5" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.8-6">
 <pre>HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Language: en
+RPP-Svtrid: XYZ-12345
+RPP-Cltrid: ABC-12345
 Content-Length: 205
-Location: https://rpp.example.nl/rpp/v1/domains/example.nl
+Location: https://rpp.example/rpp/v1/domains/foo.example/processes/renewals/XYZ-12345
 Content-Type: application/rpp+json
 RPP-code: 01000
 
-TODO
+TODO add renew response data here
 
-</pre><a href="#section-7.7-9" class="pilcrow">¶</a>
+</pre><a href="#section-8.8-6" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 <div id="transfer-resource">
-<section id="section-7.8">
+<section id="section-8.9">
         <h3 id="name-transfer-resource">
-<a href="#section-7.8" class="section-number selfRef">7.8. </a><a href="#name-transfer-resource" class="section-name selfRef">Transfer Resource</a>
+<a href="#section-8.9" class="section-number selfRef">8.9. </a><a href="#name-transfer-resource" class="section-name selfRef">Transfer Resource</a>
         </h3>
-<p id="section-7.8-1">The Transfer command is mapped to a nested resource, named "transfer". The semantics of the HTTP DELETE method are determined by the role of the client executing the DELETE method. The DELETE method is defined as "reject transfer" for the current sponsoring client of the object. For the new sponsoring client the DELETE method is defined as "cancel transfer".<a href="#section-7.8-1" class="pilcrow">¶</a></p>
+<p id="section-8.9-1">The Transfer command is mapped to a nested resource, named "transfer". The semantics of the HTTP DELETE method are determined by the role of the client executing the DELETE method. The DELETE method is defined as "reject transfer" for the current sponsoring client of the object. For the new sponsoring client the DELETE method is defined as "cancel transfer".<a href="#section-8.9-1" class="pilcrow">¶</a></p>
 <div id="start">
-<section id="section-7.8.1">
+<section id="section-8.9.1">
           <h4 id="name-start">
-<a href="#section-7.8.1" class="section-number selfRef">7.8.1. </a><a href="#name-start" class="section-name selfRef">Start</a>
+<a href="#section-8.9.1" class="section-number selfRef">8.9.1. </a><a href="#name-start" class="section-name selfRef">Start</a>
           </h4>
 <ul class="compact">
-<li class="compact" id="section-7.8.1-1.1">Request: POST /{collection}/{id}/transfer<a href="#section-7.8.1-1.1" class="pilcrow">¶</a>
+<li class="compact" id="section-8.9.1-1.1">Request: POST /{collection}/{id}/processes/transfers<a href="#section-8.9.1-1.1" class="pilcrow">¶</a>
 </li>
-            <li class="compact" id="section-7.8.1-1.2">Request message: Optional<a href="#section-7.8.1-1.2" class="pilcrow">¶</a>
+            <li class="compact" id="section-8.9.1-1.2">Request message: Optional<a href="#section-8.9.1-1.2" class="pilcrow">¶</a>
 </li>
-            <li class="compact" id="section-7.8.1-1.3">Response message: Status<a href="#section-7.8.1-1.3" class="pilcrow">¶</a>
+            <li class="compact" id="section-8.9.1-1.3">Response message: Status<a href="#section-8.9.1-1.3" class="pilcrow">¶</a>
 </li>
           </ul>
-<p id="section-7.8.1-2">In order to initiate a new object transfer process, the client MUST use the HTTP POST method on a unique resource to create a new transfer resource object. Not all RPP objects support the Transfer command.<a href="#section-7.8.1-2" class="pilcrow">¶</a></p>
-<p id="section-7.8.1-3">If the transfer request is successful, then the response MUST include the Location header for the object being transferred.<a href="#section-7.8.1-3" class="pilcrow">¶</a></p>
-<p id="section-7.8.1-4">Example request not using object authorization:<a href="#section-7.8.1-4" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.8.1-5">
-<pre>POST /rpp/v1/domains/example.nl/transfer HTTP/2
-Host: rpp.example.nl
+<p id="section-8.9.1-2">In order to initiate a new object transfer process, the client MUST use the HTTP POST method on a unique resource to create a new transfer resource object. Not all RPP objects support the Transfer command.<a href="#section-8.9.1-2" class="pilcrow">¶</a></p>
+<p id="section-8.9.1-3">If the transfer request is successful, then the response MUST include the Location header for the object being transferred.<a href="#section-8.9.1-3" class="pilcrow">¶</a></p>
+<p id="section-8.9.1-4">Example request not using object authorization:<a href="#section-8.9.1-4" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.9.1-5">
+<pre>POST /rpp/v1/domains/foo.example/processes/transfers HTTP/2
+Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 Accept-Language: en
@@ -1962,110 +2187,119 @@ RPP-Cltrid: ABC-12345
 Content-Length: 0
 
 
-</pre><a href="#section-7.8.1-5" class="pilcrow">¶</a>
+</pre><a href="#section-8.9.1-5" class="pilcrow">¶</a>
 </div>
-<p id="section-7.8.1-6">Example request using object authorization:<a href="#section-7.8.1-6" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.8.1-7">
-<pre>POST /rpp/v1/domains/example.nl/transfer HTTP/2
-Host: rpp.example.nl
+<p id="section-8.9.1-6">Example request using object authorization:<a href="#section-8.9.1-6" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.9.1-7">
+<pre>POST /rpp/v1/domains/foo.example/processes/transfers HTTP/2
+Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 RPP-Cltrid: ABC-12345
-RPP-AuthInfo: secret-token
+RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 Accept-Language: en
 Content-Length: 0
 
 
-</pre><a href="#section-7.8.1-7" class="pilcrow">¶</a>
+</pre><a href="#section-8.9.1-7" class="pilcrow">¶</a>
 </div>
-<p id="section-7.8.1-8">Example request using 1 year renewal period, using the <code>unit</code> and <code>value</code> query parameters:<a href="#section-7.8.1-8" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.8.1-9">
-<pre>POST /rpp/v1/domains/example.nl/transfer?unit=y&amp;value=1 HTTP/2
-Host: rpp.example.nl
+<p id="section-8.9.1-8">Example request using 1 year renewal period, using the <code>unit</code> and <code>value</code> query parameters:<a href="#section-8.9.1-8" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.9.1-9">
+<pre>POST /rpp/v1/domains/foo.example/processes/transfers HTTP/2
+Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
-Content-Length: 0
+Content-Length: 23
 
+{
+  "duration": "P2Y"
+}
 
-</pre><a href="#section-7.8.1-9" class="pilcrow">¶</a>
+</pre><a href="#section-8.9.1-9" class="pilcrow">¶</a>
 </div>
-<p id="section-7.8.1-10">Example Transfer response:<a href="#section-7.8.1-10" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.8.1-11">
+<p id="section-8.9.1-10">Example Transfer response:<a href="#section-8.9.1-10" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.9.1-11">
 <pre>HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Language: en
-Content-Length: 328
+Content-Length: 182
 Content-Type: application/rpp+json
-Location: https://rpp.example.nl/rpp/v1/domains/example.nl/transfer
+Location: https://rpp.example/rpp/v1/domains/foo.example/processes/transfers/latest
 RPP-code: 01001
 
-TODO
+{
+  "trStatus": "pending",
+  "reID": "ClientX",
+  "acID": "ClientY",
+  "reDate": "2000-06-06T22:00:00.0Z",
+  "acDate": "2000-06-11T22:00:00.0Z",
+  "exDate": "2002-09-08T22:00:00.0Z
+}
 
-</pre><a href="#section-7.8.1-11" class="pilcrow">¶</a>
+</pre><a href="#section-8.9.1-11" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
-<div id="status">
-<section id="section-7.8.2">
-          <h4 id="name-status">
-<a href="#section-7.8.2" class="section-number selfRef">7.8.2. </a><a href="#name-status" class="section-name selfRef">Status</a>
+<div id="status-1">
+<section id="section-8.9.2">
+          <h4 id="name-status-2">
+<a href="#section-8.9.2" class="section-number selfRef">8.9.2. </a><a href="#name-status-2" class="section-name selfRef">Status</a>
           </h4>
-<p id="section-7.8.2-1">A transfer object may not exist, when no transfer has been initiated for the specified object.
-The client MUST use the HTTP GET method and MUST NOT add content to the HTTP message body.<a href="#section-7.8.2-1" class="pilcrow">¶</a></p>
+<p id="section-8.9.2-1">A transfer object may not exist, when no transfer has been initiated for the specified object.
+The client MUST use the HTTP GET method and MUST NOT add content to the HTTP message body.<a href="#section-8.9.2-1" class="pilcrow">¶</a></p>
 <ul class="compact">
-<li class="compact" id="section-7.8.2-2.1">Request: GET {collection}/{id}/transfer<a href="#section-7.8.2-2.1" class="pilcrow">¶</a>
+<li class="compact" id="section-8.9.2-2.1">Request: GET {collection}/{id}/processes/transfers<a href="#section-8.9.2-2.1" class="pilcrow">¶</a>
 </li>
-            <li class="compact" id="section-7.8.2-2.2">Request message: Optional<a href="#section-7.8.2-2.2" class="pilcrow">¶</a>
+            <li class="compact" id="section-8.9.2-2.2">Request message: Optional<a href="#section-8.9.2-2.2" class="pilcrow">¶</a>
 </li>
-            <li class="compact" id="section-7.8.2-2.3">Response message: Transfer Status response<a href="#section-7.8.2-2.3" class="pilcrow">¶</a>
+            <li class="compact" id="section-8.9.2-2.3">Response message: Transfer Status response<a href="#section-8.9.2-2.3" class="pilcrow">¶</a>
 </li>
           </ul>
-<p id="section-7.8.2-3">Example domain name Transfer Status request without authorization information required:<a href="#section-7.8.2-3" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.8.2-4">
-<pre>GET /rpp/v1/domains/example.nl/transfer HTTP/2
-Host: rpp.example.nl
+<p id="section-8.9.2-3">Example domain name Transfer Status request without authorization information required:<a href="#section-8.9.2-3" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.9.2-4">
+<pre>GET /rpp/v1/domains/foo.example/processes/transfers HTTP/2
+Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
 
-</pre><a href="#section-7.8.2-4" class="pilcrow">¶</a>
+</pre><a href="#section-8.9.2-4" class="pilcrow">¶</a>
 </div>
-<p id="section-7.8.2-5">If the requested transfer object has associated authorization information that is not linked to another database object, then the HTTP GET method MUST be used and the authorization information MUST be included using the RPP-AuthInfo header.<a href="#section-7.8.2-5" class="pilcrow">¶</a></p>
-<p id="section-7.8.2-6">Example domain name Transfer Query request using RPP-AuthInfo header:<a href="#section-7.8.2-6" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.8.2-7">
-<pre>GET /rpp/v1/domains/example.nl/transfer HTTP/2
-Host: rpp.example.nl
+<p id="section-8.9.2-5">If the requested transfer object has associated authorization information that is not linked to another database object, then the HTTP GET method MUST be used and the authorization information MUST be included using the RPP-Authorization header.<a href="#section-8.9.2-5" class="pilcrow">¶</a></p>
+<p id="section-8.9.2-6">Example domain name Transfer Query request using RPP-Authorization header:<a href="#section-8.9.2-6" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.9.2-7">
+<pre>GET /rpp/v1/domains/foo.example/processes/transfers HTTP/2
+Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
-RPP-AuthInfo: secret-token
+RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 
 
-</pre><a href="#section-7.8.2-7" class="pilcrow">¶</a>
+</pre><a href="#section-8.9.2-7" class="pilcrow">¶</a>
 </div>
-<p id="section-7.8.2-8">If the requested object has associated authorization information linked to another database object, then the HTTP GET method MUST be used and both the RPP-AuthInfo and the RPP-Roid header MUST be included.<a href="#section-7.8.2-8" class="pilcrow">¶</a></p>
-<p id="section-7.8.2-9">Example domain name Transfer Query request and authorization using RPP-AuthInfo and the RPP-Roid header:<a href="#section-7.8.2-9" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.8.2-10">
-<pre>GET /rpp/v1/domains/example.nl/transfer HTTP/2
-Host: rpp.example.nl
+<p id="section-8.9.2-8">If the requested object has associated authorization information linked to another database object, then the HTTP GET method MUST be used and the RPP-Authorization header MUST be included.<a href="#section-8.9.2-8" class="pilcrow">¶</a></p>
+<p id="section-8.9.2-9">Example domain name Transfer Query request and authorization using RPP-Authorization header:<a href="#section-8.9.2-9" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.9.2-10">
+<pre>GET /rpp/v1/domains/foo.example/processes/transfers HTTP/2
+Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 Accept-Language: en
-RPP-AuthInfo: secret-token
-RPP-Roid: REG-XYZ-12345
+RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 Content-Length: 0
 
 
-</pre><a href="#section-7.8.2-10" class="pilcrow">¶</a>
+</pre><a href="#section-8.9.2-10" class="pilcrow">¶</a>
 </div>
-<p id="section-7.8.2-11">Example Transfer Query response:<a href="#section-7.8.2-11" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.8.2-12">
+<p id="section-8.9.2-11">Example Transfer Query response:<a href="#section-8.9.2-11" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.9.2-12">
 <pre>HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
@@ -2076,38 +2310,38 @@ RPP-code: 01000
 
 TODO
 
-</pre><a href="#section-7.8.2-12" class="pilcrow">¶</a>
+</pre><a href="#section-8.9.2-12" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 <div id="cancel">
-<section id="section-7.8.3">
+<section id="section-8.9.3">
           <h4 id="name-cancel">
-<a href="#section-7.8.3" class="section-number selfRef">7.8.3. </a><a href="#name-cancel" class="section-name selfRef">Cancel</a>
+<a href="#section-8.9.3" class="section-number selfRef">8.9.3. </a><a href="#name-cancel" class="section-name selfRef">Cancel</a>
           </h4>
 <ul class="compact">
-<li class="compact" id="section-7.8.3-1.1">Request: POST /{collection}/{id}/transfer/cancelation<a href="#section-7.8.3-1.1" class="pilcrow">¶</a>
+<li class="compact" id="section-8.9.3-1.1">Request: POST /{collection}/{id}/processes/transfers/cancelation<a href="#section-8.9.3-1.1" class="pilcrow">¶</a>
 </li>
-            <li class="compact" id="section-7.8.3-1.2">Request message: Optional<a href="#section-7.8.3-1.2" class="pilcrow">¶</a>
+            <li class="compact" id="section-8.9.3-1.2">Request message: Optional<a href="#section-8.9.3-1.2" class="pilcrow">¶</a>
 </li>
-            <li class="compact" id="section-7.8.3-1.3">Response message: Status<a href="#section-7.8.3-1.3" class="pilcrow">¶</a>
+            <li class="compact" id="section-8.9.3-1.3">Response message: Status<a href="#section-8.9.3-1.3" class="pilcrow">¶</a>
 </li>
           </ul>
-<p id="section-7.8.3-2">The new sponsoring client MUST use the HTTP POST method to cancel a requested transfer.<a href="#section-7.8.3-2" class="pilcrow">¶</a></p>
-<p id="section-7.8.3-3">Example request:<a href="#section-7.8.3-3" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.8.3-4">
-<pre>POST /rpp/v1/domains/example.nl/transfer/cancelation HTTP/2
-Host: rpp.example.nl
+<p id="section-8.9.3-2">The new sponsoring client MUST use the HTTP POST method to cancel a requested transfer.<a href="#section-8.9.3-2" class="pilcrow">¶</a></p>
+<p id="section-8.9.3-3">Example request:<a href="#section-8.9.3-3" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.9.3-4">
+<pre>POST /rpp/v1/domains/foo.example/processes/transfers/cancelation HTTP/2
+Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
 
-</pre><a href="#section-7.8.3-4" class="pilcrow">¶</a>
+</pre><a href="#section-8.9.3-4" class="pilcrow">¶</a>
 </div>
-<p id="section-7.8.3-5">Example response:<a href="#section-7.8.3-5" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.8.3-6">
+<p id="section-8.9.3-5">Example response:<a href="#section-8.9.3-5" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.9.3-6">
 <pre>HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
@@ -2118,38 +2352,38 @@ RPP-code: 01000
 
 TODO
 
-</pre><a href="#section-7.8.3-6" class="pilcrow">¶</a>
+</pre><a href="#section-8.9.3-6" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 <div id="reject">
-<section id="section-7.8.4">
+<section id="section-8.9.4">
           <h4 id="name-reject">
-<a href="#section-7.8.4" class="section-number selfRef">7.8.4. </a><a href="#name-reject" class="section-name selfRef">Reject</a>
+<a href="#section-8.9.4" class="section-number selfRef">8.9.4. </a><a href="#name-reject" class="section-name selfRef">Reject</a>
           </h4>
 <ul class="compact">
-<li class="compact" id="section-7.8.4-1.1">Request: POST /{collection}/{id}/transfer/rejection<a href="#section-7.8.4-1.1" class="pilcrow">¶</a>
+<li class="compact" id="section-8.9.4-1.1">Request: POST /{collection}/{id}/processes/transfers/rejection<a href="#section-8.9.4-1.1" class="pilcrow">¶</a>
 </li>
-            <li class="compact" id="section-7.8.4-1.2">Request message:  None<a href="#section-7.8.4-1.2" class="pilcrow">¶</a>
+            <li class="compact" id="section-8.9.4-1.2">Request message:  None<a href="#section-8.9.4-1.2" class="pilcrow">¶</a>
 </li>
-            <li class="compact" id="section-7.8.4-1.3">Response message: Status<a href="#section-7.8.4-1.3" class="pilcrow">¶</a>
+            <li class="compact" id="section-8.9.4-1.3">Response message: Status<a href="#section-8.9.4-1.3" class="pilcrow">¶</a>
 </li>
           </ul>
-<p id="section-7.8.4-2">The currently sponsoring client of the object MUST use the HTTP POST method to reject a started transfer process.<a href="#section-7.8.4-2" class="pilcrow">¶</a></p>
-<p id="section-7.8.4-3">Example request:<a href="#section-7.8.4-3" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.8.4-4">
-<pre>POST /rpp/v1/domains/example.nl/transfer/rejection HTTP/2
-Host: rpp.example.nl
+<p id="section-8.9.4-2">The currently sponsoring client of the object MUST use the HTTP POST method to reject a started transfer process.<a href="#section-8.9.4-2" class="pilcrow">¶</a></p>
+<p id="section-8.9.4-3">Example request:<a href="#section-8.9.4-3" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.9.4-4">
+<pre>POST /rpp/v1/domains/foo.example/processes/transfers/rejection HTTP/2
+Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
 
-</pre><a href="#section-7.8.4-4" class="pilcrow">¶</a>
+</pre><a href="#section-8.9.4-4" class="pilcrow">¶</a>
 </div>
-<p id="section-7.8.4-5">Example Reject response:<a href="#section-7.8.4-5" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.8.4-6">
+<p id="section-8.9.4-5">Example Reject response:<a href="#section-8.9.4-5" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.9.4-6">
 <pre>HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
@@ -2161,28 +2395,28 @@ RPP-code: 01000
 TODO
 
 
-</pre><a href="#section-7.8.4-6" class="pilcrow">¶</a>
+</pre><a href="#section-8.9.4-6" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 <div id="approve">
-<section id="section-7.8.5">
+<section id="section-8.9.5">
           <h4 id="name-approve">
-<a href="#section-7.8.5" class="section-number selfRef">7.8.5. </a><a href="#name-approve" class="section-name selfRef">Approve</a>
+<a href="#section-8.9.5" class="section-number selfRef">8.9.5. </a><a href="#name-approve" class="section-name selfRef">Approve</a>
           </h4>
 <ul class="compact">
-<li class="compact" id="section-7.8.5-1.1">Request: POST /{collection}/{id}/transfer/approval<a href="#section-7.8.5-1.1" class="pilcrow">¶</a>
+<li class="compact" id="section-8.9.5-1.1">Request: POST /{collection}/{id}/processes/transfers/approval<a href="#section-8.9.5-1.1" class="pilcrow">¶</a>
 </li>
-            <li class="compact" id="section-7.8.5-1.2">Request message: Optional<a href="#section-7.8.5-1.2" class="pilcrow">¶</a>
+            <li class="compact" id="section-8.9.5-1.2">Request message: Optional<a href="#section-8.9.5-1.2" class="pilcrow">¶</a>
 </li>
-            <li class="compact" id="section-7.8.5-1.3">Response message: Status<a href="#section-7.8.5-1.3" class="pilcrow">¶</a>
+            <li class="compact" id="section-8.9.5-1.3">Response message: Status<a href="#section-8.9.5-1.3" class="pilcrow">¶</a>
 </li>
           </ul>
-<p id="section-7.8.5-2">The currently sponsoring client MUST use the HTTP POST method to approve a transfer requested by the new sponsoring client.<a href="#section-7.8.5-2" class="pilcrow">¶</a></p>
-<p id="section-7.8.5-3">Example Approve request:<a href="#section-7.8.5-3" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.8.5-4">
-<pre>POST /rpp/v1/domains/example.nl/transfer/approval HTTP/2
-Host: rpp.example.nl
+<p id="section-8.9.5-2">The currently sponsoring client MUST use the HTTP POST method to approve a transfer requested by the new sponsoring client.<a href="#section-8.9.5-2" class="pilcrow">¶</a></p>
+<p id="section-8.9.5-3">Example Approve request:<a href="#section-8.9.5-3" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.9.5-4">
+<pre>POST /rpp/v1/domains/foo.example/processes/transfers/approval HTTP/2
+Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 Accept-Language: en
@@ -2190,10 +2424,10 @@ RPP-Cltrid: ABC-12345
 Content-Length: 0
 
 
-</pre><a href="#section-7.8.5-4" class="pilcrow">¶</a>
+</pre><a href="#section-8.9.5-4" class="pilcrow">¶</a>
 </div>
-<p id="section-7.8.5-5">Example Approve response:<a href="#section-7.8.5-5" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.8.5-6">
+<p id="section-8.9.5-5">Example Approve response:<a href="#section-8.9.5-5" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.9.5-6">
 <pre>HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
@@ -2204,31 +2438,31 @@ RPP-code: 01000
 
 TODO
 
-</pre><a href="#section-7.8.5-6" class="pilcrow">¶</a>
+</pre><a href="#section-8.9.5-6" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 </section>
 </div>
 <div id="update-resource">
-<section id="section-7.9">
+<section id="section-8.10">
         <h3 id="name-update-resource">
-<a href="#section-7.9" class="section-number selfRef">7.9. </a><a href="#name-update-resource" class="section-name selfRef">Update Resource</a>
+<a href="#section-8.10" class="section-number selfRef">8.10. </a><a href="#name-update-resource" class="section-name selfRef">Update Resource</a>
         </h3>
 <ul class="compact">
-<li class="compact" id="section-7.9-1.1">Request: PATCH /{collection}/{id}<a href="#section-7.9-1.1" class="pilcrow">¶</a>
+<li class="compact" id="section-8.10-1.1">Request: PATCH {collection}/{id}<a href="#section-8.10-1.1" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-7.9-1.2">Request message: Object Update message<a href="#section-7.9-1.2" class="pilcrow">¶</a>
+          <li class="compact" id="section-8.10-1.2">Request message: Object Update message<a href="#section-8.10-1.2" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-7.9-1.3">Response message: Status<a href="#section-7.9-1.3" class="pilcrow">¶</a>
+          <li class="compact" id="section-8.10-1.3">Response message: Status<a href="#section-8.10-1.3" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-7.9-2">An object Update request MUST be performed using the HTTP PATCH method. The request message body MUST contain an Update message.<a href="#section-7.9-2" class="pilcrow">¶</a></p>
-<p id="section-7.9-3"><strong>TODO:</strong> when using JSON, also allow for JSON patch so client can send partial update data only?<a href="#section-7.9-3" class="pilcrow">¶</a></p>
-<p id="section-7.9-4">Example request:<a href="#section-7.9-4" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.9-5">
-<pre>PATCH /rpp/v1/domains/example.nl HTTP/2
-Host: rpp.example.nl
+<p id="section-8.10-2">An object Update request MUST be performed using the HTTP PATCH method. The request message body MUST contain an Update message.<a href="#section-8.10-2" class="pilcrow">¶</a></p>
+<p id="section-8.10-3"><strong>TODO:</strong> when using JSON, also allow for JSON patch so client can send partial update data only?<a href="#section-8.10-3" class="pilcrow">¶</a></p>
+<p id="section-8.10-4">Example request:<a href="#section-8.10-4" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.10-5">
+<pre>PATCH domains/foo.example HTTP/2
+Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 Content-Type: application/rpp+json
@@ -2237,10 +2471,10 @@ Content-Length: 252
 
 TODO
 
-</pre><a href="#section-7.9-5" class="pilcrow">¶</a>
+</pre><a href="#section-8.10-5" class="pilcrow">¶</a>
 </div>
-<p id="section-7.9-6">Example response:<a href="#section-7.9-6" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-7.9-7">
+<p id="section-8.10-6">Example response:<a href="#section-8.10-6" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-8.10-7">
 <pre>HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
@@ -2251,103 +2485,137 @@ RPP-code: 01000
 
 TODO
 
-</pre><a href="#section-7.9-7" class="pilcrow">¶</a>
+</pre><a href="#section-8.10-7" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 </section>
 </div>
 <div id="extension-framework">
-<section id="section-8">
-      <h2 id="name-extension-framework">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-extension-framework" class="section-name selfRef">Extension Framework</a>
-      </h2>
-<p id="section-8-1">TODO<a href="#section-8-1" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="iana-considerations">
 <section id="section-9">
-      <h2 id="name-iana-considerations">
-<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+      <h2 id="name-extension-framework">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-extension-framework" class="section-name selfRef">Extension Framework</a>
       </h2>
 <p id="section-9-1">TODO<a href="#section-9-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="internationalization-considerations">
+<div id="iana-considerations">
 <section id="section-10">
-      <h2 id="name-internationalization-consid">
-<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-internationalization-consid" class="section-name selfRef">Internationalization Considerations</a>
+      <h2 id="name-iana-considerations">
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-10-1">TODO<a href="#section-10-1" class="pilcrow">¶</a></p>
+<div id="urn-sub-namespace-for-rpp-urn-ietf-params-rpp">
+<section id="section-10.1">
+        <h3 id="name-urn-sub-namespace-for-rpp-u">
+<a href="#section-10.1" class="section-number selfRef">10.1. </a><a href="#name-urn-sub-namespace-for-rpp-u" class="section-name selfRef">URN Sub-namespace for RPP (urn:ietf:params:rpp)</a>
+        </h3>
+<p id="section-10.1-1">The IANA is requested to add the following value to the "IETF URN Sub-namespace for Registered Protocol Parameter
+Identifiers" registry, following the template in <span>[<a href="#RFC3553" class="cite xref">RFC3553</a>]</span>:<a href="#section-10.1-1" class="pilcrow">¶</a></p>
+<p id="section-10.1-2">Registered Parameter Identifier: rpp<br>
+Reference:  This Document<br>
+IANA Registry Reference: <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span><a href="#section-10.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="internationalization-considerations">
+<section id="section-11">
+      <h2 id="name-internationalization-consid">
+<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-internationalization-consid" class="section-name selfRef">Internationalization Considerations</a>
+      </h2>
+<p id="section-11-1">TODO<a href="#section-11-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-considerations">
-<section id="section-11">
+<section id="section-12">
       <h2 id="name-security-considerations">
-<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-11-1">RPP relies on the security of the underlying HTTP <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span> transport, hence the best common practices for securing HTTP also apply to RPP. It is RECOMMENDED to follow them closely.<a href="#section-11-1" class="pilcrow">¶</a></p>
-<p id="section-11-2">Data confidentiality and integrity MUST be enforced, all data transport between a client and server MUST be encrypted using TLS <span>[<a href="#RFC5246" class="cite xref">RFC5246</a>]</span>. <a href="https://rfc-editor.org/rfc/rfc5734#appendix-Section%209" class="relref">Section 9</a> describes the level of security that is REQUIRED for all RPP endpoints.<a href="#section-11-2" class="pilcrow">¶</a></p>
-<p id="section-11-3">Due to the stateless nature of RPP, the client MUST include the authentication credentials in each HTTP request. This MAY be done by using JSON Web Tokens (JWT) <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span> or Basic authentication <span>[<a href="#RFC7617" class="cite xref">RFC7617</a>]</span>.<a href="#section-11-3" class="pilcrow">¶</a></p>
+<p id="section-12-1">RPP relies on the security of the underlying HTTP <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span> transport, hence the best common practices for securing HTTP also apply to RPP. It is RECOMMENDED to follow them closely.<a href="#section-12-1" class="pilcrow">¶</a></p>
+<p id="section-12-2">Data confidentiality and integrity MUST be enforced, all data transport between a client and server MUST be encrypted using TLS <span>[<a href="#RFC5246" class="cite xref">RFC5246</a>]</span>. <a href="https://rfc-editor.org/rfc/rfc5734#appendix-Section%209" class="relref">Section 9</a> describes the level of security that is REQUIRED for all RPP endpoints.<a href="#section-12-2" class="pilcrow">¶</a></p>
+<p id="section-12-3">Due to the stateless nature of RPP, the client MUST include the authentication credentials in each HTTP request. This MAY be done by using JSON Web Tokens (JWT) <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span> or Basic authentication <span>[<a href="#RFC7617" class="cite xref">RFC7617</a>]</span>.<a href="#section-12-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="change-history">
-<section id="section-12">
+<section id="section-13">
       <h2 id="name-change-history">
-<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-change-history" class="section-name selfRef">Change History</a>
+<a href="#section-13" class="section-number selfRef">13. </a><a href="#name-change-history" class="section-name selfRef">Change History</a>
       </h2>
 <div id="version-01-to-02">
-<section id="section-12.1">
+<section id="section-13.1">
         <h3 id="name-version-01-to-02">
-<a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-version-01-to-02" class="section-name selfRef">Version 01 to 02</a>
+<a href="#section-13.1" class="section-number selfRef">13.1. </a><a href="#name-version-01-to-02" class="section-name selfRef">Version 01 to 02</a>
         </h3>
 <ul class="compact">
-<li class="compact" id="section-12.1-1.1">Merged the RPP-EPP-Code and RPP-Code headers into a single RPP-Code header<a href="#section-12.1-1.1" class="pilcrow">¶</a>
+<li class="compact" id="section-13.1-1.1">Updated the examples, changed from "<em>.example.org" to "</em>.example"<a href="#section-13.1-1.1" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-13.1-1.2">Merged the RPP-EPP-Code and RPP-Code headers into a single RPP-Code header<a href="#section-13.1-1.2" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-13.1-1.3">Update the RPP-Authorization header to match the HTTP Authorization header format<a href="#section-13.1-1.3" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-13.1-1.4">Added new process path segment and process representations<a href="#section-13.1-1.4" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-13.1-1.5">Added use of Problem Detail <span>[<a href="#RFC9457" class="cite xref">RFC9457</a>]</span> for error responses<a href="#section-13.1-1.5" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-13.1-1.6">Updated the Check request to now use an "availability" path segment and support both GET and HEAD methods<a href="#section-13.1-1.6" class="pilcrow">¶</a>
 </li>
         </ul>
 </section>
 </div>
 <div id="version-00-to-01">
-<section id="section-12.2">
+<section id="section-13.2">
         <h3 id="name-version-00-to-01">
-<a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-version-00-to-01" class="section-name selfRef">Version 00 to 01</a>
+<a href="#section-13.2" class="section-number selfRef">13.2. </a><a href="#name-version-00-to-01" class="section-name selfRef">Version 00 to 01</a>
         </h3>
 <ul class="compact">
-<li class="compact" id="section-12.2-1.1">Updated "Request Headers" and "Response Headers" section<a href="#section-12.2-1.1" class="pilcrow">¶</a>
+<li class="compact" id="section-13.2-1.1">Updated "Request Headers" and "Response Headers" section<a href="#section-13.2-1.1" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-12.2-1.2">Changed transfer resource URL and HTTP method for reject, approve and cancel, in order to make the API easier to use<a href="#section-12.2-1.2" class="pilcrow">¶</a>
+          <li class="compact" id="section-13.2-1.2">Changed transfer resource URL and HTTP method for reject, approve and cancel, in order to make the API easier to use<a href="#section-13.2-1.2" class="pilcrow">¶</a>
 </li>
         </ul>
 </section>
 </div>
 <div id="version-00-draft-rpp-core-to-00-draft-wullink-rpp-core">
-<section id="section-12.3">
+<section id="section-13.3">
         <h3 id="name-version-00-draft-rpp-core-t">
-<a href="#section-12.3" class="section-number selfRef">12.3. </a><a href="#name-version-00-draft-rpp-core-t" class="section-name selfRef">Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)</a>
+<a href="#section-13.3" class="section-number selfRef">13.3. </a><a href="#name-version-00-draft-rpp-core-t" class="section-name selfRef">Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)</a>
         </h3>
 <ul class="compact">
-<li class="compact" id="section-12.3-1.1">Renamed the document name to "draft-wullink-rpp-core"<a href="#section-12.3-1.1" class="pilcrow">¶</a>
+<li class="compact" id="section-13.3-1.1">Renamed the document name to "draft-wullink-rpp-core"<a href="#section-13.3-1.1" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-12.3-1.2">Removed sections: Design Considerations, Resource Naming Convention, Session Management, HTTP Layer, Content Negotiation, Object Filtering, Error Handling<a href="#section-12.3-1.2" class="pilcrow">¶</a>
+          <li class="compact" id="section-13.3-1.2">Removed sections: Design Considerations, Resource Naming Convention, Session Management, HTTP Layer, Content Negotiation, Object Filtering, Error Handling<a href="#section-13.3-1.2" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-12.3-1.3">Renamed Commands section to Endpoints<a href="#section-12.3-1.3" class="pilcrow">¶</a>
+          <li class="compact" id="section-13.3-1.3">Renamed Commands section to Endpoints<a href="#section-13.3-1.3" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-12.3-1.4">Removed text about extensions<a href="#section-12.3-1.4" class="pilcrow">¶</a>
+          <li class="compact" id="section-13.3-1.4">Removed text about extensions<a href="#section-13.3-1.4" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-12.3-1.5">Changed naming to be less EPP like and more RDAP like<a href="#section-12.3-1.5" class="pilcrow">¶</a>
+          <li class="compact" id="section-13.3-1.5">Changed naming to be less EPP like and more RDAP like<a href="#section-13.3-1.5" class="pilcrow">¶</a>
 </li>
+          <li class="compact" id="section-13.3-1.6">
         </ul>
 </section>
 </div>
 </section>
 </div>
-<section id="section-13">
-      <h2 id="name-references">
-<a href="#section-13" class="section-number selfRef">13. </a><a href="#name-references" class="section-name selfRef">References</a>
+<div id="acknowledgements">
+<section id="section-14">
+      <h2 id="name-acknowledgements">
+<a href="#section-14" class="section-number selfRef">14. </a><a href="#name-acknowledgements" class="section-name selfRef">Acknowledgements</a>
       </h2>
-<section id="section-13.1">
+<p id="section-14-1">The authors would like to thank the following people for their helpful text contributions, comments and suggestions.<a href="#section-14-1" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="section-14-2.1">Q Misell, AS207960 Cyfyngedig<a href="#section-14-2.1" class="pilcrow">¶</a>
+</li>
+      </ul>
+</section>
+</div>
+<section id="section-15">
+      <h2 id="name-references">
+<a href="#section-15" class="section-number selfRef">15. </a><a href="#name-references" class="section-name selfRef">References</a>
+      </h2>
+<section id="section-15.1">
         <h3 id="name-normative-references">
-<a href="#section-13.1" class="section-number selfRef">13.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-15.1" class="section-number selfRef">15.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
 <dt id="REST">[REST]</dt>
@@ -2361,6 +2629,10 @@ TODO
 <dt id="RFC2616">[RFC2616]</dt>
         <dd>
 <span class="refAuthor">Fielding, R.</span>, <span class="refAuthor">Gettys, J.</span>, <span class="refAuthor">Mogul, J.</span>, <span class="refAuthor">Frystyk, H.</span>, <span class="refAuthor">Masinter, L.</span>, <span class="refAuthor">Leach, P.</span>, and <span class="refAuthor">T. Berners-Lee</span>, <span class="refTitle">"Hypertext Transfer Protocol -- HTTP/1.1"</span>, <span class="seriesInfo">RFC 2616</span>, <span class="seriesInfo">DOI 10.17487/RFC2616</span>, <time datetime="1999-06" class="refDate">June 1999</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc2616">https://www.rfc-editor.org/info/rfc2616</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC3553">[RFC3553]</dt>
+        <dd>
+<span class="refAuthor">Mealling, M.</span>, <span class="refAuthor">Masinter, L.</span>, <span class="refAuthor">Hardie, T.</span>, and <span class="refAuthor">G. Klyne</span>, <span class="refTitle">"An IETF URN Sub-namespace for Registered Protocol Parameters"</span>, <span class="seriesInfo">BCP 73</span>, <span class="seriesInfo">RFC 3553</span>, <span class="seriesInfo">DOI 10.17487/RFC3553</span>, <time datetime="2003-06" class="refDate">June 2003</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc3553">https://www.rfc-editor.org/info/rfc3553</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC3986">[RFC3986]</dt>
         <dd>
@@ -2390,6 +2662,10 @@ TODO
         <dd>
 <span class="refAuthor">Hollenbeck, S.</span>, <span class="refTitle">"Extensible Provisioning Protocol (EPP) Transport over TCP"</span>, <span class="seriesInfo">STD 69</span>, <span class="seriesInfo">RFC 5734</span>, <span class="seriesInfo">DOI 10.17487/RFC5734</span>, <time datetime="2009-08" class="refDate">August 2009</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5734">https://www.rfc-editor.org/info/rfc5734</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC6570">[RFC6570]</dt>
+        <dd>
+<span class="refAuthor">Gregorio, J.</span>, <span class="refAuthor">Fielding, R.</span>, <span class="refAuthor">Hadley, M.</span>, <span class="refAuthor">Nottingham, M.</span>, and <span class="refAuthor">D. Orchard</span>, <span class="refTitle">"URI Template"</span>, <span class="seriesInfo">RFC 6570</span>, <span class="seriesInfo">DOI 10.17487/RFC6570</span>, <time datetime="2012-03" class="refDate">March 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6570">https://www.rfc-editor.org/info/rfc6570</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC6648">[RFC6648]</dt>
         <dd>
 <span class="refAuthor">Saint-Andre, P.</span>, <span class="refAuthor">Crocker, D.</span>, and <span class="refAuthor">M. Nottingham</span>, <span class="refTitle">"Deprecating the "X-" Prefix and Similar Constructs in Application Protocols"</span>, <span class="seriesInfo">BCP 178</span>, <span class="seriesInfo">RFC 6648</span>, <span class="seriesInfo">DOI 10.17487/RFC6648</span>, <time datetime="2012-06" class="refDate">June 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6648">https://www.rfc-editor.org/info/rfc6648</a>&gt;</span>. </dd>
@@ -2402,27 +2678,27 @@ TODO
         <dd>
 <span class="refAuthor">Reschke, J.</span>, <span class="refTitle">"The 'Basic' HTTP Authentication Scheme"</span>, <span class="seriesInfo">RFC 7617</span>, <span class="seriesInfo">DOI 10.17487/RFC7617</span>, <time datetime="2015-09" class="refDate">September 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7617">https://www.rfc-editor.org/info/rfc7617</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="RFC8259">[RFC8259]</dt>
-        <dd>
-<span class="refAuthor">Bray, T., Ed.</span>, <span class="refTitle">"The JavaScript Object Notation (JSON) Data Interchange Format"</span>, <span class="seriesInfo">STD 90</span>, <span class="seriesInfo">RFC 8259</span>, <span class="seriesInfo">DOI 10.17487/RFC8259</span>, <time datetime="2017-12" class="refDate">December 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8259">https://www.rfc-editor.org/info/rfc8259</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC8941">[RFC8941]</dt>
-        <dd>
-<span class="refAuthor">Nottingham, M.</span> and <span class="refAuthor">P. Kamp</span>, <span class="refTitle">"Structured Field Values for HTTP"</span>, <span class="seriesInfo">RFC 8941</span>, <span class="seriesInfo">DOI 10.17487/RFC8941</span>, <time datetime="2021-02" class="refDate">February 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8941">https://www.rfc-editor.org/info/rfc8941</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="RFC9110">[RFC9110]</dt>
         <dd>
 <span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="seriesInfo">STD 97</span>, <span class="seriesInfo">RFC 9110</span>, <span class="seriesInfo">DOI 10.17487/RFC9110</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9110">https://www.rfc-editor.org/info/rfc9110</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="YAML">[YAML]</dt>
+<dt id="RFC9205">[RFC9205]</dt>
+        <dd>
+<span class="refAuthor">Nottingham, M.</span>, <span class="refTitle">"Building Protocols with HTTP"</span>, <span class="seriesInfo">BCP 56</span>, <span class="seriesInfo">RFC 9205</span>, <span class="seriesInfo">DOI 10.17487/RFC9205</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9205">https://www.rfc-editor.org/info/rfc9205</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9457">[RFC9457]</dt>
+        <dd>
+<span class="refAuthor">Nottingham, M.</span>, <span class="refAuthor">Wilde, E.</span>, and <span class="refAuthor">S. Dalal</span>, <span class="refTitle">"Problem Details for HTTP APIs"</span>, <span class="seriesInfo">RFC 9457</span>, <span class="seriesInfo">DOI 10.17487/RFC9457</span>, <time datetime="2023-07" class="refDate">July 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9457">https://www.rfc-editor.org/info/rfc9457</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9535">[RFC9535]</dt>
       <dd>
-<span class="refAuthor">YAML Language Development Team</span>, <span class="refTitle">"YAML: YAML Ain't Markup Language"</span>, <time datetime="2000" class="refDate">2000</time>, <span>&lt;<a href="https://yaml.org/spec/1.2.2/">https://yaml.org/spec/1.2.2/</a>&gt;</span>. </dd>
+<span class="refAuthor">Gössner, S., Ed.</span>, <span class="refAuthor">Normington, G., Ed.</span>, and <span class="refAuthor">C. Bormann, Ed.</span>, <span class="refTitle">"JSONPath: Query Expressions for JSON"</span>, <span class="seriesInfo">RFC 9535</span>, <span class="seriesInfo">DOI 10.17487/RFC9535</span>, <time datetime="2024-02" class="refDate">February 2024</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9535">https://www.rfc-editor.org/info/rfc9535</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
-<section id="section-13.2">
+<section id="section-15.2">
         <h3 id="name-informative-references">
-<a href="#section-13.2" class="section-number selfRef">13.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+<a href="#section-15.2" class="section-number selfRef">15.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
 <dt id="RFC8748">[RFC8748]</dt>
