@@ -913,13 +913,16 @@ Due to the stateless nature of RPP, the client MUST include the authentication c
 
 # Change History
 
+## Version 02 to 03
+
+- Added use of Problem Detail [@!RFC9457] for error responses
+
 ## Version 01 to 02
 
 - Updated the examples, changed from "*.example.org" to "*.example"
 - Merged the RPP-EPP-Code and RPP-Code headers into a single RPP-Code header
 - Update the RPP-Authorization header to match the HTTP Authorization header format
 - Added new process path segment and process representations
-- Added use of Problem Detail [@!RFC9457] for error responses
 - Updated the Check request to now use an "availability" path segment and support both GET and HEAD methods
 
 

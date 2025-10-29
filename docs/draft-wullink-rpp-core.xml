@@ -910,6 +910,13 @@ IANA Registry Reference: <xref target="RFC5730"></xref></t>
 
 <section anchor="change-history"><name>Change History</name>
 
+<section anchor="version-02-to-03"><name>Version 02 to 03</name>
+
+<ul spacing="compact">
+<li>Added use of Problem Detail <xref target="RFC9457"></xref> for error responses</li>
+</ul>
+</section>
+
 <section anchor="version-01-to-02"><name>Version 01 to 02</name>
 
 <ul spacing="compact">
@@ -917,7 +924,6 @@ IANA Registry Reference: <xref target="RFC5730"></xref></t>
 <li>Merged the RPP-EPP-Code and RPP-Code headers into a single RPP-Code header</li>
 <li>Update the RPP-Authorization header to match the HTTP Authorization header format</li>
 <li>Added new process path segment and process representations</li>
-<li>Added use of Problem Detail <xref target="RFC9457"></xref> for error responses</li>
 <li>Updated the Check request to now use an &quot;availability&quot; path segment and support both GET and HEAD methods</li>
 </ul>
 </section>

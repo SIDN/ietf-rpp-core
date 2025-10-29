@@ -97,15 +97,15 @@ Table of Contents
    11. Internationalization Considerations . . . . . . . . . . . . .  26
    12. Security Considerations . . . . . . . . . . . . . . . . . . .  26
    13. Change History  . . . . . . . . . . . . . . . . . . . . . . .  26
-     13.1.  Version 01 to 02 . . . . . . . . . . . . . . . . . . . .  27
-     13.2.  Version 00 to 01 . . . . . . . . . . . . . . . . . . . .  27
-     13.3.  Version 00 (draft-rpp-core) to 00
+     13.1.  Version 02 to 03 . . . . . . . . . . . . . . . . . . . .  27
+     13.2.  Version 01 to 02 . . . . . . . . . . . . . . . . . . . .  27
+     13.3.  Version 00 to 01 . . . . . . . . . . . . . . . . . . . .  27
+     13.4.  Version 00 (draft-rpp-core) to 00
             (draft-wullink-rpp-core) . . . . . . . . . . . . . . . .  27
    14. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  27
    15. References  . . . . . . . . . . . . . . . . . . . . . . . . .  27
      15.1.  Normative References . . . . . . . . . . . . . . . . . .  27
      15.2.  Informative References . . . . . . . . . . . . . . . . .  29
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  29
 
 
 
@@ -113,6 +113,8 @@ Wullink & Kowalik          Expires 2 May 2026                   [Page 2]
 
 Internet-Draft        RESTful Provisioning Protocol         October 2025
 
+
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  29
 
 1.  Introduction
 
@@ -157,8 +159,6 @@ Internet-Draft        RESTful Provisioning Protocol         October 2025
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
    NOT","SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in
    this document are to be interpreted as described in [RFC2119].
-
-
 
 
 
@@ -1458,7 +1458,11 @@ Wullink & Kowalik          Expires 2 May 2026                  [Page 26]
 Internet-Draft        RESTful Provisioning Protocol         October 2025
 
 
-13.1.  Version 01 to 02
+13.1.  Version 02 to 03
+
+   -  Added use of Problem Detail [RFC9457] for error responses
+
+13.2.  Version 01 to 02
 
    -  Updated the examples, changed from "_.example.org" to "_.example"
    -  Merged the RPP-EPP-Code and RPP-Code headers into a single RPP-
@@ -1466,17 +1470,16 @@ Internet-Draft        RESTful Provisioning Protocol         October 2025
    -  Update the RPP-Authorization header to match the HTTP
       Authorization header format
    -  Added new process path segment and process representations
-   -  Added use of Problem Detail [RFC9457] for error responses
    -  Updated the Check request to now use an "availability" path
       segment and support both GET and HEAD methods
 
-13.2.  Version 00 to 01
+13.3.  Version 00 to 01
 
    -  Updated "Request Headers" and "Response Headers" section
    -  Changed transfer resource URL and HTTP method for reject, approve
       and cancel, in order to make the API easier to use
 
-13.3.  Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)
+13.4.  Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)
 
    -  Renamed the document name to "draft-wullink-rpp-core"
    -  Removed sections: Design Considerations, Resource Naming
@@ -1502,10 +1505,7 @@ Internet-Draft        RESTful Provisioning Protocol         October 2025
               <http://www.ics.uci.edu/~fielding/pubs/dissertation/
               rest_arch_style.htm>.
 
-   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997,
-              <https://www.rfc-editor.org/info/rfc2119>.
+
 
 
 
@@ -1513,6 +1513,11 @@ Wullink & Kowalik          Expires 2 May 2026                  [Page 27]
 
 Internet-Draft        RESTful Provisioning Protocol         October 2025
 
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
 
    [RFC2616]  Fielding, R., Gettys, J., Mogul, J., Frystyk, H.,
               Masinter, L., Leach, P., and T. Berners-Lee, "Hypertext
@@ -1557,11 +1562,6 @@ Internet-Draft        RESTful Provisioning Protocol         October 2025
               DOI 10.17487/RFC5734, August 2009,
               <https://www.rfc-editor.org/info/rfc5734>.
 
-   [RFC6570]  Gregorio, J., Fielding, R., Hadley, M., Nottingham, M.,
-              and D. Orchard, "URI Template", RFC 6570,
-              DOI 10.17487/RFC6570, March 2012,
-              <https://www.rfc-editor.org/info/rfc6570>.
-
 
 
 
@@ -1569,6 +1569,11 @@ Wullink & Kowalik          Expires 2 May 2026                  [Page 28]
 
 Internet-Draft        RESTful Provisioning Protocol         October 2025
 
+
+   [RFC6570]  Gregorio, J., Fielding, R., Hadley, M., Nottingham, M.,
+              and D. Orchard, "URI Template", RFC 6570,
+              DOI 10.17487/RFC6570, March 2012,
+              <https://www.rfc-editor.org/info/rfc6570>.
 
    [RFC6648]  Saint-Andre, P., Crocker, D., and M. Nottingham,
               "Deprecating the "X-" Prefix and Similar Constructs in
@@ -1613,11 +1618,6 @@ Authors' Addresses
 
    Maarten Wullink
    SIDN Labs
-   Email: maarten.wullink@sidn.nl
-   URI:   https://sidn.nl/
-
-
-
 
 
 
@@ -1626,14 +1626,14 @@ Wullink & Kowalik          Expires 2 May 2026                  [Page 29]
 Internet-Draft        RESTful Provisioning Protocol         October 2025
 
 
+   Email: maarten.wullink@sidn.nl
+   URI:   https://sidn.nl/
+
+
    Pawel Kowalik
    DENIC
    Email: pawel.kowalik@denic.de
    URI:   https://denic.de/
-
-
-
-
 
 
 
