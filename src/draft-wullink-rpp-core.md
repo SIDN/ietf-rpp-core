@@ -170,22 +170,20 @@ Implementations MAY use other URIs, for more specificity about custom error type
 The `values` objects consist of the following fields:
 
 `path`
-: (required, string) The JSONPath [@!RFC9535] to the value referenced
+: (optional, string) The JSONPath [@!RFC9535] to the value referenced
 
 `reason`
-: (optional, string) A human-readable description of why the value was not acceptable
+: (required, string) A human-readable description of why the value was not acceptable
 
 Implementations MAY add extension fields to the `errors` document to convey additional information about the
 causes of the error. For example, to indicate the account balance on a billing failure, the following could be sent:
 
 ```json
 {
-  "type": "urn:ietf:params:rpp:problem",
-  "title": "Billing failure",
-  "status": 405,
-  "errors": [{
-    "type": "urn:ietf:params:rpp:code:02104",
-    "detail": "Not enough balance on account to create domain",
+  "type": "urn:ietf:params:rpp:code:02104",
+  "detail": "Billing failure",
+  "values": [{
+    "reason": "Not enough balance on account to create domain",
     "balance": 10.0,
     "action_cost": 25.0
   }]
