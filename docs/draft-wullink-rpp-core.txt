@@ -428,9 +428,9 @@ Internet-Draft        RESTful Provisioning Protocol         October 2025
 
    The values objects consist of the following fields:
 
-   path  (required, string) The JSONPath [RFC9535] to the value
+   path  (optional, string) The JSONPath [RFC9535] to the value
       referenced
-   reason  (optional, string) A human-readable description of why the
+   reason  (required, string) A human-readable description of why the
       value was not acceptable
 
    Implementations MAY add extension fields to the errors document to
@@ -451,12 +451,10 @@ Internet-Draft        RESTful Provisioning Protocol         October 2025
 
 
    {
-     "type": "urn:ietf:params:rpp:problem",
-     "title": "Billing failure",
-     "status": 405,
-     "errors": [{
-       "type": "urn:ietf:params:rpp:code:02104",
-       "detail": "Not enough balance on account to create domain",
+     "type": "urn:ietf:params:rpp:code:02104",
+     "detail": "Billing failure",
+     "values": [{
+       "reason": "Not enough balance on account to create domain",
        "balance": 10.0,
        "action_cost": 25.0
      }]
@@ -496,6 +494,8 @@ Internet-Draft        RESTful Provisioning Protocol         October 2025
    method to retrieve additional information about the object's
    availability for provisioning, for example about pricing or
    additional requirements to be able to provision the requested object.
+
+
 
 
 

@@ -208,20 +208,18 @@ Implementations MAY use other URIs, for more specificity about custom error type
 
 <dl spacing="compact">
 <dt><tt>path</tt></dt>
-<dd>(required, string) The JSONPath <xref target="RFC9535"></xref> to the value referenced</dd>
+<dd>(optional, string) The JSONPath <xref target="RFC9535"></xref> to the value referenced</dd>
 <dt><tt>reason</tt></dt>
-<dd>(optional, string) A human-readable description of why the value was not acceptable</dd>
+<dd>(required, string) A human-readable description of why the value was not acceptable</dd>
 </dl>
 <t>Implementations MAY add extension fields to the <tt>errors</tt> document to convey additional information about the
 causes of the error. For example, to indicate the account balance on a billing failure, the following could be sent:</t>
 
 <sourcecode type="json"><![CDATA[{
-  "type": "urn:ietf:params:rpp:problem",
-  "title": "Billing failure",
-  "status": 405,
-  "errors": [{
-    "type": "urn:ietf:params:rpp:code:02104",
-    "detail": "Not enough balance on account to create domain",
+  "type": "urn:ietf:params:rpp:code:02104",
+  "detail": "Billing failure",
+  "values": [{
+    "reason": "Not enough balance on account to create domain",
     "balance": 10.0,
     "action_cost": 25.0
   }]
