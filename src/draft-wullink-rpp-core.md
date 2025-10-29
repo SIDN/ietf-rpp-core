@@ -159,8 +159,8 @@ This document consists of the following fields:
 `type`
 : (required, string) This field contains an URI, referencing more information about the error type.
 
-`detail`
-: (required, string) A human-readable description of the error.
+`title`
+: (required, string) A short human-readable description of the error.
 
 `errors`
 : (optional, list of errors) MAY contain references to which values in the original request were not acceptable to the server.
@@ -186,7 +186,7 @@ Example Problem Detail response for a billing failure, no JSONPaths specified:
 ```json
 {
   "type": "https://rpp.example/problems/billing/billing-failure",
-  "detail": "Billing failure",
+  "title": "Billing failure",
   "errors": [{
     "type": "urn:ietf:params:rpp:code:02104",
     "reason": "Not enough balance on account to create domain",
@@ -201,7 +201,7 @@ Example Problem Detail response for domain create request containing an invalid 
 ```json
 {
   "type": "https://rpp.example/problems/domains/domain-name-validation",
-  "detail": "Domain name validation failed",
+  "title": "Domain name validation failed",
   "errors": [{
     "type": "urn:ietf:params:rpp:code:02005",
     "paths": ["$.domain.name"],
