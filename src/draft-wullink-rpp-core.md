@@ -163,7 +163,7 @@ This document consists of the following fields:
 : (required, string) A short human-readable description of the Problem Detail type.
 
 `errors`
-: (optional, array of errors) MUST contain objects detailing information about the specific errors that occurred, including optional references to which values in the original request were not acceptable to the server.
+: (optional, array of error objects) MUST contain objects detailing information about the specific errors that occurred, including optional references to which values in the original request were not acceptable to the server.
 
 The `error` object consist of the following fields:
 
@@ -179,7 +179,7 @@ The `error` object consist of the following fields:
 `reason`
 : (required, string) A human-readable detailed description of the error.
 
-Implementations MAY add extension fields to an error object in the errors array, to convey additional information about the causes of the error. For example, to indicate the account balance on a billing failure, the following could be sent:
+RPP specifications and/or extensions MAY add extension fields to the error object, to convey additional information about the causes of the error. For example, to indicate the account balance on a billing failure, the following Problem Detail response could be used:
 
 ```json
 {
