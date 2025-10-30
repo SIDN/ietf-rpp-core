@@ -157,38 +157,37 @@ The document MUST contain an `errors` element, as a list of objects detailing in
 This document consists of the following fields:
 
 `type`
-: (required, string) This field contains an URI, referencing more information about the error type.
+: (required, string) This field MUST always contain the fixed string value `urn:ietf:params:rpp:error` to indicate that this is an RPP Problem Detail response.
 
 `title`
-: (required, string) A short human-readable description of the error.
+: (required, string) A short human-readable description of the Problem Detail type.
 
 `errors`
-: (optional, list of errors) MAY contain references to which values in the original request were not acceptable to the server.
+: (optional, array of errors) MUST contain objects detailing information about the specific errors that occurred, including optional references to which values in the original request were not acceptable to the server.
 
-The `errors` objects consist of the following fields:
+The `error` object consist of the following fields:
 
 `type`
-: (required, string) This field SHOULD be a URN under the `urn:ietf:params:rpp:code:` namespace using the RPP response
-code; e.g. with a code of `02005` the `type` field is `urn:ietf:params:rpp:code:02005`.
-Implementations MAY use other URIs, for more specificity about custom error types.
+: (required, string) This field SHOULD be a URI that identifies the error type. This URI MAY be dereferenceable to obtain human-readable documentation about the error type.
+
+`result`
+: (required, string) This field MUST contain the RPP result code associated with the error.
 
 `paths`
-: (optional, list of strings) The JSONPath [@!RFC9535] to the value(s) referenced
+: (optional, list of strings) The JSONPath [@!RFC9535] to the value(s) in the request that caused the error. This field MAY be omitted if no specific value in the request can be identified as the cause of the error.
 
 `reason`
-: (required, string) A human-readable detailed description of the error and/or why the request value was not acceptable
+: (required, string) A human-readable detailed description of the error.
 
-Implementations MAY add extension fields to the `errors` document to convey additional information about the
-causes of the error. For example, to indicate the account balance on a billing failure, the following could be sent:
-
-Example Problem Detail response for a billing failure, no JSONPaths specified:
+Implementations MAY add extension fields to an error object in the errors array, to convey additional information about the causes of the error. For example, to indicate the account balance on a billing failure, the following could be sent:
 
 ```json
 {
-  "type": "https://rpp.example/problems/billing/billing-failure",
-  "title": "Billing failure",
+  "type": "urn:ietf:params:rpp:error",
+  "title": "RPP Error",
   "errors": [{
-    "type": "urn:ietf:params:rpp:code:02104",
+    "type": "https://rpp.example/problems/billing/billing-failure",
+    "result": "02104",
     "reason": "Not enough balance on account to create domain",
     "balance": 10.0,
     "action_cost": 25.0
@@ -196,19 +195,21 @@ Example Problem Detail response for a billing failure, no JSONPaths specified:
 }
 ```
 
-Example Problem Detail response for domain create request containing an invalid domain name (_$.example), with JSONPaths specified:
+Problem Detail response containing multiple errors for a domain create request using an invalid domain name (_$.example), JSONPaths are specified in the error objects to indicate which value in the request caused the error:
 
 ```json
 {
-  "type": "https://rpp.example/problems/domains/domain-name-validation",
-  "title": "Domain name validation failed",
+  "type": "urn:ietf:params:rpp:error",
+  "title": "RPP Error",
   "errors": [{
-    "type": "urn:ietf:params:rpp:code:02005",
+    "type": "https://rpp.example/problems/domains/domain-syntax",
+    "result": "02005",
     "paths": ["$.domain.name"],
     "reason": "Invalid character(s) in domain name",
   },
   {
-    "type": "urn:ietf:params:rpp:code:02004",
+    "type": "https://rpp.example/problems/domains/domain-allowed-length",
+    "result": "02004",
     "paths": ["$.domain.name"],
     "reason": "Domain name length must be between 3 and 63 characters",
   }]
