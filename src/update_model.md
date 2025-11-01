@@ -90,8 +90,8 @@
         ... allowed for items which are read-write
     },
     "change": {
-        
         ... allowed for items which are read-write
+        ... allowed for items which are clearly identified by a label, but not by value
     }
 }
 
