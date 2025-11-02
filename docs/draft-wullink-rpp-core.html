@@ -1662,11 +1662,11 @@ Implementations MAY use other URIs, for more specificity about custom error type
 <p id="section-7-4">The <code>values</code> objects consist of the following fields:<a href="#section-7-4" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlCompact dlParallel" id="section-7-5">
         <dt id="section-7-5.1"><code>path</code></dt>
-        <dd style="margin-left: 1.5em" id="section-7-5.2">(required, string) The JSONPath <span>[<a href="#RFC9535" class="cite xref">RFC9535</a>]</span> to the value referenced<a href="#section-7-5.2" class="pilcrow">¶</a>
+        <dd style="margin-left: 1.5em" id="section-7-5.2">(optional, string) The JSONPath <span>[<a href="#RFC9535" class="cite xref">RFC9535</a>]</span> to the value referenced<a href="#section-7-5.2" class="pilcrow">¶</a>
 </dd>
         <dd class="break"></dd>
 <dt id="section-7-5.3"><code>reason</code></dt>
-        <dd style="margin-left: 1.5em" id="section-7-5.4">(optional, string) A human-readable description of why the value was not acceptable<a href="#section-7-5.4" class="pilcrow">¶</a>
+        <dd style="margin-left: 1.5em" id="section-7-5.4">(required, string) A human-readable description of why the value was not acceptable<a href="#section-7-5.4" class="pilcrow">¶</a>
 </dd>
       <dd class="break"></dd>
 </dl>
@@ -1674,12 +1674,10 @@ Implementations MAY use other URIs, for more specificity about custom error type
 causes of the error. For example, to indicate the account balance on a billing failure, the following could be sent:<a href="#section-7-6" class="pilcrow">¶</a></p>
 <div class="lang-json sourcecode" id="section-7-7">
 <pre>{
-  "type": "urn:ietf:params:rpp:problem",
-  "title": "Billing failure",
-  "status": 405,
-  "errors": [{
-    "type": "urn:ietf:params:rpp:code:02104",
-    "detail": "Not enough balance on account to create domain",
+  "type": "urn:ietf:params:rpp:code:02104",
+  "detail": "Billing failure",
+  "values": [{
+    "reason": "Not enough balance on account to create domain",
     "balance": 10.0,
     "action_cost": 25.0
   }]

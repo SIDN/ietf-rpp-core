@@ -157,37 +157,61 @@ The document MUST contain an `errors` element, as a list of objects detailing in
 This document consists of the following fields:
 
 `type`
-: (required, string) This field SHOULD be a URN under the `urn:ietf:params:rpp:code:` namespace using the RPP response
-code; e.g. with a code of `02005` the `type` field is `urn:ietf:params:rpp:code:02005`.
-Implementations MAY use other URIs, for more specificity about custom error types.
+: (required, string) This field MUST always contain the fixed string value `urn:ietf:params:rpp:error` to indicate that this is an RPP Problem Detail response.
 
-`detail`
-: (required, string) A human-readable description of the error.
+`title`
+: (required, string) A short human-readable description of the Problem Detail type.
 
-`values`
-: (optional, list of objects) References to which values in the original request were not acceptable to the server.
+`errors`
+: (optional, array of error objects) MUST contain objects detailing information about the specific errors that occurred, including optional references to which values in the original request were not acceptable to the server.
 
-The `values` objects consist of the following fields:
+The `error` object consist of the following fields:
 
-`path`
-: (required, string) The JSONPath [@!RFC9535] to the value referenced
+`type`
+: (required, string) This field SHOULD be a URI that identifies the error type. This URI MAY be dereferenceable to obtain human-readable documentation about the error type.
+
+`result`
+: (required, string) This field MUST contain the RPP result code associated with the error.
+
+`paths`
+: (optional, list of strings) The JSONPath [@!RFC9535] to the value(s) in the request that caused the error. This field MAY be omitted if no specific value in the request can be identified as the cause of the error.
 
 `reason`
-: (optional, string) A human-readable description of why the value was not acceptable
+: (required, string) A human-readable detailed description of the error.
 
-Implementations MAY add extension fields to the `errors` document to convey additional information about the
-causes of the error. For example, to indicate the account balance on a billing failure, the following could be sent:
+RPP specifications and/or extensions MAY add extension fields to the error object, to convey additional information about the causes of the error. For example, to indicate the account balance on a billing failure, the following Problem Detail response could be used:
 
 ```json
 {
-  "type": "urn:ietf:params:rpp:problem",
-  "title": "Billing failure",
-  "status": 405,
+  "type": "urn:ietf:params:rpp:error",
+  "title": "RPP Error",
   "errors": [{
-    "type": "urn:ietf:params:rpp:code:02104",
-    "detail": "Not enough balance on account to create domain",
+    "type": "https://rpp.example/problems/billing/billing-failure",
+    "result": "02104",
+    "reason": "Not enough balance on account to create domain",
     "balance": 10.0,
     "action_cost": 25.0
+  }]
+}
+```
+
+Problem Detail response containing multiple errors for a domain create request using an invalid domain name (_$.example), JSONPaths are specified in the error objects to indicate which value in the request caused the error:
+
+```json
+{
+  "type": "urn:ietf:params:rpp:error",
+  "title": "RPP Error",
+  "errors": [{
+    "type": "https://rpp.example/problems/domains/domain-syntax",
+    "result": "02005",
+    "paths": ["$.domain.name"],
+    "reason": "Invalid character(s) in domain name",
+  },
+  {
+    "type": "https://rpp.example/problems/domains/domain-allowed-length",
+    "result": "02004",
+    "paths": ["$.domain.name"],
+    "reason": "Domain name length must be between 3 and 63 characters",
   }]
 }
 ```
