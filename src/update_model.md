@@ -162,13 +162,13 @@ Cardinatily 1+ or 0+
     "contacts": [
         {
             "label": "adminc",
-            "object: {
+            "object": {
                 "handle_id": "..."
             }
         },
         {
             "label": "adminc",
-            "object: {
+            "object": {
                 "handle_id": "..."
             }
         },
@@ -253,13 +253,13 @@ Cardinatily 1+ or 0+
         "contacts": [
             {
                 "label": "adminc",
-                "object: {
+                "object": {
                     "handle_id": "..."
                 }
             },
             {
                 "label": "adminc",
-                "object: {
+                "object": {
                     "handle_id": "..."
                 }
             },
@@ -463,7 +463,7 @@ Example remove based on match of label and object's property id (can be literali
         "contacts": [
             {
                 "label": "techc",
-                "object: {
+                "object": {
                     "id": "1234"
                 }
             }
