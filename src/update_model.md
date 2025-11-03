@@ -23,6 +23,7 @@
 }
 ```
 
+EPP UPDATE model
 ```json
 {
   "add": {
@@ -59,6 +60,7 @@
 }
 ```
 
+Attempts to model PATCH without add/remove/change logic:
 ```json
 -- an existing key is a full replacement
 {
@@ -77,7 +79,9 @@
     ]
 }
 ```
+... both will offer serious limitations!
 
+```json
 {
     -- generalisation based on data objects 
     "remove": {
@@ -94,6 +98,8 @@
         ... allowed for items which are clearly identified by a label, but not by value
     }
 }
+```
+# Analysis of approaches based on type of relations and expressions in Data Objects
 
 ## Simple values (primitive)
 ```
