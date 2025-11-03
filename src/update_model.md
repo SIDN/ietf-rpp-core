@@ -101,19 +101,21 @@ Attempts to model PATCH without add/remove/change logic:
 ```
 # Analysis of approaches based on type of relations and expressions in Data Objects
 
-## Simple values (primitive)
-```
+## Example modelling (before change)
+
+### Simple values (primitive)
+```json
 {
     "foo": "value"
 }
 ```
 
-## Component Objects
+### Component Objects
 ... same as any object composition?
 
-## Composition
+### Composition
 Cardinatily 1 or 0-1
-```
+```json
 {
     "foo": {
         ...
@@ -122,7 +124,7 @@ Cardinatily 1 or 0-1
 ```
 
 Cardinatily 1+ or 0+
-```
+```json
 {
     "foo": [{
         ...
@@ -131,12 +133,12 @@ Cardinatily 1+ or 0+
 ```
 
 
-## Composition Dictionary
+### Composition Dictionary
 Cardinatily 1 or 0-1
 ... same as below but does not make too much sense
 
 Cardinatily 1+ or 0+
-```
+```json
 {
     "foo": {
         "label1" {
@@ -150,12 +152,12 @@ Cardinatily 1+ or 0+
 }
 ```
 
-## Labelled Composition
+### Labelled Composition
 Cardinatily 1 or 0-1
 ... same as below but does not make too much sense
 
 Cardinatily 1+ or 0+
-```
+```json
 {
     "contacts": [
         {
@@ -176,26 +178,30 @@ Cardinatily 1+ or 0+
 ```
 
 
-# add
+## add
 
 -- preconditions
 -- cardinality 0-1
 -- it's not yet set
-## Simple values (primitive)
-```
+### Simple values (primitive)
+```json
 {
-    "foo": "value"
+    "add": {
+        "foo": "value"
+    }
 }
 ```
 
 -- preconditions
 -- cardinality 0-1
 -- it's not yet set
-## Composition
-```
+### Composition
+```json
 {
-    "foo": {
-        ...
+    "add": {
+        "foo": {
+            ...
+        }
     }
 }
 ```
@@ -203,151 +209,173 @@ Cardinatily 1+ or 0+
 -- Cardinatily 1+ or 0+
 -- semantics: if element does not exist, add it
   -- add all elements to the existing array
-```
+```json
 {
-    "foo": [{
-        ...
-    },
-    {
-        ...
+    "add": {
+        "foo": [
+            {
+                ...
+            },
+            {
+                ...
+            }
+        ]
     }
-    ]
 }
 ```
 
-## Composition Dictionary
+### Composition Dictionary
 
 -- Cardinatily 1+ or 0+
 -- add labels
 -- fail if label already exist
-```
+```json
 {
-    "foo": {
-        "label1" {
+    "add": {
+        "foo": {
+            "label1" {
+                ...
+            },
+            "label2" {
+                ...
+            },
             ...
-        },
-        "label2" {
-            ...
-        },
-        ...
+        }
     }
 }
 ```
 
-## Labelled Composition
+### Labelled Composition
 --Cardinatily 1+ or 0+
-```
+```json
 {
-    "contacts": [
-        {
-            "label": "adminc",
-            "object: {
-                "handle_id": "..."
-            }
-        },
-        {
-            "label": "adminc",
-            "object: {
-                "handle_id": "..."
-            }
-        },
-        ...
-    ]
+    "foo": {
+        "contacts": [
+            {
+                "label": "adminc",
+                "object: {
+                    "handle_id": "..."
+                }
+            },
+            {
+                "label": "adminc",
+                "object: {
+                    "handle_id": "..."
+                }
+            },
+            ...
+        ]
+    }
 }
 ```
 
 
-# remove
+## remove
 
 -- preconditions
 -- cardinality 0-1
-## Simple values (primitive)
-```
+### Simple values (primitive)
+```json
 {
-    "foo": null
+    "remove": {
+        "foo": null
+    }
 }
 ```
 
 -- preconditions
 -- cardinality 0-1
-## Composition
-```
+### Composition
+```json
 {
-    "foo": null
+    "remove": {
+        "foo": null
+    }
 }
 ```
 
 -- preconsitions
 -- remove all items matching the provided values (recourse same generic alg. over all values)
-```
+```json
 {
-    "foo": [{
-        "...": "xxxx"
-    },
-    {
-        "...": "xxxx"        
+    "remove": {
+        "foo": [
+            {
+                "...": "xxxx"
+            },
+            {
+                "...": "xxxx"        
+            }
+        ]
     }
-    ]
 }
 ```
 
-## Composition Dictionary
+### Composition Dictionary
 
 -- Cardinatily 1+ or 0+
 -- remove all labels
 -- fail if label does not exist exist
-```
+```json
 {
-    "foo": {
-        "label1": null
-        "label2": null,
-        ...
+    "remove": {
+        "foo": {
+            "label1": null
+            "label2": null,
+            ...
+        }
     }
 }
 ```
 
-## Labelled Composition
+### Labelled Composition
 --Cardinatily 1+ or 0+
 -- remove all items matching the provided values (recourse same generic alg. over all values)
 ```json
 {
-    "contacts": [
-        {
-            "label": "adminc",
-            "object": {
-                "...": "..."
-            }
-        },
-        {
-            "label": "adminc",
-            "object": {
-                "...": "..."
-            }
-        },
-        ...
-    ]
+    "remove": {
+        "contacts": [
+            {
+                "label": "adminc",
+                "object": {
+                    "...": "..."
+                }
+            },
+            {
+                "label": "adminc",
+                "object": {
+                    "...": "..."
+                }
+            },
+            ...
+        ]
+    }
 }
 ```
 
 
-# change
+## change
 
 -- preconditions
 -- cardinality 1 or 0-1
-## Simple values (primitive)
-```
+### Simple values (primitive)
+```json
 {
-    "foo": "value"
+    "change": {
+        "foo": "value"
+    }
 }
 ```
 
 -- preconditions
 -- cardinality 1 or 0-1
-## Composition
-```
+### Composition
+```json
 {
-    "foo": {
-        ...
+    "change": {
+        "foo": {
+            ...
+        }
     }
 }
 ```
@@ -355,32 +383,35 @@ Cardinatily 1+ or 0+
 -- Cardinatily 1+ or 0+
 -- forbidden, do remove and add
 
-## Composition Dictionary
+### Composition Dictionary
 
 -- Cardinatily 1+ or 0+
 -- full replace labels ???
 -- fail if label does not exist
-```
+```json
 {
-    "foo": {
-        "label1" {
+    "change": {
+        "foo": {
+            "label1" {
+                ...
+            },
+            "label2" {
+                ...
+            },
             ...
-        },
-        "label2" {
-            ...
-        },
-        ...
+        }
     }
 }
 ```
 
 
-## Labelled Composition
+### Labelled Composition
 --Cardinatily 1+ or 0+
 -- forbidden, just do remove and add
 
---- examples
+# examples
 
+Input
 ```json
 {
     "status": [
@@ -407,8 +438,10 @@ Cardinatily 1+ or 0+
       }
     ]
 }
+```
 
-
+Example to remove based on matching of name and tag
+```json
 {
     "remove": {
         "status": [
@@ -423,6 +456,7 @@ Cardinatily 1+ or 0+
 }
 ```
 
+Example remove based on match of label and object's property id (can be literalily any property)
 ```json
 {
     "remove": {
