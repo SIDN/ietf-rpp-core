@@ -9,7 +9,7 @@ TocDepth = 4
 
 [seriesInfo]
 name = "Internet-Draft"
-value = "draft-wullink-rpp-core-03"
+value = "draft-wullink-rpp-core-04"
 stream = "IETF"
 status = "standard"
 
@@ -936,6 +936,8 @@ Data confidentiality and integrity MUST be enforced, all data transport between 
 Due to the stateless nature of RPP, the client MUST include the authentication credentials in each HTTP request. This MAY be done by using JSON Web Tokens (JWT) [@!RFC7519] or Basic authentication [@!RFC7617].
 
 # Change History
+
+## Version 03 to 04
 
 ## Version 02 to 03
 
