@@ -196,32 +196,55 @@ The document MUST contain an <tt>errors</tt> element, as a list of objects detai
 
 <dl spacing="compact">
 <dt><tt>type</tt></dt>
-<dd>(required, string) This field SHOULD be a URN under the <tt>urn:ietf:params:rpp:code:</tt> namespace using the RPP response
-code; e.g. with a code of <tt>02005</tt> the <tt>type</tt> field is <tt>urn:ietf:params:rpp:code:02005</tt>.
-Implementations MAY use other URIs, for more specificity about custom error types.</dd>
-<dt><tt>detail</tt></dt>
-<dd>(required, string) A human-readable description of the error.</dd>
-<dt><tt>values</tt></dt>
-<dd>(optional, list of objects) References to which values in the original request were not acceptable to the server.</dd>
+<dd>(required, string) This field MUST always contain the fixed string value <tt>urn:ietf:params:rpp:error</tt> to indicate that this is an RPP Problem Detail response.</dd>
+<dt><tt>title</tt></dt>
+<dd>(required, string) A short human-readable description of the Problem Detail type.</dd>
+<dt><tt>errors</tt></dt>
+<dd>(optional, array of error objects) MUST contain objects detailing information about the specific errors that occurred, including optional references to which values in the original request were not acceptable to the server.</dd>
 </dl>
-<t>The <tt>values</tt> objects consist of the following fields:</t>
+<t>The <tt>error</tt> object consist of the following fields:</t>
 
 <dl spacing="compact">
-<dt><tt>path</tt></dt>
-<dd>(optional, string) The JSONPath <xref target="RFC9535"></xref> to the value referenced</dd>
+<dt><tt>type</tt></dt>
+<dd>(required, string) This field SHOULD be a URI that identifies the error type. This URI MAY be dereferenceable to obtain human-readable documentation about the error type.</dd>
+<dt><tt>result</tt></dt>
+<dd>(required, string) This field MUST contain the RPP result code associated with the error.</dd>
+<dt><tt>paths</tt></dt>
+<dd>(optional, list of strings) The JSONPath <xref target="RFC9535"></xref> to the value(s) in the request that caused the error. This field MAY be omitted if no specific value in the request can be identified as the cause of the error.</dd>
 <dt><tt>reason</tt></dt>
-<dd>(required, string) A human-readable description of why the value was not acceptable</dd>
+<dd>(required, string) A human-readable detailed description of the error.</dd>
 </dl>
-<t>Implementations MAY add extension fields to the <tt>errors</tt> document to convey additional information about the
-causes of the error. For example, to indicate the account balance on a billing failure, the following could be sent:</t>
+<t>RPP specifications and/or extensions MAY add extension fields to the error object, to convey additional information about the causes of the error. For example, to indicate the account balance on a billing failure, the following Problem Detail response could be used:</t>
 
 <sourcecode type="json"><![CDATA[{
-  "type": "urn:ietf:params:rpp:code:02104",
-  "detail": "Billing failure",
-  "values": [{
+  "type": "urn:ietf:params:rpp:error",
+  "title": "RPP Error",
+  "errors": [{
+    "type": "https://rpp.example/problems/billing/billing-failure",
+    "result": "02104",
     "reason": "Not enough balance on account to create domain",
     "balance": 10.0,
     "action_cost": 25.0
+  }]
+}
+]]>
+</sourcecode>
+<t>Problem Detail response containing multiple errors for a domain create request using an invalid domain name (_$.example), JSONPaths are specified in the error objects to indicate which value in the request caused the error:</t>
+
+<sourcecode type="json"><![CDATA[{
+  "type": "urn:ietf:params:rpp:error",
+  "title": "RPP Error",
+  "errors": [{
+    "type": "https://rpp.example/problems/domains/domain-syntax",
+    "result": "02005",
+    "paths": ["$.domain.name"],
+    "reason": "Invalid character(s) in domain name",
+  },
+  {
+    "type": "https://rpp.example/problems/domains/domain-allowed-length",
+    "result": "02004",
+    "paths": ["$.domain.name"],
+    "reason": "Domain name length must be between 3 and 63 characters",
   }]
 }
 ]]>
