@@ -931,13 +931,16 @@ TODO
 
 RPP relies on the security of the underlying HTTP [@!RFC9110] transport, hence the best common practices for securing HTTP also apply to RPP. It is RECOMMENDED to follow them closely.
 
-Data confidentiality and integrity MUST be enforced, all data transport between a client and server MUST be encrypted using TLS [@!RFC5246]. [@!RFC5734, Section 9] describes the level of security that is REQUIRED for all RPP endpoints.
+Data confidentiality and integrity MUST be enforced, all data transport between a client and server MUST be encrypted using TLS [@!RFC5246].
+It is RECOMMENDED to follow the recommendations in [@!RFC9325] for securing RPP endpoints.
 
 Due to the stateless nature of RPP, the client MUST include the authentication credentials in each HTTP request. This MAY be done by using JSON Web Tokens (JWT) [@!RFC7519] or Basic authentication [@!RFC7617].
 
 # Change History
 
 ## Version 03 to 04
+
+- Updated Transport Security related text in the "Security Considerations" section. (Issue #37)
 
 ## Version 02 to 03
 
