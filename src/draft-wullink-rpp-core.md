@@ -216,6 +216,128 @@ Problem Detail response containing multiple errors for a domain create request u
 }
 ```
 
+# Bootstrapping
+
+The client MUST be able to bootstrap itself by discovering the location of an RPP server. Not having a fixed location for the RPP server is a fundamental design principle of RPP, as it allows for a more flexible and scalable architecture. The client MUST use either the IANA registry for RPP servers or a DNS lookup using an SRV record as defined in [@!RFC2782]. The format and procedure for adding an RPP server to the IANA registry is defined in the IANA Considerations section below.
+
+For DNS-based bootstrapping, an RPP server MUST publish an SRV record in each DNS zone that is served by the RPP server. The owner name of the SRV record MUST be `_rpp._tcp.<zone>`.
+
+If multiple SRV records are returned, the client MUST select the RPP server according to the priority and weight rules in [@!RFC2782]. The client MUST ignore SRV records with a target of `.` (service not available).
+
+The SRV record provides the target host and port of the RPP service. The client MUST construct the URL for the well-known endpoint (defined in the Discoverability section below) as:
+
+- `https://<target>:<port>/.well-known/rpp` when `<port>` is not 443
+- `https://<target>/.well-known/rpp` when `<port>` is 443
+
+The client MUST use the constructed URL to discover the capabilities of the RPP server, as defined in the Discoverability section below.
+
+Example SRV record for an RPP server for the TLD "example" running HTTPS on port 443 at `rpp.example.`:
+
+```dns
+_rpp._tcp.example. 3600 IN SRV 0 0 443 rpp.example.
+```
+
+In this example, the well-known endpoint URL is `https://rpp.example/.well-known/rpp`.
+
+# Discoverability
+
+RPP server capabilities MUST be discoverable by clients. The server MUST provide a well-known endpoint at `/.well-known/rpp` at the root of the RPP server, this endpoint MUST return a JSON document containing the capabilities of the RPP server. The well-known endpoint MUST be accessible without authentication, and the client MUST be able to access this endpoint before authenticating with the server. The well-known endpoint MUST be accessible using the HTTP GET method and MUST return an HTTP status code 200 (OK) if the request was successful. The response message body MUST contain a JSON document describing the capabilities of the RPP server using the following fields:
+
+- `base_url`: (required, string) The base URL for the RPP API, this is the URL that MUST be used as the base for all endpoint URL templates.
+- `version`: (required, string) The version of the RPP API supported by the server, for example "1.0".
+- `tlds`: (required, array of strings) A list of TLDs supported by the server, for example "example", "org".
+- `extensions`: (optional, array of extension objects) A list of supported extensions, each extension object MUST contain the following fields:
+  - `name`: (required, string) A short name for the extension, for example "registry fee extension".
+  - `id`: (required, string) A unique URN identifier for the extension, for example "urn:ietf:params:rpp:extension:registry-fee".
+  - `version`: (required, string) The version of the extension supported by the server, for example "1.0".
+  - `url`: (required, string) for standard extensions, this MUST be the URL for the extension in the IANA registry, for private extensions, this MUST be the URL for the extension specification, the domain name used in the URL MUST resolve and the URL MUST be accessible to the client.
+- `profiles`: (optional, array of profile objects) A list of supported profiles, each profile object MUST contain the following fields:
+  - `name`: (required, string) A short name for the profile, for example "domain provisioning profile".
+  - `id`: (required, string) A unique URN identifier for the profile, for example "urn:ietf:params:rpp:profile:domain-provisioning-1.0".
+  - `version`: (required, string) The version of the profile supported by the server, for example "1.0".
+  - `url`: (required, string) for standard profiles, this MUST be the URL for the profile in the IANA registry, for private profiles, this MUST be the URL for the profile specification, the domain name used in the URL MUST resolve and the URL MUST be accessible to the client.
+- `objects`: (required, array)  A list of supported resource collections, for example "domains", "hosts", "entities".
+- `authentication`: (optional, array of strings) A list of supported authentication methods, for example "Bearer", "Basic".  
+- `endpoints`: (required, array of endpoint objects) A list of available endpoints, each endpoint object MUST contain the following fields:
+  - `name`: (required, string) A short name for the endpoint, for example "availability", "info", "poll", "create", "delete", "renewal" or "transfer".
+  - `url_template`: (required, string) The URI template for the endpoint, using the syntax defined in [@!RFC6570].
+- `maintenance`: (optional, array) An array containing information about upcoming planned maintenance windows of the server, with the following fields:
+  - `start_time`: (required, string) The start time of the maintenance window in ISO 8601 format.
+  - `end_time`: (required, string) The end time of the maintenance window in ISO 8601 format.
+  - `description`: (optional, string) A human-readable description of the maintenance window.
+
+The following template variables are defined for use in RPP endpoint URL templates:
+
+- `collection`: The resource collection type (e.g., "domains", "hosts", "entities")
+- `id`: The unique identifier for a resource instance within a collection
+- `process_name`: The name of a process associated with a resource (e.g., "transfers", "renewals")
+- `process_id`: The unique identifier for a specific process instance
+
+<!-- TODO: Include appendix with example discovery response document. -->
+
+Example discovery response document:
+
+```json
+{
+  "base_url": "https://rpp.example/rpp/v1",
+  "version": "1.0",
+  "tlds": ["example", "org"],
+  "extensions": [
+    {
+      "name": "RPP example extension",
+      "id": "urn:ietf:params:rpp:extension:example-extension",
+      "version": "1.0",
+      "url": "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0"
+    }
+  ],
+  "profiles": [
+    {
+      "name": "EPP compatibility profile",
+      "id": "urn:ietf:params:rpp:profile:epp-compatibility",
+      "version": "1.0",
+      "url": "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0"
+    }
+  ],
+  "objects": ["domains", "hosts", "entities"],
+  "endpoints": [
+    {
+      "name": "availability",
+      "url_template": "/{collection}/{id}/availability"
+    },
+    {
+      "name": "info",
+      "url_template": "/{collection}/{id}"
+    },
+    {
+      "name": "poll",
+      "url_template": "/messages"
+    },
+    {
+      "name": "create",
+      "url_template": "/{collection}"
+    },
+  ],
+  "authentication": ["Bearer"],
+  "maintenance": [
+    {
+      "start_time": "2026-06-01T00:00:00Z",
+      "end_time": "2026-06-01T06:00:00Z",
+      "description": "Planned maintenance for server upgrades"
+    }
+  ]
+
+}
+```
+
+## Workflow
+
+The steps for a typical workflow of provisioning an object using RPP without knowing the location and capabilities of the server are as follows, the first three steps are optional, the client can choose to skip any of these steps if it already has the required information from a previous interaction or configuration.
+
+1. Bootstrap (optional): The client discovers the location of the RPP server by looking up the IANA registry for RPP servers or by performing a DNS SRV lookup as defined in [@!RFC2782].
+2. Discover capabilities (optional):  The client retrieves the capabilities of the RPP server by sending a GET request to the well-known endpoint at `/.well-known/rpp`.
+3. Extract RPP URLs (optional): The client extracts the base URL and endpoint URL templates from the discovery response, and uses this information to construct the URLs for the desired operations.
+4. Perform provisioning operations: The client performs provisioning operations by sending HTTP requests to the appropriate endpoint URLs, using the HTTP method and request message body as required by the specific operation.
+
 # Endpoints
 
 Endpoints are described using URI Templates [@!RFC6570] relative to a discoverable base URL, as recommended by [@!RFC9205]. Some RPP endpoints do not require a request and/or response message.
@@ -916,12 +1038,67 @@ TODO
 
 ## URN Sub-namespace for RPP (urn:ietf:params:rpp)
 
-The IANA is requested to add the following value to the "IETF URN Sub-namespace for Registered Protocol Parameter 
-Identifiers" registry, following the template in [@!RFC3553]:
+The IANA is requested to add the following value to the "IETF URN Sub-namespace for Registered Protocol Parameter Identifiers" registry, following the template in [@!RFC3553]:
 
-Registered Parameter Identifier: rpp  
-Reference:  This Document  
-IANA Registry Reference: [@!RFC5730]
+Registry name: rpp  
+Specification: This Document
+Repository: ?
+Index value: ?
+
+<!-- see: https://datatracker.ietf.org/doc/html/rfc3553 -->
+<!-- see: https://www.iana.org/assignments/params/params.xml#urn-subnamespaces -->
+
+## RPP registry group
+
+The IANA is requested to create a new registry group for RPP, this will be used to group together all the RPP-related registries such as those for discovery URLs, extensions and profiles.
+
+Name of the registry: RESTful Provisioning Protocol (RPP)
+Reference: This Document
+IANA Registry Reference: TODO
+
+<!-- see: https://www.iana.org/help/protocol-registration -->
+
+## RPP Discovery registry
+
+The IANA is requested to create a new registry for RPP discovery URLs, this registry will be used to register the well-known URLs for RPP discovery endpoints, used by RPP clients to discover the capabilities of a RPP server.
+
+Name of the registry: RPP Discovery URLs
+Registry group: RESTful Provisioning Protocol (RPP)
+Registration procedure: Expert Review
+Fields to be registered:
+
+- `tld`: The top-level domain (TLD) for which the discovery URL is applicable, for example "example".
+- `url`: The URL for the discovery endpoint, for example "https://rpp.example/.well-known/rpp".
+- `description`: A human-readable description of the discovery URL and its intended use.
+
+## RPP Extension registry
+
+The IANA is requested to create a new registry for RPP extensions, this registry will be used to register standardized extensions to the RPP protocol. Extensions are defined as additional features or capabilities that can be added to the base RPP protocol, for example support for additional resource types, additional operations or additional authentication methods.
+
+Name of the registry: RPP Extensions
+Registry group: RESTful Provisioning Protocol (RPP)
+Registration procedure: Expert Review
+Fields to be registered:
+
+- `name`: The name of the extension, for example "RPP example extension".
+- `version`: The version of the extension, for example "1.0".
+- `url`: The URL for the extension specification, for example "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0".
+- `description`: A human-readable description of the extension and its intended use.
+
+## RPP Profile registry
+
+The IANA is requested to create a new registry for RPP profiles, this registry will be used to register standardized profiles for the RPP protocol. Profiles are defined as specific configurations of the RPP protocol that are designed to meet the needs of specific use cases or environments, for example an EPP compatibility profile that defines a set of RPP features and behaviors that are compatible with the Extensible Provisioning Protocol (EPP) [@!RFC5730].
+
+Name of the registry: RPP Profiles
+Registry group: RESTful Provisioning Protocol (RPP)
+Registration procedure: Expert Review
+Fields to be registered:
+
+- `name`: The name of the profile, for example "EPP compatibility profile".
+- `id`: A unique URN identifier for the profile, for example "urn:ietf:params:rpp:profile:epp-compatibility-1.0".
+- `version`: The version of the profile, for example "1.0".
+- `url`: The URL for the profile specification, for example "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0".
+- `description`: A human-readable description of the profile and its intended use. 
 
 # Internationalization Considerations
 
@@ -938,6 +1115,9 @@ Due to the stateless nature of RPP, the client MUST include the authentication c
 # Change History
 
 ## Version 03 to 04
+
+- Added Boostrap and Discovery sections to the document, describing how a client can discover the location and capabilities of an RPP server
+- Added IANA Considerations section with a request for new RPP discovery URLs, extensions and profile URLs.
 
 ## Version 02 to 03
 
