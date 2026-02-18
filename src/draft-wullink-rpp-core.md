@@ -241,7 +241,7 @@ In this example, the well-known endpoint URL is `https://rpp.example/.well-known
 
 # Discoverability
 
-RPP server capabilities MUST be discoverable by clients. The server MUST provide a well-known endpoint at `/.well-known/rpp` at the root of the RPP server, this endpoint MUST return a JSON document containing the capabilities of the RPP server. The well-known endpoint MUST be accessible without authentication, and the client MUST be able to access this endpoint before authenticating with the server. The well-known endpoint MUST be accessible using the HTTP GET method and MUST return an HTTP status code 200 (OK) if the request was successful. The response message body MUST contain a JSON document describing the capabilities of the RPP server using the following fields:
+RPP server capabilities MUST be discoverable by clients. The server MUST provide a well-known endpoint at `/.well-known/rpp` as descibed by [!@RFC8615], this endpoint MUST return a JSON document containing the capabilities of the RPP server. The well-known endpoint MUST be accessible without authentication, and the client MUST be able to access this endpoint before authenticating with the server. The well-known endpoint MUST be accessible using the HTTP GET method and MUST return an HTTP status code 200 (OK) if the request was successful. The response message body MUST contain a JSON document describing the capabilities of the RPP server using the following fields:
 
 - `base_url`: (required, string) The base URL for the RPP API, this is the URL that MUST be used as the base for all endpoint URL templates.
 - `version`: (required, string) The version of the RPP API supported by the server, for example "1.0".
@@ -1099,6 +1099,17 @@ Fields to be registered:
 - `version`: The version of the profile, for example "1.0".
 - `url`: The URL for the profile specification, for example "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0".
 - `description`: A human-readable description of the profile and its intended use. 
+
+## Well-Known URIs registry
+
+The IANA is requested to create a new RPP registration in the "Well-Known URIs" registry for the RPP discovery endpoint, this will allow RPP servers to be discoverable by clients using a standardized URL.
+
+URI suffix: rpp
+Change controller: IETF
+Specification: This Document
+Status: Permanent
+
+<!-- see: https://www.rfc-editor.org/rfc/rfc8615 -->
 
 # Internationalization Considerations
 
