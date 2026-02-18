@@ -216,6 +216,18 @@ Problem Detail response containing multiple errors for a domain create request u
 }
 ```
 
+# Versioning
+
+RPP is designed to be extensible and backward compatible. The version of the RPP API is indicated in the URL path, for example: `https://rpp.example/rpp/v1/`. The server MUST support at least one version of the RPP API, and MUST return a 404 Not Found status code for requests using an unsupported version. The versionign schemes uses the semantic versioning format defined in [@!SemVer], but only the major version number is used to indicate breaking changes. The minor and patch version numbers are not used in the URL path, but can be used in the media type or in the message body to indicate non-breaking changes.
+
+The following RPP elements include versioning support:
+
+- Endpoints: The server MUST support at least one version of the RPP API, and MUST return a 404 Not Found status code for requests using an unsupported version.
+- Request and response messages: A message MUST include the version of the RPP API it is compatible with.
+- Extensions: RPP extensions MUST include the version of the RPP API they are compatible with.
+- Profiles: RPP profiles MUST include the version of the RPP API they are compatible with.
+- Media types: RPP media types MUST include the version of the RPP API they are compatible with.
+
 # Endpoints
 
 Endpoints are described using URI Templates [@!RFC6570] relative to a discoverable base URL, as recommended by [@!RFC9205]. Some RPP endpoints do not require a request and/or response message.
@@ -992,6 +1004,15 @@ The authors would like to thank the following people for their helpful text cont
       <organization>YAML Language Development Team</organization>
     </author>
     <date year="2000"/>
+  </front>
+</reference>
+
+<reference anchor="SemVer" target="https://semver.org/">
+  <front>
+    <title>Semantic Versioning 2.0.0</title>
+    <author>
+      <organization>Semantic Versioning</organization>
+    </author>
   </front>
 </reference>
 
