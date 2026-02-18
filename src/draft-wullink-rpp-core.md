@@ -914,14 +914,30 @@ TODO
 
 # IANA Considerations
 
-## URN Sub-namespace for RPP (urn:ietf:params:rpp)
+## RPP Media Type (application/rpp+json)
 
-The IANA is requested to add the following value to the "IETF URN Sub-namespace for Registered Protocol Parameter 
-Identifiers" registry, following the template in [@!RFC3553]:
+The IANA is requested to add the following RPP media type to the "Media Types" registry, following the template in [@!RFC6838]:
 
-Registered Parameter Identifier: rpp  
-Reference:  This Document  
-IANA Registry Reference: [@!RFC5730]
+Type name: application
+Subtype name: rpp+json
+Required parameters: version
+Optional parameters: "N/A"
+Encoding considerations: "N/A"
+Security considerations: "N/A"
+Interoperability considerations: "N/A"
+Published specification: This document
+Applications that use this media type: RPP protocol and extensions
+Fragment identifier considerations: "N/A"
+Additional information: "N/A"
+Person & email address to contact for further information: Author's email address
+Intended usage: COMMON
+Restrictions on usage: "N/A"
+Author: Document authors
+Change controller: Document authors
+Provisional registration: No
+
+<!-- see: https://www.iana.org/assignments/media-types/media-types.xhtml#application -->
+<!-- Post request to media-types@iana.org list for review prior to submission  -->
 
 # Internationalization Considerations
 
@@ -938,6 +954,8 @@ Due to the stateless nature of RPP, the client MUST include the authentication c
 # Change History
 
 ## Version 03 to 04
+
+- Added IANA registration request for the new RPP media type. (Issue #40)
 
 ## Version 02 to 03
 
