@@ -93,6 +93,8 @@ RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu, roid=REG-XYZ-12345
 The value of the `RPP-Authorization` header is case sensitive. The server MUST reject requests where the case of the header value does not match the expected case.
 The `RPP-Authorization` header is specific to the user agent and MUST NOT be cached, as recommended by [@!RFC9110, Section 16.4.2], the server MUST use the correct HTTP cache directives to prevent caching of the `RPP-Authorization` header.
 
+- `RPP-Profile`: The client MUST use this header to indicate the profiles is used in the request.
+
 # Response Headers
 
 The server HTTP response contains a status code, headers, and MAY contain an RPP response message in the message body. HTTP headers are used to transmit additional data to the client and MAY be used to send RPP process related data to the client. HTTP headers used by RPP MUST use the "RPP-" prefix, the following response headers have been defined for RPP.
@@ -215,6 +217,66 @@ Problem Detail response containing multiple errors for a domain create request u
   }]
 }
 ```
+
+# Profiles
+
+A profile is a named set of protocol features and versions that are used to define the compatibility and capabilities of RPP implementations, allowing for better interoperability between different implementations. Using profiles helps to simplify the implementation and deployment of RPP by providing a clear and concise way for the client and server to communicate their capabilities and requirements.
+
+A profile is identified by a unique name and may be published as a standard profile in the IANA registry for RPP profiles, to promote interoperability and standardization across implementations. Standard profiles names MUST use the RPP URN namespace defined in this document, for example: `urn:ietf:params:rpp:profile:{profile_name}`. The profile name MUST be unique within the RPP URN namespace and SHOULD be descriptive of the features and versions included in the profile.
+
+A profile can also be defined as a private profile, which is not published in the IANA registry, but is used for specific implementations. A private profile can be defined by a server operator to specify the features and versions supported by their implementation. If the profile is not published in the IANA registry, then the server operator MUST ensure that the profile name is globally unique to avoid conflicts with other profiles, the use of reverse domain name notation is RECOMMENDED for private profiles to ensure uniqueness.
+
+## Definition
+
+A profile definition MUST contain the following fields, private profiles may contain additional fields as needed:
+
+- `name`: A unique name that identifies the profile.
+- `description`: A human-readable description of the profile and its intended use.
+- `version`: The version of the profile.
+- `rpp_version`: The version of the RPP protocol that is supported or required for the profile.
+- `extensions`: A list of extensions, including their versions, that are supported or required for the profile.
+- `profiles`: A list of other profiles, including their versions, that are supported or required for the profile.
+
+<!-- TODO: do we really want to include inheritence to profiles,. this can make things much more complicatyed? -->
+
+Example JSON representation for a standard profile named "example-profile" that supports RPP version 1.0 and includes two extensions, "rppExample" version 1.0 and "rppOther" version 1.1:
+
+```json
+{
+  "name": "urn:ietf:params:rpp:profile:example-profile",
+  "description": "An example profile for provisioning objects using the RPP protocol.",
+  "version": "1.0",
+  "rpp_version": "1.0",
+  "extensions": [
+    {
+      "rppExample": {
+        "version": "1.0"
+      },
+      "rppOther": {
+        "version": "1.1"
+      }
+    }
+  ]
+}
+```
+
+## Signalling
+
+The client MUST use the `RPP-Profile` header to indicate the name of one or more profiles that are used in the request. The value of this header MUST MUST use be of the type `list` described in [@!RFC8941], each list item MUST uniquely identify a profile, for example `urn:ietf:params:rpp:profile:example-profile` and include the version. If the server does not support the indicated profile or the request version, then the server MUST return an HTTP error response and include a Problem Detail response in the message body.
+
+Example:
+
+```http
+RPP-Profile: "urn:ietf:params:rpp:profile:example-profile";version="1.0", "urn:ietf:params:rpp:profile:other-profile";version="1.1"
+```
+
+
+
+<!--
+ TODO: use media type parameters to signal the profile in the Accept and Content-Type headers?
+ TODO: what about the server? does it also include this header in the response to indicate the profile used by the server?
+it should be the same as used by the client? not seeing why we need this. 
+-->
 
 # Endpoints
 
@@ -938,6 +1000,8 @@ Due to the stateless nature of RPP, the client MUST include the authentication c
 # Change History
 
 ## Version 03 to 04
+
+- Added a new "Profiles" section to describe how to define and use profiles. (Issue #43)
 
 ## Version 02 to 03
 
