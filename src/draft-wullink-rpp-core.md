@@ -936,6 +936,7 @@ Author: Document authors
 Change controller: Document authors
 Provisional registration: No
 
+<!-- TODO: Add additional parameters when needed, for example for content negotiation -->
 <!-- see: https://www.iana.org/assignments/media-types/media-types.xhtml#application -->
 <!-- Post request to media-types@iana.org list for review prior to submission  -->
 
