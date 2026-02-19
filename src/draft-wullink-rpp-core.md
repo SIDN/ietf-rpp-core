@@ -245,7 +245,7 @@ RPP server capabilities MUST be discoverable by clients. The server MUST provide
 
 - `base_url`: (required, string) The base URL for the RPP API, this is the URL that MUST be used as the base for all endpoint URL templates.
 - `version`: (required, string) The version of the RPP API supported by the server, for example "1.0".
-- `tlds`: (required, array of strings) A list of TLDs supported by the server, for example "example", "org".
+- `zones`: (required, array of strings) A list of zones supported by the server, for example "example", "org".
 - `extensions`: (optional, array of extension objects) A list of supported extensions, each extension object MUST contain the following fields:
   - `name`: (required, string) A short name for the extension, for example "registry fee extension".
   - `id`: (required, string) A unique URN identifier for the extension, for example "urn:ietf:params:rpp:extension:registry-fee".
@@ -253,7 +253,7 @@ RPP server capabilities MUST be discoverable by clients. The server MUST provide
   - `url`: (required, string) for standard extensions, this MUST be the URL for the extension in the IANA registry, for private extensions, this MUST be the URL for the extension specification, the domain name used in the URL MUST resolve and the URL MUST be accessible to the client.
 - `profiles`: (optional, array of profile objects) A list of supported profiles, each profile object MUST contain the following fields:
   - `name`: (required, string) A short name for the profile, for example "domain provisioning profile".
-  - `id`: (required, string) A unique URN identifier for the profile, for example "urn:ietf:params:rpp:profile:domain-provisioning-1.0".
+  - `id`: (required, string) A unique URN identifier for the profile, for example "urn:ietf:params:rpp:profile:domain-provisioning".
   - `version`: (required, string) The version of the profile supported by the server, for example "1.0".
   - `url`: (required, string) for standard profiles, this MUST be the URL for the profile in the IANA registry, for private profiles, this MUST be the URL for the profile specification, the domain name used in the URL MUST resolve and the URL MUST be accessible to the client.
 - `objects`: (required, array)  A list of supported resource collections, for example "domains", "hosts", "entities".
@@ -1067,7 +1067,7 @@ Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
 Fields to be registered:
 
-- `tld`: The top-level domain (TLD) for which the discovery URL is applicable, for example "example".
+- `zone`: The DNS zone for which the discovery URL is applicable, for example "example".
 - `url`: The URL for the discovery endpoint, for example "https://rpp.example/.well-known/rpp".
 - `description`: A human-readable description of the discovery URL and its intended use.
 
@@ -1081,9 +1081,14 @@ Registration procedure: Expert Review
 Fields to be registered:
 
 - `name`: The name of the extension, for example "RPP example extension".
+- `id`: A unique URN identifier for the extension, for example "urn:ietf:params:rpp:extension:example".
 - `version`: The version of the extension, for example "1.0".
+- `status`: The status of the extension, for example "active" or "deprecated".
+- `category`: The IETF category of the extension, for example "Standard", or "Informational".
 - `url`: The URL for the extension specification, for example "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0".
 - `description`: A human-readable description of the extension and its intended use.
+
+<!-- TODO: add structured data, such as fields added by the extension -->
 
 ## RPP Profile registry
 
@@ -1097,6 +1102,8 @@ Fields to be registered:
 - `name`: The name of the profile, for example "EPP compatibility profile".
 - `id`: A unique URN identifier for the profile, for example "urn:ietf:params:rpp:profile:epp-compatibility-1.0".
 - `version`: The version of the profile, for example "1.0".
+- `status`: The status of the profile, for example "active" or "deprecated".
+- `category`: The IETF category of the profile, for example "Standard", or "Informational".
 - `url`: The URL for the profile specification, for example "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0".
 - `description`: A human-readable description of the profile and its intended use. 
 
