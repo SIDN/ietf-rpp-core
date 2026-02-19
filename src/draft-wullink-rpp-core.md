@@ -929,12 +929,13 @@ TODO
 
 # Security Considerations
 
-RPP relies on the security of the underlying HTTP [@!RFC9110] transport, hence the best common practices for securing HTTP also apply to RPP. It is RECOMMENDED to follow them closely.
+RPP relies on the security of the underlying HTTP transport, hence the best common practices for securing HTTP [@!RFC9325] also apply to RPP. It is RECOMMENDED to follow them closely.
 
-Data confidentiality and integrity MUST be enforced, all data transport between a client and server MUST be encrypted using TLS [@!RFC5246].
-It is RECOMMENDED to follow the recommendations in [@!RFC9325] for securing RPP endpoints.
+Data confidentiality and integrity MUST be enforced. Every client and server interaction MUST be encrypted using TLS version 1.3 [@!RFC8446]. Future versions of TLS MAY be used as they become available and are deemed secure.
 
-Due to the stateless nature of RPP, the client MUST include the authentication credentials in each HTTP request. This MAY be done by using JSON Web Tokens (JWT) [@!RFC7519] or Basic authentication [@!RFC7617].
+Due to the stateless nature of RPP, the client MUST include the authentication credentials in each HTTP request. This MAY be done by using JSON Web Tokens (JWT) [@!RFC7519] or Basic authentication [@!RFC7617]. The server MUST validate the authentication credentials on each request and reject any request with invalid credentials with an appropriate HTTP status code (e.g., 401 Unauthorized or 403 Forbidden).
+
+When using JWT for authentication, the server MUST cryptographically sign the token using a secure algorithm and include an expiration time claim, to limit the token's validity period. The client MUST ensure that the token is securely stored. The server MUST validate the token's signature and claims to ensure that it is valid and has not been tampered with. It is RECOMMENDED to use short-lived tokens and to implement token revocation mechanisms to mitigate the risk of token compromise. If sensitive information is included in the JWT payload, it MUST be encrypted to prevent unauthorized access. Furthermore, it is RECOMMENED to follow the best practices for JWT usage as outlined in [@!RFC8725].
 
 # Change History
 
