@@ -67,6 +67,8 @@ RPP client - An HTTP user agent performing an RPP request
 
 RPP server - An HTTP server responsible for processing requests and returning results in any supported media type.
 
+JWT - JSON Web Token as defined in [@!RFC7519].
+
 # Conventions Used in This Document
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT","SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [@!RFC2119].
@@ -918,7 +920,7 @@ TODO
 
 Due to the stateless nature of RPP, the client MUST include the authentication credentials in each HTTP request. This MAY be done by using JSON Web Tokens (JWT) [@!RFC7519] or Basic authentication [@!RFC7617]. The server MUST validate the authentication credentials on each request and reject any request with invalid credentials with an appropriate HTTP status code.
 
-When using JWT for authentication, the server MUST cryptographically sign the token and include the "exp" claim descibed in [@!RFC7519], to limit the token's validity period. It is RECOMMENDED to use short-lived tokens and to implement token revocation mechanisms to mitigate the risk of token compromise. If sensitive information is included in the JWT payload, it MUST be encrypted to prevent unauthorized access. Furthermore, the best practices for JWT usage as outlined in [@!RFC8725] MUST be followed.
+When using JWTs for OAuth 2.0 [@!RFC6749] Access Tokens, the JWT profile described in [@!RFC9068] MUST be used. It is RECOMMENDED to use short-lived tokens and to implement token revocation mechanisms to mitigate the risk of token compromise. If sensitive information is included in the JWT payload, it MUST be encrypted to prevent unauthorized access when the token is persistent to a storage device. Furthermore, the best practices for JWT usage as outlined in [@!RFC8725] MUST be followed.
 
 # IANA Considerations
 
