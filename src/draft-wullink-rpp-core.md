@@ -924,14 +924,31 @@ When using JWTs for OAuth 2.0 [@!RFC6749] Access Tokens, the JWT profile describ
 
 # IANA Considerations
 
-## URN Sub-namespace for RPP (urn:ietf:params:rpp)
+## RPP Media Type (application/rpp+json)
 
-The IANA is requested to add the following value to the "IETF URN Sub-namespace for Registered Protocol Parameter 
-Identifiers" registry, following the template in [@!RFC3553]:
+The IANA is requested to add the following RPP media type to the "Media Types" registry, following the template in [@!RFC6838]:
 
-Registered Parameter Identifier: rpp  
-Reference:  This Document  
-IANA Registry Reference: [@!RFC5730]
+Type name: application
+Subtype name: rpp+json
+Required parameters: version
+Optional parameters: "N/A"
+Encoding considerations: "N/A"
+Security considerations: "N/A"
+Interoperability considerations: "N/A"
+Published specification: This document
+Applications that use this media type: RPP protocol and extensions
+Fragment identifier considerations: "N/A"
+Additional information: "N/A"
+Person & email address to contact for further information: Author's email address
+Intended usage: COMMON
+Restrictions on usage: "N/A"
+Author: Document authors
+Change controller: Document authors
+Provisional registration: No
+
+<!-- TODO: Add additional parameters when needed, for example for content negotiation -->
+<!-- see: https://www.iana.org/assignments/media-types/media-types.xhtml#application -->
+<!-- Post request to media-types@iana.org list for review prior to submission  -->
 
 # Internationalization Considerations
 
@@ -947,8 +964,12 @@ Data confidentiality and integrity MUST be enforced. Every client and server int
 
 ## Version 03 to 04
 
+<<<<<<< mwull/issue37
 - Added a new section "Authentication and Authorization". (Issue #37)
 - Updated the "Security Considerations" section to include transport security. (Issue #37)
+=======
+- Added IANA registration request for the new RPP media type. (Issue #40)
+>>>>>>> work-rpp-core-04
 
 ## Version 02 to 03
 
