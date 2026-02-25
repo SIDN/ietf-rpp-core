@@ -272,29 +272,18 @@ The RPP server MUST include the version for each profile in the RPP Discovery re
 
 # Media types
 
-RPP media types are used to indicate the format of the request and response messages, and MUST include the version of the RPP API they are compatible with. The server MUST use the version information in the media type to determine which version of the RPP API to use when processing the request, and to ensure that it returns a response that is compatible with the version of the RPP API used in the request. The client MUST use the version information in the media type to determine which version of the RPP API to use when processing the response, and to ensure that it can correctly interpret the response.
+RPP media types are used to indicate the format of the request and response messages, and MUST include a parameter indicating the name of the profile they are compatible with. The server MUST use the profile information in the media type to determine which features, extensions and versions to use when processing the request, and to ensure that it returns a response that is compatible with the client. The client MUST use the profile information in the media type to determine which features, extensions and versions to use when processing the response, and to ensure that it can correctly interpret the response.
 
-RPP media types MUST include the version of the RPP API they are compatible with. The server MUST use the version information in the media type to determine which version of the RPP API to use when processing the request, and to ensure that it returns a response that is compatible with the version of the RPP API used in the request. The client MUST use the version information in the media type to determine which version of the RPP API to use when processing the response, and to ensure that it can correctly interpret the response.
+The definition of profile parameters in media types is described in section ....
 
-The client MUST include the version of the RPP API in the `Accept` header when making a request to the server, and also the  `Content-Type` header when sending a request message body to the server.
+<!-- TODO: add reference to the media type style of profile signalling defined in Issue #43 -->
 
-```http
-Accept: application/rpp+json; version=1.0
-Content-Type: application/rpp+json; version=1.0
-```
-
-The server MUST include the version of the RPP API in the `Content-Type` header when returning a response message body to the client.
-
-```http
-Content-Type: application/rpp+json; version=1.0
-```
-
-
-<!-- TODO: use media type versioning and not include a required version field in the message? -->
 
 ## Result codes
 
-Standard RPP result codes are defined in the RPP core specification and standard extensions, and MUST be registered in the IANA registry for RPP result codes. Each result code MUST include the version of the RPP API it is compatible with. The server MUST return a result code that is compatible with the version of the RPP API used in the request 
+Standard RPP result codes are defined in the RPP core specification and standard extensions, and MUST be registered in the IANA registry for RPP result codes. Each result code MUST include the minimum RPP version it is compatible with. The server MUST return a result code that is compatible with the RPP version used in the request.
+
+<!-- TODO: do we want to version rpp result codes? -->
 
 # Endpoints
 
