@@ -218,7 +218,7 @@ Problem Detail response containing multiple errors for a domain create request u
 
 # Bootstrapping
 
-The client MUST be able to bootstrap itself by discovering the location of an RPP server. Not having a fixed location for the RPP server is a fundamental design principle of RPP, as it allows for a more flexible and scalable architecture. The client MUST use either the IANA registry for RPP servers or a DNS lookup using an SRV record as defined in [@!RFC2782]. The format and procedure for adding an RPP server to the IANA registry is defined in the IANA Considerations section below.
+The client MUST be able to bootstrap itself by discovering the location of an RPP server. The client MUST use either the IANA registry for RPP servers or a DNS lookup using an SRV record as defined in [@!RFC2782]. The format and procedure for adding an RPP server to the IANA registry is defined in the IANA Considerations section below.
 
 For DNS-based bootstrapping, an RPP server MUST publish an SRV record in each DNS zone that is served by the RPP server. The owner name of the SRV record MUST be `_rpp._tcp.<zone>`.
 
@@ -249,18 +249,14 @@ RPP server capabilities MUST be discoverable by clients. The server MUST provide
 - `extensions`: (optional, array of extension objects) A list of supported extensions, each extension object MUST contain the following fields:
   - `name`: (required, string) A short name for the extension, for example "registry fee extension".
   - `id`: (required, string) A unique URN identifier for the extension, for example "urn:ietf:params:rpp:extension:registry-fee".
-  - `version`: (required, string) The version of the extension supported by the server, for example "1.0".
+  - `versions`: (required, array of strings) The version(s) of the extension supported by the server, for example "1.0" and "1.1".
   - `url`: (required, string) for standard extensions, this MUST be the URL for the extension in the IANA registry, for private extensions, this MUST be the URL for the extension specification, the domain name used in the URL MUST resolve and the URL MUST be accessible to the client.
 - `profiles`: (optional, array of profile objects) A list of supported profiles, each profile object MUST contain the following fields:
   - `name`: (required, string) A short name for the profile, for example "domain provisioning profile".
   - `id`: (required, string) A unique URN identifier for the profile, for example "urn:ietf:params:rpp:profile:domain-provisioning".
-  - `version`: (required, string) The version of the profile supported by the server, for example "1.0".
+  - `versions`: (required, array of strings) The version(s) of the profile supported by the server, for example "1.0" and "1.1".
   - `url`: (required, string) for standard profiles, this MUST be the URL for the profile in the IANA registry, for private profiles, this MUST be the URL for the profile specification, the domain name used in the URL MUST resolve and the URL MUST be accessible to the client.
-- `objects`: (required, array)  A list of supported resource collections, for example "domains", "hosts", "entities".
 - `authentication`: (optional, array of strings) A list of supported authentication methods, for example "Bearer", "Basic".  
-- `endpoints`: (required, array of endpoint objects) A list of available endpoints, each endpoint object MUST contain the following fields:
-  - `name`: (required, string) A short name for the endpoint, for example "availability", "info", "poll", "create", "delete", "renewal" or "transfer".
-  - `url_template`: (required, string) The URI template for the endpoint, using the syntax defined in [@!RFC6570].
 - `maintenance`: (optional, array) An array containing information about upcoming planned maintenance windows of the server, with the following fields:
   - `start_time`: (required, string) The start time of the maintenance window in ISO 8601 format.
   - `end_time`: (required, string) The end time of the maintenance window in ISO 8601 format.
@@ -286,7 +282,7 @@ Example discovery response document:
     {
       "name": "RPP example extension",
       "id": "urn:ietf:params:rpp:extension:example-extension",
-      "version": "1.0",
+      "versions": ["1.0"],
       "url": "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0"
     }
   ],
@@ -294,28 +290,9 @@ Example discovery response document:
     {
       "name": "EPP compatibility profile",
       "id": "urn:ietf:params:rpp:profile:epp-compatibility",
-      "version": "1.0",
+      "versions": ["1.0"],
       "url": "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0"
     }
-  ],
-  "objects": ["domains", "hosts", "entities"],
-  "endpoints": [
-    {
-      "name": "availability",
-      "url_template": "/{collection}/{id}/availability"
-    },
-    {
-      "name": "info",
-      "url_template": "/{collection}/{id}"
-    },
-    {
-      "name": "poll",
-      "url_template": "/messages"
-    },
-    {
-      "name": "create",
-      "url_template": "/{collection}"
-    },
   ],
   "authentication": ["Bearer"],
   "maintenance": [
@@ -336,7 +313,8 @@ The steps for a typical workflow of provisioning an object using RPP without kno
 1. Bootstrap (optional): The client discovers the location of the RPP server by looking up the IANA registry for RPP servers or by performing a DNS SRV lookup as defined in [@!RFC2782].
 2. Discover capabilities (optional):  The client retrieves the capabilities of the RPP server by sending a GET request to the well-known endpoint at `/.well-known/rpp`.
 3. Extract RPP URLs (optional): The client extracts the base URL and endpoint URL templates from the discovery response, and uses this information to construct the URLs for the desired operations.
-4. Perform provisioning operations: The client performs provisioning operations by sending HTTP requests to the appropriate endpoint URLs, using the HTTP method and request message body as required by the specific operation.
+4. Authenticate (optional): If the client needs to request an access token from an authorization server (OAuth 2.0), before being allowed to perform provisioning operations, then the client performs the authentication process and MUST use the obtained access token to authenticate subsequent requests to the RPP server.
+5. Perform provisioning operations: The client performs provisioning operations by sending HTTP requests to the appropriate endpoint URLs, using the HTTP method and request message body as required by the specific operation, each request MUST include the authorization details in the Authorization header.
 
 # Endpoints
 
