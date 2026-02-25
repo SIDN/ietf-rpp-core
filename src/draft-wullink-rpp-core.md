@@ -95,6 +95,8 @@ The `RPP-Authorization` header is specific to the user agent and MUST NOT be cac
 
 - `RPP-Profile`: The client MUST use this header to indicate the profiles is used in the request.
 
+<!--TODO: need to make a choice, do we use the RPP-Profile or do we use media-type params for signalling profile used  -->
+
 # Response Headers
 
 The server HTTP response contains a status code, headers, and MAY contain an RPP response message in the message body. HTTP headers are used to transmit additional data to the client and MAY be used to send RPP process related data to the client. HTTP headers used by RPP MUST use the "RPP-" prefix, the following response headers have been defined for RPP.
@@ -220,11 +222,11 @@ Problem Detail response containing multiple errors for a domain create request u
 
 # Profiles
 
-A profile is a named set of protocol features and versions that are used to define the compatibility and capabilities of RPP implementations, allowing for better interoperability between different implementations. Using profiles helps to simplify the implementation and deployment of RPP by providing a clear and concise way for the client and server to communicate their capabilities and requirements.
+A profile is a named set of protocol features and versions that are used to define the compatibility and capabilities of RPP server implementations, allowing for better interoperability between different implementations. Using profiles helps to simplify the implementation and deployment of RPP by providing a clear and concise way for the client and server to communicate their capabilities and requirements.
 
 A profile is identified by a unique name and may be published as a standard profile in the IANA registry for RPP profiles, to promote interoperability and standardization across implementations. Standard profiles names MUST use the RPP URN namespace defined in this document, for example: `urn:ietf:params:rpp:profile:{profile_name}`. The profile name MUST be unique within the RPP URN namespace and SHOULD be descriptive of the features and versions included in the profile.
 
-A profile can also be defined as a private profile, which is not published in the IANA registry, but is used for specific implementations. A private profile can be defined by a server operator to specify the features and versions supported by their implementation. If the profile is not published in the IANA registry, then the server operator MUST ensure that the profile name is globally unique to avoid conflicts with other profiles, the use of reverse domain name notation is RECOMMENDED for private profiles to ensure uniqueness.
+A profile can also be defined as a private profile, which is not published in the IANA registry, but is used by specific server implementations only. A private profile can be defined by a server operator to specify the features and versions supported by their implementation. If the profile is not published in the IANA registry, then the server operator MUST ensure that the profile name is globally unique to avoid conflicts with other profiles, the use of reverse domain name notation is RECOMMENDED for private profiles to ensure uniqueness.
 
 ## Definition
 
@@ -233,13 +235,16 @@ A profile definition MUST contain the following fields, private profiles may con
 - `name`: A unique name that identifies the profile.
 - `description`: A human-readable description of the profile and its intended use.
 - `version`: The version of the profile.
-- `rpp_version`: The version of the RPP protocol that is supported or required for the profile.
+- `rpp_version`: The minimum version of the RPP protocol that is supported or required for the profile.
+- `objects`: A list of objects allowed for provisioning operations, for example "domains", "hosts", "entities", etc.
 - `extensions`: A list of extensions, including their versions, that are supported or required for the profile.
-- `profiles`: A list of other profiles, including their versions, that are supported or required for the profile.
+- `profile`: A base profile that is extended by this profile. The base profile MUST be published in the IANA registry for RPP profiles, or be made available to the client using other means.
 
-<!-- TODO: do we really want to include inheritence to profiles,. this can make things much more complicatyed? -->
+<!-- TODO: do we really want to include inheritance to profiles, this can make things much more complicated? -->
+<!-- TODO: if we keep inheritance then strongly prefer that we limit the depth to 1 and do not allow multiple inheritance -->
 
-Example JSON representation for a standard profile named "example-profile" that supports RPP version 1.0 and includes two extensions, "rppExample" version 1.0 and "rppOther" version 1.1:
+{#profile-example}
+Example JSON representation for a standard profile named "example-profile" that supports RPP version 1.0 and includes two extensions, "rppExample" version 1.0 and "rppOther" version 1.1. The profile also "extends" the "base-profile" profile, which is defined in the IANA registry for RPP profiles and supports RPP version 1.0.
 
 ```json
 {
@@ -247,6 +252,7 @@ Example JSON representation for a standard profile named "example-profile" that 
   "description": "An example profile for provisioning objects using the RPP protocol.",
   "version": "1.0",
   "rpp_version": "1.0",
+  "objects": ["domains", "hosts", "entities"],
   "extensions": [
     {
       "rppExample": {
@@ -256,20 +262,86 @@ Example JSON representation for a standard profile named "example-profile" that 
         "version": "1.1"
       }
     }
-  ]
+  ],
+  "profile": {
+    "name": "urn:ietf:params:rpp:profile:base-profile",
+    "version": "1.0"
+  }
 }
 ```
 
+## Inheritance
+
+A profile can include another profile, which is referred to as "inheriting" from that profile. When a profile inherits from another profile, it means that the features and versions defined in the inherited profile are also included in the inheriting profile. This allows for the creation of more complex profiles by building upon existing profiles. For example, a profile named "example-profile" could inherit from a base profile named "base-profile", which includes a set of common features and versions. The "example-profile" could then add additional features and versions on top of the ones defined in the "base-profile", or it can override some of the features and versions from the "base-profile". This allows for greater flexibility and modularity in defining profiles, as well as promoting reuse of common features and versions across different profiles. However, it is important to note that the use of inheritance in profiles can also make things more complicated, as it can create dependencies between profiles and make it harder to understand the features and versions included in a profile. Therefore, it is recommended to use inheritance with caution and to clearly document the relationships between profiles. The depth of inheritance MUST be limited to 1 to provent excessive complexity, and profile designers MUST NOT create circular dependencies between profiles, where a profile inherits from itself directly.
+
+This is an example of the parent base-profile used in the previous example, it contains a single extension "rppOther" version 1.0 and does not include any other profiles:
+
+```json
+{
+  "name": "urn:ietf:params:rpp:profile:base-profile",
+  "description": "A base profile for provisioning objects using the RPP protocol.",
+  "version": "1.0",
+  "rpp_version": "1.0",
+  "objects": ["domains", "hosts", "entities"],
+  "extensions": [
+    {
+      "rppOther": {
+        "version": "1.0"
+      }
+    }
+  ],
+  "profile":
+}
+```
+
+The example profile definition shown in (#profile-example) uses the "base-profile" as its base and inherits its features and also overrides the version of the "rppOther" extension defined in the base profile.
+
 ## Signalling
 
-The client MUST use the `RPP-Profile` header to indicate the name of one or more profiles that are used in the request. The value of this header MUST MUST use be of the type `list` described in [@!RFC8941], each list item MUST uniquely identify a profile, for example `urn:ietf:params:rpp:profile:example-profile` and include the version. If the server does not support the indicated profile or the request version, then the server MUST return an HTTP error response and include a Problem Detail response in the message body.
+This document descibes two distinct methods for signalling the profile used in a RPP request or response, the first method uses a dedicated HTTP header, the second method uses media type parameters. The two methods MUST not be used simultaneously in a single request or response. If both methods are used in a single request or response, then the server MUST return an HTTP error response and include a Problem Detail response in the message body.
+
+<!-- TODO: We need to make a choice here, do we want to use the RPP-Profile header or do we want to use media type parameters for signalling the profile used in the request? 
+ having both is probably not a good idea, having 2 methods for doing the same thing -->
+
+### Header signalling
+
+The client MUST use the `RPP-Profile` header to indicate the name of the profile that is to be used for the request. The value of this header MUST be of the type `parameter` described in [@!RFC8941], the first parameter MUST uniquely identify a profile, for example `urn:ietf:params:rpp:profile:example-profile`, followed by the version parameter. If the server does not support the indicated profile or version, then the server MUST return an HTTP error response and include a Problem Detail response in the message body.
+
+The ABNF for Profile header value is as follows:
+
+```abnf
+profile-header = "profile" "=" profile-name ";" OWS "version" "=" version
+profile-name   = token
+version        = 1*DIGIT "." 1*DIGIT
+```
 
 Example:
 
 ```http
-RPP-Profile: "urn:ietf:params:rpp:profile:example-profile";version="1.0", "urn:ietf:params:rpp:profile:other-profile";version="1.1"
+RPP-Profile: profile=urn:ietf:params:rpp:profile:example-profile;version=1.0
 ```
 
+### Media type parameter signalling
+
+When using Media type parameter signalling, the client and the server MUST use media type parameters in the Accept and Content-Type headers to indicate the name and version of the profile used in the request. The media type parameters MUST be defined as follows:
+
+- `profile`: The value of this parameter MUST uniquely identify the profile, for example `urn:ietf:params:rpp:profile:example-profile`.
+- `version`: The value of this parameter MUST indicate the version of the profile used in the request.
+
+The ABNF for media type parameter signalling is as follows:
+
+```abnf
+profile-parameter = "profile" "=" profile-name ";" OWS "version" "=" version
+profile-name      = token
+version           = 1*DIGIT "." 1*DIGIT
+```
+
+Example for the media type `application/rpp+json` with profile parameters indicating the use of the "example-profile" profile version 1.0.:
+
+```http
+Accept: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
+Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
+```
 
 
 <!--

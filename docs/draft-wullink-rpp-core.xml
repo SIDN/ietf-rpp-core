@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- name="GENERATOR" content="github.com/mmarkdown/mmark Mmark Markdown Processor - mmark.miek.nl" -->
-<rfc version="3" ipr="trust200902" docName="draft-wullink-rpp-core-03" submissionType="IETF" category="std" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" indexInclude="true" tocDepth="4">
+<rfc version="3" ipr="trust200902" docName="draft-wullink-rpp-core-04" submissionType="IETF" category="std" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" indexInclude="true" tocDepth="4">
 
 <front>
-<title abbrev="RESTful Provisioning Protocol">RESTful Provisioning Protocol (RPP)</title><seriesInfo value="draft-wullink-rpp-core-03" stream="IETF" status="standard" name="Internet-Draft"></seriesInfo>
+<title abbrev="RESTful Provisioning Protocol">RESTful Provisioning Protocol (RPP)</title><seriesInfo value="draft-wullink-rpp-core-04" stream="IETF" status="standard" name="Internet-Draft"></seriesInfo>
 <author initials="M." surname="Wullink" fullname="Maarten Wullink"><organization>SIDN Labs</organization><address><postal><street></street>
 </postal><email>maarten.wullink@sidn.nl</email>
 <uri>https://sidn.nl/</uri>
@@ -64,6 +64,10 @@
 </sourcecode>
 <t>The value of the <tt>RPP-Authorization</tt> header is case sensitive. The server MUST reject requests where the case of the header value does not match the expected case.
 The <tt>RPP-Authorization</tt> header is specific to the user agent and MUST NOT be cached, as recommended by <xref target="RFC9110" sectionFormat="bare" section="Section 16.4.2"></xref>, the server MUST use the correct HTTP cache directives to prevent caching of the <tt>RPP-Authorization</tt> header.</t>
+
+<ul spacing="compact">
+<li><tt>RPP-Profile</tt>: The client MUST use this header to indicate the profiles is used in the request.</li>
+</ul>
 </section>
 
 <section anchor="response-headers"><name>Response Headers</name>
@@ -249,6 +253,117 @@ The document MUST contain an <tt>errors</tt> element, as a list of objects detai
 }
 ]]>
 </sourcecode>
+</section>
+
+<section anchor="profiles"><name>Profiles</name>
+<t>A profile is a named set of protocol features and versions that are used to define the compatibility and capabilities of RPP server implementations, allowing for better interoperability between different implementations. Using profiles helps to simplify the implementation and deployment of RPP by providing a clear and concise way for the client and server to communicate their capabilities and requirements.</t>
+<t>A profile is identified by a unique name and may be published as a standard profile in the IANA registry for RPP profiles, to promote interoperability and standardization across implementations. Standard profiles names MUST use the RPP URN namespace defined in this document, for example: <tt>urn:ietf:params:rpp:profile:{profile_name}</tt>. The profile name MUST be unique within the RPP URN namespace and SHOULD be descriptive of the features and versions included in the profile.</t>
+<t>A profile can also be defined as a private profile, which is not published in the IANA registry, but is used by specific server implementations only. A private profile can be defined by a server operator to specify the features and versions supported by their implementation. If the profile is not published in the IANA registry, then the server operator MUST ensure that the profile name is globally unique to avoid conflicts with other profiles, the use of reverse domain name notation is RECOMMENDED for private profiles to ensure uniqueness.</t>
+
+<section anchor="definition"><name>Definition</name>
+<t>A profile definition MUST contain the following fields, private profiles may contain additional fields as needed:</t>
+
+<ul spacing="compact">
+<li><tt>name</tt>: A unique name that identifies the profile.</li>
+<li><tt>description</tt>: A human-readable description of the profile and its intended use.</li>
+<li><tt>version</tt>: The version of the profile.</li>
+<li><tt>rpp_version</tt>: The minimum version of the RPP protocol that is supported or required for the profile.</li>
+<li><tt>objects</tt>: A list of objects allowed for provisioning operations, for example &quot;domains&quot;, &quot;hosts&quot;, &quot;entities&quot;, etc.</li>
+<li><tt>extensions</tt>: A list of extensions, including their versions, that are supported or required for the profile.</li>
+<li><tt>profile</tt>: A base profile that is extended by this profile. The base profile MUST be published in the IANA registry for RPP profiles, or be made available to the client using other means.</li>
+</ul>
+<t anchor="profile-example">Example JSON representation for a standard profile named &quot;example-profile&quot; that supports RPP version 1.0 and includes two extensions, &quot;rppExample&quot; version 1.0 and &quot;rppOther&quot; version 1.1. The profile also &quot;extends&quot; the &quot;base-profile&quot; profile, which is defined in the IANA registry for RPP profiles and supports RPP version 1.0.</t>
+
+<sourcecode type="json"><![CDATA[{
+  "name": "urn:ietf:params:rpp:profile:example-profile",
+  "description": "An example profile for provisioning objects using the RPP protocol.",
+  "version": "1.0",
+  "rpp_version": "1.0",
+  "objects": ["domains", "hosts", "entities"],
+  "extensions": [
+    {
+      "rppExample": {
+        "version": "1.0"
+      },
+      "rppOther": {
+        "version": "1.1"
+      }
+    }
+  ],
+  "profile": {
+    "name": "urn:ietf:params:rpp:profile:base-profile",
+    "version": "1.0"
+  }
+}
+]]>
+</sourcecode>
+</section>
+
+<section anchor="inheritance"><name>Inheritance</name>
+<t>A profile can include another profile, which is referred to as &quot;inheriting&quot; from that profile. When a profile inherits from another profile, it means that the features and versions defined in the inherited profile are also included in the inheriting profile. This allows for the creation of more complex profiles by building upon existing profiles. For example, a profile named &quot;example-profile&quot; could inherit from a base profile named &quot;base-profile&quot;, which includes a set of common features and versions. The &quot;example-profile&quot; could then add additional features and versions on top of the ones defined in the &quot;base-profile&quot;, or it can override some of the features and versions from the &quot;base-profile&quot;. This allows for greater flexibility and modularity in defining profiles, as well as promoting reuse of common features and versions across different profiles. However, it is important to note that the use of inheritance in profiles can also make things more complicated, as it can create dependencies between profiles and make it harder to understand the features and versions included in a profile. Therefore, it is recommended to use inheritance with caution and to clearly document the relationships between profiles. The depth of inheritance MUST be limited to 1 to provent excessive complexity, and profile designers MUST NOT create circular dependencies between profiles, where a profile inherits from itself directly.</t>
+<t>This is an example of the parent base-profile used in the previous example, it contains a single extension &quot;rppOther&quot; version 1.0 and does not include any other profiles:</t>
+
+<sourcecode type="json"><![CDATA[{
+  "name": "urn:ietf:params:rpp:profile:base-profile",
+  "description": "A base profile for provisioning objects using the RPP protocol.",
+  "version": "1.0",
+  "rpp_version": "1.0",
+  "objects": ["domains", "hosts", "entities"],
+  "extensions": [
+    {
+      "rppOther": {
+        "version": "1.0"
+      }
+    }
+  ],
+  "profile":
+}
+]]>
+</sourcecode>
+<t>The example profile definition shown in <xref target="profile-example"></xref> uses the &quot;base-profile&quot; as its base and inherits its features and also overrides the version of the &quot;rppOther&quot; extension defined in the base profile.</t>
+</section>
+
+<section anchor="signalling"><name>Signalling</name>
+<t>This document descibes two distinct methods for signalling the profile used in a RPP request or response, the first method uses a dedicated HTTP header, the second method uses media type parameters. The two methods MUST not be used simultaneously in a single request or response. If both methods are used in a single request or response, then the server MUST return an HTTP error response and include a Problem Detail response in the message body.</t>
+
+<section anchor="header-signalling"><name>Header signalling</name>
+<t>The client MUST use the <tt>RPP-Profile</tt> header to indicate the name of the profile that is to be used for the request. The value of this header MUST be of the type <tt>parameter</tt> described in <xref target="RFC8941"></xref>, the first parameter MUST uniquely identify a profile, for example <tt>urn:ietf:params:rpp:profile:example-profile</tt>, followed by the version parameter. If the server does not support the indicated profile or version, then the server MUST return an HTTP error response and include a Problem Detail response in the message body.</t>
+<t>The ABNF for Profile header value is as follows:</t>
+
+<sourcecode type="abnf"><![CDATA[profile-header = "profile" "=" profile-name ";" OWS "version" "=" version
+profile-name   = token
+version        = 1*DIGIT "." 1*DIGIT
+]]>
+</sourcecode>
+<t>Example:</t>
+
+<sourcecode type="http"><![CDATA[RPP-Profile: profile=urn:ietf:params:rpp:profile:example-profile;version=1.0
+]]>
+</sourcecode>
+</section>
+
+<section anchor="media-type-parameter-signalling"><name>Media type parameter signalling</name>
+<t>When using Media type parameter signalling, the client and the server MUST use media type parameters in the Accept and Content-Type headers to indicate the name and version of the profile used in the request. The media type parameters MUST be defined as follows:</t>
+
+<ul spacing="compact">
+<li><tt>profile</tt>: The value of this parameter MUST uniquely identify the profile, for example <tt>urn:ietf:params:rpp:profile:example-profile</tt>.</li>
+<li><tt>version</tt>: The value of this parameter MUST indicate the version of the profile used in the request.</li>
+</ul>
+<t>The ABNF for media type parameter signalling is as follows:</t>
+
+<sourcecode type="abnf"><![CDATA[profile-parameter = "profile" "=" profile-name ";" OWS "version" "=" version
+profile-name      = token
+version           = 1*DIGIT "." 1*DIGIT
+]]>
+</sourcecode>
+<t>Example for the media type <tt>application/rpp+json</tt> with profile parameters indicating the use of the &quot;example-profile&quot; profile version 1.0.:</t>
+
+<sourcecode type="http"><![CDATA[Accept: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
+Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
+]]>
+</sourcecode>
+</section>
+</section>
 </section>
 
 <section anchor="endpoints"><name>Endpoints</name>
@@ -931,6 +1046,13 @@ IANA Registry Reference: <xref target="RFC5730"></xref></t>
 
 <section anchor="change-history"><name>Change History</name>
 
+<section anchor="version-03-to-04"><name>Version 03 to 04</name>
+
+<ul spacing="compact">
+<li>Added a new &quot;Profiles&quot; section to describe how to define and use profiles. (Issue #43)</li>
+</ul>
+</section>
+
 <section anchor="version-02-to-03"><name>Version 02 to 03</name>
 
 <ul spacing="compact">
@@ -1006,6 +1128,7 @@ IANA Registry Reference: <xref target="RFC5730"></xref></t>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6648.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7519.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7617.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8941.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9110.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9205.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9457.xml"/>
