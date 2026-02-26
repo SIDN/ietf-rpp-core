@@ -1139,42 +1139,104 @@ When using JWTs for OAuth 2.0 [@!RFC6749] Access Tokens, the JWT profile describ
 
 # IANA Considerations
 
+## URN Sub-namespace for RPP (urn:ietf:params:rpp)
+
+The IANA is requested to add the following value to the "IETF URN Sub-namespace for Registered Protocol Parameter Identifiers" registry, following the template in [@!RFC3553]:
+TODO: add filled in template, if we decide to use URN for profile identification, for example "urn:ietf:params:rpp:profile:example-profile"
+
+```text
+Registry name: rpp 
+Specification: This Document
+Repository: ?
+Index value: ?
+```
+
+<!-- see: https://datatracker.ietf.org/doc/html/rfc3553 -->
+<!-- see: https://www.iana.org/assignments/params/params.xml#urn-subnamespaces -->
+
+## RPP registry group
+
+The IANA is requested to create a new registry group for RPP, this will be used to group together all the RPP-related registries such as those for discovery URLs, extensions and profiles.
+
+```text
+Name of the registry: RESTful Provisioning Protocol (RPP)
+Reference: This Document
+IANA Registry Reference: TODO
+```
+
+<!-- see: https://www.iana.org/help/protocol-registration -->
+
+## RPP Discovery registry
+
+The IANA is requested to create a new registry for RPP discovery URLs, this registry will be used to register the well-known URLs for RPP discovery endpoints, used by RPP clients to discover the capabilities of a RPP server.
+
+```text
+Name of the registry: RPP Discovery URLs
+Registry group: RESTful Provisioning Protocol (RPP)
+Registration procedure: Expert Review
+```
+
+Fields to be registered:
+
+- `tld`: The top-level domain (TLD) for which the discovery URL is applicable, for example "example".
+- `url`: The URL for the discovery endpoint, for example "https://rpp.example/.well-known/rpp".
+- `description`: A human-readable description of the discovery URL and its intended use.
+
+## RPP Extension registry
+
+The IANA is requested to create a new registry for RPP extensions, this registry will be used to register standardized extensions to the RPP protocol. Extensions are defined as additional features or capabilities that can be added to the base RPP protocol, for example support for additional resource types, additional operations or additional authentication methods.
+
+```text
+Name of the registry: RPP Extensions
+Registry group: RESTful Provisioning Protocol (RPP)
+Registration procedure: Expert Review
+```
+
+Fields to be registered:
+
+- `name`: The name of the extension, for example "RPP example extension".
+- `version`: The version of the extension, for example "1.0".
+- `url`: The URL for the extension specification, for example "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0".
+- `description`: A human-readable description of the extension and its intended use.
+
+## RPP Profile registry
+
+The IANA is requested to create a new registry for RPP profiles, this registry will be used to register standardized profiles for the RPP protocol. Profiles are defined as specific configurations of the RPP protocol that are designed to meet the needs of specific use cases or environments, for example an EPP compatibility profile that defines a set of RPP features and behaviors that are compatible with the Extensible Provisioning Protocol (EPP) [@!RFC5730].
+
+```text
+Name of the registry: RPP Profiles
+Registry group: RESTful Provisioning Protocol (RPP)
+Registration procedure: Expert Review
+```
+
+Fields to be registered:
+
+- `name`: The name of the profile, for example "EPP compatibility profile".
+- `id`: A unique URN identifier for the profile, for example "urn:ietf:params:rpp:profile:epp-compatibility-1.0".
+- `version`: The version of the profile, for example "1.0".
+- `url`: The URL for the profile specification, for example "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0".
+- `description`: A human-readable description of the profile and its intended use. 
+
 ## RPP Result Codes Registry
 
 The IANA is requested to create a new registry "RPP Result codes", this registry will be used to register RPP result codes defined in this document and in future RPP specifications and extensions.
 
+```text
 Name of the registry: RPP Result codes
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
+```
+
 Fields to be registered:
 
 - `code`: The RPP result code, for example "12000".
 - `description`: A human-readable description of the result code and its intended use.
-
-## URN Sub-namespace for RPP (urn:ietf:params:rpp)
-
-The IANA is requested to add the following value to the "IETF URN Sub-namespace for Registered Protocol Parameter Identifiers" registry, following the template in [@!RFC3553]:
-
-TODO: add filled in template, if we decide to use URN for profile identification, for example "urn:ietf:params:rpp:profile:example-profile"
-
-The IANA is requested to create a new registry "RPP Result codes", this registry will be used to register RPP result codes defined in this document and in future RPP specifications and extensions.
-
-Name of the registry: RPP Result codes
-Registry group: RESTful Provisioning Protocol (RPP)
-Registration procedure: Expert Review
-Fields to be registered:
-
-- `code`: The RPP result code, for example "12000".
-- `description`: A human-readable description of the result code and its intended use.
-
-## URN Sub-namespace for RPP (urn:ietf:params:rpp)
-
-The IANA is requested to add the following value to the "IETF URN Sub-namespace for Registered Protocol Parameter Identifiers" registry, following the template in [@!RFC3553]:
 
 ## RPP Media Type (application/rpp+json)
 
 The IANA is requested to add the following RPP media type to the "Media Types" registry, following the template in [@!RFC6838]:
 
+```text
 Type name: application
 Subtype name: rpp+json
 Required parameters: version
@@ -1192,6 +1254,7 @@ Restrictions on usage: "N/A"
 Author: Document authors
 Change controller: Document authors
 Provisional registration: No
+```
 
 <!-- TODO: Add additional parameters when needed, for example for content negotiation -->
 <!-- see: https://www.iana.org/assignments/media-types/media-types.xhtml#application -->
