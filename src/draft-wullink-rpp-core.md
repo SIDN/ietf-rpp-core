@@ -986,10 +986,10 @@ RPP result codes are used to indicate the result of an RPP request. They are ret
 
 The following RPP result codes are defined and used in this document:
 
-| RPP Result Code | HTTP Status Code | Description | Version |
-|-----------------|------------------|-------------|---------|
-| 12000           | 200 OK           | Command completed successfully | 1.0 |
-| 12001           | 201 Created      | Command completed successfully and a new resource was created | 1.0 |
+| RPP Result Code | HTTP Status Code | Description | 
+|-----------------|------------------|-------------|
+| 12000           | 200 OK           | Command completed successfully |
+| 12001           | 201 Created      | Command completed successfully and a new resource was created |
 
 <!-- TODO: add more result codes here -->
 
@@ -1006,7 +1006,6 @@ Fields to be registered:
 
 - `code`: The RPP result code, for example "12000".
 - `description`: A human-readable description of the result code and its intended use.
-- `version`: The version of the RPP API that the result code is applicable to, for example "1.0".
 
 ## URN Sub-namespace for RPP (urn:ietf:params:rpp)
 

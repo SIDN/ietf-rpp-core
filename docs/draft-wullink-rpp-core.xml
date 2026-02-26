@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- name="GENERATOR" content="github.com/mmarkdown/mmark Mmark Markdown Processor - mmark.miek.nl" -->
-<rfc version="3" ipr="trust200902" docName="draft-wullink-rpp-core-03" submissionType="IETF" category="std" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" indexInclude="true" tocDepth="4">
+<rfc version="3" ipr="trust200902" docName="draft-wullink-rpp-core-04" submissionType="IETF" category="std" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" indexInclude="true" tocDepth="4">
 
 <front>
-<title abbrev="RESTful Provisioning Protocol">RESTful Provisioning Protocol (RPP)</title><seriesInfo value="draft-wullink-rpp-core-03" stream="IETF" status="standard" name="Internet-Draft"></seriesInfo>
+<title abbrev="RESTful Provisioning Protocol">RESTful Provisioning Protocol (RPP)</title><seriesInfo value="draft-wullink-rpp-core-04" stream="IETF" status="standard" name="Internet-Draft"></seriesInfo>
 <author initials="M." surname="Wullink" fullname="Maarten Wullink"><organization>SIDN Labs</organization><address><postal><street></street>
 </postal><email>maarten.wullink@sidn.nl</email>
 <uri>https://sidn.nl/</uri>
@@ -41,7 +41,7 @@
 
 <section anchor="conventions-used-in-this-document"><name>Conventions Used in This Document</name>
 <t>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,&quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be interpreted as described in <xref target="RFC2119"></xref>.</t>
-<t>In examples, lines starting with &quot;C:&quot; represent data sent by a RPP client and lines starting with &quot;S:&quot; represent data returned by a RPP server. Indentation and white space in examples are provided only to illustrate element relationships and are not REQUIRED features of the protocol.</t>
+<t>In examples, indentation and white space in examples are provided only to illustrate element relationships and are not REQUIRED features of the protocol.</t>
 <t>All example requests assume a RPP server using HTTP version 2 is listening on the standard HTTPS port on host rpp.example. An authorization token has been provided by an out of band process and MUST be used by the client to authenticate each request.</t>
 </section>
 
@@ -251,7 +251,65 @@ The document MUST contain an <tt>errors</tt> element, as a list of objects detai
 </sourcecode>
 </section>
 
+<section anchor="versioning"><name>Versioning</name>
+<t>RPP is designed to be extensible and backward compatible. The version of the RPP API is indicated in the URL path, for example: <tt>https://rpp.example/rpp/v1/</tt>. The server MUST support at least one version of the RPP API, and MUST return a 404 Not Found status code for requests using an unsupported version. The versioning scheme uses the Semantic Versioning format defined in <xref target="SemVer"></xref>, but only the major version number is used to indicate breaking changes. The minor and patch version numbers are not used in an URL path, but can be used in the media type or in the message body to indicate non-breaking changes.</t>
+<t>The following RPP elements include versioning support:</t>
+
+<ul spacing="compact">
+<li>Endpoints: The server MUST support at least one version of the RPP API, and MUST return a 404 Not Found status code for requests using an unsupported version.</li>
+<li>Messages: A request and response message MUST include the version of the RPP API it is compatible with.</li>
+<li>Extensions: RPP extensions MUST include the version of the RPP API they are compatible with.</li>
+<li>Profiles: RPP profiles MUST include the version of the RPP API they are compatible with.</li>
+<li>Media types: RPP media types MUST include the version of the RPP API they are compatible with.</li>
+<li>Result codes: RPP result codes may be added by extensions or updates to the core RPP specification.</li>
+</ul>
+
 <section anchor="endpoints"><name>Endpoints</name>
+<t>The <tt>base_url</tt> element of the RPP Discovery response MAY include the version of the RPP API supported by the server. The client MUST use this <tt>base_url</tt> for all subsequent requests to the server. For example, if the version is 1.2.3, the <tt>base_url</tt> is <tt>https://rpp.example/rpp/v1/</tt>, then the client MUST use this URL for all subsequent requests to the server, and MUST not use a different version in the URL path.</t>
+</section>
+
+<section anchor="messages"><name>Messages</name>
+<t>The <tt>version</tt> element of the RPP request and response messages MUST include the version of the RPP API that the message is compatible with. The server MUST reject requests with a version that is not supported by the server, and MUST return a RPP Client error code.</t>
+</section>
+
+<section anchor="extensions"><name>Extensions</name>
+<t>The RPP server MUST include the version for each extension in the RPP Discovery response. The client MUST use this version information to determine which extensions are supported by the server, and to ensure that it uses the correct version of the extension when making requests to the server.
+A request using an extension MUST include the version of the extension. The server MUST reject requests using extensions with a version that is not supported by the server, and MUST return a RPP Client error code. The following is an example of how the version information for an extension can be included in the RPP Discovery response:</t>
+
+<sourcecode type="json"><![CDATA["extensions": [
+    {
+      "name": "RPP example extension",
+      "id": "urn:ietf:params:rpp:extension:example-extension",
+      "version": "1.0",
+      "url": "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0"
+    }
+  ],
+]]>
+</sourcecode>
+</section>
+
+<section anchor="profiles"><name>Profiles</name>
+<t>The RPP server MUST include the version for each profile in the RPP Discovery response. The client MUST use this version information to determine which profiles are supported by the server, and to ensure that it uses the correct version of the profile when making requests to the server. A request using a profile MUST include the version of the profile. The server MUST reject requests using profiles with a version that is not supported by the server, and MUST return a RPP Client error code. The following is an example of how the version information for a profile can be included in the RPP Discovery response:</t>
+
+<sourcecode type="json"><![CDATA["profiles": [
+    {
+      "name": "EPP compatibility profile",
+      "id": "urn:ietf:params:rpp:profile:epp-compatibility",
+      "version": "1.0",
+      "url": "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0"
+    }
+  ]
+]]>
+</sourcecode>
+</section>
+</section>
+
+<section anchor="media-types"><name>Media types</name>
+<t>RPP media types are used to indicate the format of the request and response messages, and MUST include a parameter indicating the name of the profile they are compatible with. The server MUST use the profile information in the media type to determine which features, extensions and versions to use when processing the request, and to ensure that it returns a response that is compatible with the client. The client MUST use the profile information in the media type to determine which features, extensions and versions to use when processing the response, and to ensure that it can correctly interpret the response.</t>
+<t>The definition of profile parameters in media types is described in section ....</t>
+</section>
+
+<section anchor="endpoints-1"><name>Endpoints</name>
 <t>Endpoints are described using URI Templates <xref target="RFC6570"></xref> relative to a discoverable base URL, as recommended by <xref target="RFC9205"></xref>. Some RPP endpoints do not require a request and/or response message.</t>
 <t>The RPP endpoints are defined using the following URI Template syntax:</t>
 
@@ -908,11 +966,58 @@ TODO
 <t>TODO</t>
 </section>
 
+<section anchor="rpp-result-codes"><name>RPP Result Codes</name>
+<t>RPP result codes are used to indicate the result of an RPP request. They are returned in the RPP-Code header of the HTTP response. The format of the RPP result code is a 5-digit string, where the first digit MUST always be &quot;1&quot;, the second digit indicates the class of the result, and the remaining four digits indicate the specific result within that class, his allows implementers to define more specific result codes within each class. The classes of RPP result codes are designed to match the classes of HTTP status codes, to facilitate mapping between RPP result codes and HTTP status codes. The classes of RPP result codes are defined as follows:</t>
+
+<ul spacing="compact">
+<li>11xxx: Informational</li>
+<li>12xxx: Success</li>
+<li>13xxx: Reserved for future use</li>
+<li>14xxx: Client error</li>
+<li>15xxx: Server error</li>
+</ul>
+<t>The following RPP result codes are defined and used in this document:</t>
+<table>
+<thead>
+<tr>
+<th>RPP Result Code</th>
+<th>HTTP Status Code</th>
+<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>12000</td>
+<td>200 OK</td>
+<td>Command completed successfully</td>
+</tr>
+
+<tr>
+<td>12001</td>
+<td>201 Created</td>
+<td>Command completed successfully and a new resource was created</td>
+</tr>
+</tbody>
+</table></section>
+
 <section anchor="iana-considerations"><name>IANA Considerations</name>
 
+<section anchor="rpp-result-codes-registry"><name>RPP Result Codes Registry</name>
+<t>The IANA is requested to create a new registry &quot;RPP Result codes&quot;, this registry will be used to register RPP result codes defined in this document and in future RPP specifications and extensions.</t>
+<t>Name of the registry: RPP Result codes
+Registry group: RESTful Provisioning Protocol (RPP)
+Registration procedure: Expert Review
+Fields to be registered:</t>
+
+<ul spacing="compact">
+<li><tt>code</tt>: The RPP result code, for example &quot;12000&quot;.</li>
+<li><tt>description</tt>: A human-readable description of the result code and its intended use.</li>
+</ul>
+</section>
+
 <section anchor="urn-sub-namespace-for-rpp-urn-ietf-params-rpp"><name>URN Sub-namespace for RPP (urn:ietf:params:rpp)</name>
-<t>The IANA is requested to add the following value to the &quot;IETF URN Sub-namespace for Registered Protocol Parameter
-Identifiers&quot; registry, following the template in <xref target="RFC3553"></xref>:</t>
+<t>The IANA is requested to add the following value to the &quot;IETF URN Sub-namespace for Registered Protocol Parameter Identifiers&quot; registry, following the template in <xref target="RFC3553"></xref>:</t>
 <t>Registered Parameter Identifier: rpp<br />
 Reference:  This Document<br />
 IANA Registry Reference: <xref target="RFC5730"></xref></t>
@@ -930,6 +1035,15 @@ IANA Registry Reference: <xref target="RFC5730"></xref></t>
 </section>
 
 <section anchor="change-history"><name>Change History</name>
+
+<section anchor="version-03-to-04"><name>Version 03 to 04</name>
+
+<ul spacing="compact">
+<li>Added a new section on versioning, describing how versioning is applied to different RPP elements. (Issue #39)</li>
+<li>Added IANA request for RPP Result codes registry, and added a table with example RPP result codes. (Issue #39)</li>
+<li>Added IANA request for URN sub-namespace for RPP. (Issue #39)</li>
+</ul>
+</section>
 
 <section anchor="version-02-to-03"><name>Version 02 to 03</name>
 
@@ -1010,6 +1124,14 @@ IANA Registry Reference: <xref target="RFC5730"></xref></t>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9205.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9457.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9535.xml"/>
+<reference anchor="SemVer" target="https://semver.org/">
+  <front>
+    <title>Semantic Versioning 2.0.0</title>
+    <author>
+      <organization>Semantic Versioning</organization>
+    </author>
+  </front>
+</reference>
 </references>
 <references><name>Informative References</name>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8748.xml"/>
