@@ -73,7 +73,7 @@ JWT - JSON Web Token as defined in [@!RFC7519].
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT","SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [@!RFC2119].
 
-In examples, lines starting with "C:" represent data sent by a RPP client and lines starting with "S:" represent data returned by a RPP server. Indentation and white space in examples are provided only to illustrate element relationships and are not REQUIRED features of the protocol.
+In examples, indentation and white space in examples are provided only to illustrate element relationships and are not REQUIRED features of the protocol.
 
 All example requests assume a RPP server using HTTP version 2 is listening on the standard HTTPS port on host rpp.example. An authorization token has been provided by an out of band process and MUST be used by the client to authenticate each request.
 
@@ -221,6 +221,68 @@ Problem Detail response containing multiple errors for a domain create request u
   }]
 }
 ```
+
+# Versioning
+
+RPP is designed to be extensible and backward compatible. The version of the RPP API is indicated in the URL path, for example: `https://rpp.example/rpp/v1/`. The server MUST support at least one version of the RPP API, and MUST return a 404 Not Found status code for requests using an unsupported version. The versioning scheme uses the Semantic Versioning format defined in [@!SemVer], but only the major version number is used to indicate breaking changes. The minor and patch version numbers are not used in an URL path, but can be used in the media type or in the message body to indicate non-breaking changes.
+
+The following RPP elements include versioning support:
+
+- Endpoints: The server MUST support at least one version of the RPP API, and MUST return a 404 Not Found status code for requests using an unsupported version.
+- Messages: A request and response message MUST include the version of the RPP API it is compatible with.
+- Extensions: RPP extensions MUST include the version of the RPP API they are compatible with.
+- Profiles: RPP profiles MUST include the version of the RPP API they are compatible with.
+- Media types: RPP media types MUST include the version of the RPP API they are compatible with.
+- Result codes: RPP result codes may be added by extensions or updates to the core RPP specification.
+
+## Endpoints
+
+The `base_url` element of the RPP Discovery response MAY include the version of the RPP API supported by the server. The client MUST use this `base_url` for all subsequent requests to the server. For example, if the version is 1.2.3, the `base_url` is `https://rpp.example/rpp/v1/`, then the client MUST use this URL for all subsequent requests to the server, and MUST not use a different version in the URL path.
+
+## Messages
+
+The `version` element of the RPP request and response messages MUST include the version of the RPP API that the message is compatible with. The server MUST reject requests with a version that is not supported by the server, and MUST return a RPP Client error code.
+
+<!-- TODO: see media type below, this version element may be redundant -->
+
+## Extensions
+
+The RPP server MUST include the version for each extension in the RPP Discovery response. The client MUST use this version information to determine which extensions are supported by the server, and to ensure that it uses the correct version of the extension when making requests to the server.
+A request using an extension MUST include the version of the extension. The server MUST reject requests using extensions with a version that is not supported by the server, and MUST return a RPP Client error code. The following is an example of how the version information for an extension can be included in the RPP Discovery response:
+
+```json
+"extensions": [
+    {
+      "name": "RPP example extension",
+      "id": "urn:ietf:params:rpp:extension:example-extension",
+      "version": "1.0",
+      "url": "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0"
+    }
+  ],
+```
+
+## Profiles
+
+The RPP server MUST include the version for each profile in the RPP Discovery response. The client MUST use this version information to determine which profiles are supported by the server, and to ensure that it uses the correct version of the profile when making requests to the server. A request using a profile MUST include the version of the profile. The server MUST reject requests using profiles with a version that is not supported by the server, and MUST return a RPP Client error code. The following is an example of how the version information for a profile can be included in the RPP Discovery response:
+
+```json
+"profiles": [
+    {
+      "name": "EPP compatibility profile",
+      "id": "urn:ietf:params:rpp:profile:epp-compatibility",
+      "version": "1.0",
+      "url": "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0"
+    }
+  ]
+```
+
+# Media types
+
+RPP media types are used to indicate the format of the request and response messages, and MUST include a parameter indicating the name of the profile they are compatible with. The server MUST use the profile information in the media type to determine which features, extensions and versions to use when processing the request, and to ensure that it returns a response that is compatible with the client. The client MUST use the profile information in the media type to determine which features, extensions and versions to use when processing the response, and to ensure that it can correctly interpret the response.
+
+The definition of profile parameters in media types is described in section ....
+
+<!-- TODO: add reference to the media type style of profile signalling defined in Issue #43 -->
 
 # Profiles
 
@@ -1048,6 +1110,25 @@ TODO
 
 TODO
 
+# RPP Result Codes
+
+RPP result codes are used to indicate the result of an RPP request. They are returned in the RPP-Code header of the HTTP response. The format of the RPP result code is a 5-digit string, where the first digit MUST always be "1", the second digit indicates the class of the result, and the remaining four digits indicate the specific result within that class, his allows implementers to define more specific result codes within each class. The classes of RPP result codes are designed to match the classes of HTTP status codes, to facilitate mapping between RPP result codes and HTTP status codes. The classes of RPP result codes are defined as follows:
+
+- 11xxx: Informational
+- 12xxx: Success
+- 13xxx: Reserved for future use
+- 14xxx: Client error
+- 15xxx: Server error
+
+The following RPP result codes are defined and used in this document:
+
+| RPP Result Code | HTTP Status Code | Description | 
+|-----------------|------------------|-------------|
+| 12000           | 200 OK           | Command completed successfully |
+| 12001           | 201 Created      | Command completed successfully and a new resource was created |
+
+<!-- TODO: add more result codes here -->
+
 # Authentication and Authorization
 
 <!--  TODO: this is for now placeholder section and maybe needs to be renamed or split into multiple sections to better fit the content, but for now it is added here to describe authentication and authorization mechanisms -->
@@ -1057,6 +1138,22 @@ Due to the stateless nature of RPP, the client MUST include the authentication c
 When using JWTs for OAuth 2.0 [@!RFC6749] Access Tokens, the JWT profile described in [@!RFC9068] MUST be used. It is RECOMMENDED to use short-lived tokens and to implement token revocation mechanisms to mitigate the risk of token compromise. If sensitive information is included in the JWT payload, it MUST be encrypted to prevent unauthorized access when the token is persistent to a storage device. Furthermore, the best practices for JWT usage as outlined in [@!RFC8725] MUST be followed.
 
 # IANA Considerations
+
+## RPP Result Codes Registry
+
+The IANA is requested to create a new registry "RPP Result codes", this registry will be used to register RPP result codes defined in this document and in future RPP specifications and extensions.
+
+Name of the registry: RPP Result codes
+Registry group: RESTful Provisioning Protocol (RPP)
+Registration procedure: Expert Review
+Fields to be registered:
+
+- `code`: The RPP result code, for example "12000".
+- `description`: A human-readable description of the result code and its intended use.
+
+## URN Sub-namespace for RPP (urn:ietf:params:rpp)
+
+The IANA is requested to add the following value to the "IETF URN Sub-namespace for Registered Protocol Parameter Identifiers" registry, following the template in [@!RFC3553]:
 
 ## RPP Media Type (application/rpp+json)
 
@@ -1098,6 +1195,9 @@ Data confidentiality and integrity MUST be enforced. Every client and server int
 
 ## Version 03 to 04
 
+- Added a new section on versioning, describing how versioning is applied to different RPP elements. (Issue #39)
+- Added IANA request for RPP Result codes registry, and added a table with example RPP result codes. (Issue #39)
+- Added IANA request for URN sub-namespace for RPP. (Issue #39)
 - Added a new "Profiles" section to describe how to define and use profiles. (Issue #43)
 - Added a new section "Authentication and Authorization". (Issue #37)
 - Updated the "Security Considerations" section to include transport security. (Issue #37)
@@ -1128,7 +1228,6 @@ Data confidentiality and integrity MUST be enforced. Every client and server int
 - Renamed Commands section to Endpoints
 - Removed text about extensions
 - Changed naming to be less EPP like and more RDAP like
-- 
 
 # Acknowledgements
 
@@ -1156,6 +1255,15 @@ The authors would like to thank the following people for their helpful text cont
       <organization>YAML Language Development Team</organization>
     </author>
     <date year="2000"/>
+  </front>
+</reference>
+
+<reference anchor="SemVer" target="https://semver.org/">
+  <front>
+    <title>Semantic Versioning 2.0.0</title>
+    <author>
+      <organization>Semantic Versioning</organization>
+    </author>
   </front>
 </reference>
 
