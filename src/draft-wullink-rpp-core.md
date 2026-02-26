@@ -283,6 +283,7 @@ RPP media types are used to indicate the format of the request and response mess
 The definition of profile parameters in media types is described in section ....
 
 <!-- TODO: add reference to the media type style of profile signalling defined in Issue #43 -->
+
 # Profiles
 
 A profile is a named set of protocol features and versions that are used to define the compatibility and capabilities of RPP server implementations, allowing for better interoperability between different implementations. Using profiles helps to simplify the implementation and deployment of RPP by providing a clear and concise way for the client and server to communicate their capabilities and requirements.
@@ -1155,6 +1156,20 @@ Fields to be registered:
 The IANA is requested to add the following value to the "IETF URN Sub-namespace for Registered Protocol Parameter Identifiers" registry, following the template in [@!RFC3553]:
 
 TODO: add filled in template, if we decide to use URN for profile identification, for example "urn:ietf:params:rpp:profile:example-profile"
+
+The IANA is requested to create a new registry "RPP Result codes", this registry will be used to register RPP result codes defined in this document and in future RPP specifications and extensions.
+
+Name of the registry: RPP Result codes
+Registry group: RESTful Provisioning Protocol (RPP)
+Registration procedure: Expert Review
+Fields to be registered:
+
+- `code`: The RPP result code, for example "12000".
+- `description`: A human-readable description of the result code and its intended use.
+
+## URN Sub-namespace for RPP (urn:ietf:params:rpp)
+
+The IANA is requested to add the following value to the "IETF URN Sub-namespace for Registered Protocol Parameter Identifiers" registry, following the template in [@!RFC3553]:
 
 ## RPP Media Type (application/rpp+json)
 
