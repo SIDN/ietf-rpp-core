@@ -67,11 +67,13 @@ RPP client - An HTTP user agent performing an RPP request
 
 RPP server - An HTTP server responsible for processing requests and returning results in any supported media type.
 
+JWT - JSON Web Token as defined in [@!RFC7519].
+
 # Conventions Used in This Document
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT","SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [@!RFC2119].
 
-In examples, lines starting with "C:" represent data sent by a RPP client and lines starting with "S:" represent data returned by a RPP server. Indentation and white space in examples are provided only to illustrate element relationships and are not REQUIRED features of the protocol.
+In examples, indentation and white space in examples are provided only to illustrate element relationships and are not REQUIRED features of the protocol.
 
 All example requests assume a RPP server using HTTP version 2 is listening on the standard HTTPS port on host rpp.example. An authorization token has been provided by an out of band process and MUST be used by the client to authenticate each request.
 
@@ -92,6 +94,10 @@ RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu, roid=REG-XYZ-12345
 
 The value of the `RPP-Authorization` header is case sensitive. The server MUST reject requests where the case of the header value does not match the expected case.
 The `RPP-Authorization` header is specific to the user agent and MUST NOT be cached, as recommended by [@!RFC9110, Section 16.4.2], the server MUST use the correct HTTP cache directives to prevent caching of the `RPP-Authorization` header.
+
+- `RPP-Profile`: The client MUST use this header to indicate the profiles is used in the request.
+
+<!--TODO: need to make a choice, do we use the RPP-Profile or do we use media-type params for signalling profile used  -->
 
 # Response Headers
 
@@ -216,105 +222,196 @@ Problem Detail response containing multiple errors for a domain create request u
 }
 ```
 
-# Bootstrapping
+# Versioning
 
-The client MUST be able to bootstrap itself by discovering the location of an RPP server. The client MUST use either the IANA registry for RPP servers or a DNS lookup using an SRV record as defined in [@!RFC2782]. The format and procedure for adding an RPP server to the IANA registry is defined in the IANA Considerations section below.
+RPP is designed to be extensible and backward compatible. The version of the RPP API is indicated in the URL path, for example: `https://rpp.example/rpp/v1/`. The server MUST support at least one version of the RPP API, and MUST return a 404 Not Found status code for requests using an unsupported version. The versioning scheme uses the Semantic Versioning format defined in [@!SemVer], but only the major version number is used to indicate breaking changes. The minor and patch version numbers are not used in an URL path, but can be used in the media type or in the message body to indicate non-breaking changes.
 
-For DNS-based bootstrapping, an RPP server MUST publish an SRV record in each DNS zone that is served by the RPP server. The owner name of the SRV record MUST be `_rpp._tcp.<zone>`.
+The following RPP elements include versioning support:
 
-If multiple SRV records are returned, the client MUST select the RPP server according to the priority and weight rules in [@!RFC2782]. The client MUST ignore SRV records with a target of `.` (service not available).
+- Endpoints: The server MUST support at least one version of the RPP API, and MUST return a 404 Not Found status code for requests using an unsupported version.
+- Messages: A request and response message MUST include the version of the RPP API it is compatible with.
+- Extensions: RPP extensions MUST include the version of the RPP API they are compatible with.
+- Profiles: RPP profiles MUST include the version of the RPP API they are compatible with.
+- Media types: RPP media types MUST include the version of the RPP API they are compatible with.
+- Result codes: RPP result codes may be added by extensions or updates to the core RPP specification.
 
-The SRV record provides the target host and port of the RPP service. The client MUST construct the URL for the well-known endpoint (defined in the Discoverability section below) as:
+## Endpoints
 
-- `https://<target>:<port>/.well-known/rpp` when `<port>` is not 443
-- `https://<target>/.well-known/rpp` when `<port>` is 443
+The `base_url` element of the RPP Discovery response MAY include the version of the RPP API supported by the server. The client MUST use this `base_url` for all subsequent requests to the server. For example, if the version is 1.2.3, the `base_url` is `https://rpp.example/rpp/v1/`, then the client MUST use this URL for all subsequent requests to the server, and MUST not use a different version in the URL path.
 
-The client MUST use the constructed URL to discover the capabilities of the RPP server, as defined in the Discoverability section below.
+## Messages
 
-Example SRV record for an RPP server for the TLD "example" running HTTPS on port 443 at `rpp.example.`:
+The `version` element of the RPP request and response messages MUST include the version of the RPP API that the message is compatible with. The server MUST reject requests with a version that is not supported by the server, and MUST return a RPP Client error code.
 
-```dns
-_rpp._tcp.example. 3600 IN SRV 0 0 443 rpp.example.
-```
+<!-- TODO: see media type below, this version element may be redundant -->
 
-In this example, the well-known endpoint URL is `https://rpp.example/.well-known/rpp`.
+## Extensions
 
-# Discoverability
-
-RPP server capabilities MUST be discoverable by clients. The server MUST provide a well-known endpoint at `/.well-known/rpp` as descibed by [!@RFC8615], this endpoint MUST return a JSON document containing the capabilities of the RPP server. The well-known endpoint MUST be accessible without authentication, and the client MUST be able to access this endpoint before authenticating with the server. The well-known endpoint MUST be accessible using the HTTP GET method and MUST return an HTTP status code 200 (OK) if the request was successful. The response message body MUST contain a JSON document describing the capabilities of the RPP server using the following fields:
-
-- `base_url`: (required, string) The base URL for the RPP API, this is the URL that MUST be used as the base for all endpoint URL templates.
-- `version`: (required, string) The version of the RPP API supported by the server, for example "1.0".
-- `zones`: (required, array of strings) A list of zones supported by the server, for example "example", "org".
-- `extensions`: (optional, array of extension objects) A list of supported extensions, each extension object MUST contain the following fields:
-  - `name`: (required, string) A short name for the extension, for example "registry fee extension".
-  - `id`: (required, string) A unique URN identifier for the extension, for example "urn:ietf:params:rpp:extension:registry-fee".
-  - `versions`: (required, array of strings) The version(s) of the extension supported by the server, for example "1.0" and "1.1".
-  - `url`: (required, string) for standard extensions, this MUST be the URL for the extension in the IANA registry, for private extensions, this MUST be the URL for the extension specification, the domain name used in the URL MUST resolve and the URL MUST be accessible to the client.
-- `profiles`: (optional, array of profile objects) A list of supported profiles, each profile object MUST contain the following fields:
-  - `name`: (required, string) A short name for the profile, for example "domain provisioning profile".
-  - `id`: (required, string) A unique URN identifier for the profile, for example "urn:ietf:params:rpp:profile:domain-provisioning".
-  - `versions`: (required, array of strings) The version(s) of the profile supported by the server, for example "1.0" and "1.1".
-  - `url`: (required, string) for standard profiles, this MUST be the URL for the profile in the IANA registry, for private profiles, this MUST be the URL for the profile specification, the domain name used in the URL MUST resolve and the URL MUST be accessible to the client.
-- `authentication`: (optional, array of strings) A list of supported authentication methods, for example "Bearer", "Basic".  
-- `maintenance`: (optional, array) An array containing information about upcoming planned maintenance windows of the server, with the following fields:
-  - `start_time`: (required, string) The start time of the maintenance window in ISO 8601 format.
-  - `end_time`: (required, string) The end time of the maintenance window in ISO 8601 format.
-  - `description`: (optional, string) A human-readable description of the maintenance window.
-
-The following template variables are defined for use in RPP endpoint URL templates:
-
-- `collection`: The resource collection type (e.g., "domains", "hosts", "entities")
-- `id`: The unique identifier for a resource instance within a collection
-- `process_name`: The name of a process associated with a resource (e.g., "transfers", "renewals")
-- `process_id`: The unique identifier for a specific process instance
-
-<!-- TODO: Include appendix with example discovery response document. -->
-
-Example discovery response document:
+The RPP server MUST include the version for each extension in the RPP Discovery response. The client MUST use this version information to determine which extensions are supported by the server, and to ensure that it uses the correct version of the extension when making requests to the server.
+A request using an extension MUST include the version of the extension. The server MUST reject requests using extensions with a version that is not supported by the server, and MUST return a RPP Client error code. The following is an example of how the version information for an extension can be included in the RPP Discovery response:
 
 ```json
-{
-  "base_url": "https://rpp.example/rpp/v1",
-  "version": "1.0",
-  "tlds": ["example", "org"],
-  "extensions": [
+"extensions": [
     {
       "name": "RPP example extension",
       "id": "urn:ietf:params:rpp:extension:example-extension",
-      "versions": ["1.0"],
+      "version": "1.0",
       "url": "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0"
     }
   ],
-  "profiles": [
+```
+
+## Profiles
+
+The RPP server MUST include the version for each profile in the RPP Discovery response. The client MUST use this version information to determine which profiles are supported by the server, and to ensure that it uses the correct version of the profile when making requests to the server. A request using a profile MUST include the version of the profile. The server MUST reject requests using profiles with a version that is not supported by the server, and MUST return a RPP Client error code. The following is an example of how the version information for a profile can be included in the RPP Discovery response:
+
+```json
+"profiles": [
     {
       "name": "EPP compatibility profile",
       "id": "urn:ietf:params:rpp:profile:epp-compatibility",
-      "versions": ["1.0"],
+      "version": "1.0",
       "url": "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0"
     }
-  ],
-  "authentication": ["Bearer"],
-  "maintenance": [
-    {
-      "start_time": "2026-06-01T00:00:00Z",
-      "end_time": "2026-06-01T06:00:00Z",
-      "description": "Planned maintenance for server upgrades"
-    }
   ]
+```
 
+# Media types
+
+RPP media types are used to indicate the format of the request and response messages, and MUST include a parameter indicating the name of the profile they are compatible with. The server MUST use the profile information in the media type to determine which features, extensions and versions to use when processing the request, and to ensure that it returns a response that is compatible with the client. The client MUST use the profile information in the media type to determine which features, extensions and versions to use when processing the response, and to ensure that it can correctly interpret the response.
+
+The definition of profile parameters in media types is described in section ....
+
+<!-- TODO: add reference to the media type style of profile signalling defined in Issue #43 -->
+# Profiles
+
+A profile is a named set of protocol features and versions that are used to define the compatibility and capabilities of RPP server implementations, allowing for better interoperability between different implementations. Using profiles helps to simplify the implementation and deployment of RPP by providing a clear and concise way for the client and server to communicate their capabilities and requirements.
+
+A profile is identified by a unique name and may be published as a standard profile in the IANA registry for RPP profiles, to promote interoperability and standardization across implementations. Standard profiles names MUST use the RPP URN namespace defined in this document, for example: `urn:ietf:params:rpp:profile:{profile_name}`. The profile name MUST be unique within the RPP URN namespace and SHOULD be descriptive of the features and versions included in the profile.
+
+A profile can also be defined as a private profile, which is not published in the IANA registry, but is used by specific server implementations only. A private profile can be defined by a server operator to specify the features and versions supported by their implementation. If the profile is not published in the IANA registry, then the server operator MUST ensure that the profile name is globally unique to avoid conflicts with other profiles, the use of reverse domain name notation is RECOMMENDED for private profiles to ensure uniqueness.
+
+## Definition
+
+A profile definition MUST contain the following fields, private profiles may contain additional fields as needed:
+
+- `name`: A unique name that identifies the profile.
+- `description`: A human-readable description of the profile and its intended use.
+- `version`: The version of the profile.
+- `rpp_version`: The minimum version of the RPP protocol that is supported or required for the profile.
+- `objects`: A list of objects allowed for provisioning operations, for example "domains", "hosts", "entities", etc.
+- `extensions`: A list of extensions, including their versions, that are supported or required for the profile.
+- `profile`: A base profile that is extended by this profile. The base profile MUST be published in the IANA registry for RPP profiles, or be made available to the client using other means.
+
+<!-- TODO: do we really want to include inheritance to profiles, this can make things much more complicated? -->
+<!-- TODO: if we keep inheritance then strongly prefer that we limit the depth to 1 and do not allow multiple inheritance -->
+
+{#profile-example}
+Example JSON representation for a standard profile named "example-profile" that supports RPP version 1.0 and includes two extensions, "rppExample" version 1.0 and "rppOther" version 1.1. The profile also "extends" the "base-profile" profile, which is defined in the IANA registry for RPP profiles and supports RPP version 1.0.
+
+```json
+{
+  "name": "urn:ietf:params:rpp:profile:example-profile",
+  "description": "An example profile for provisioning objects using the RPP protocol.",
+  "version": "1.0",
+  "rpp_version": "1.0",
+  "objects": ["domains", "hosts", "entities"],
+  "extensions": [
+    {
+      "rppExample": {
+        "version": "1.0"
+      },
+      "rppOther": {
+        "version": "1.1"
+      }
+    }
+  ],
+  "profile": {
+    "name": "urn:ietf:params:rpp:profile:base-profile",
+    "version": "1.0"
+  }
 }
 ```
 
-## Workflow
+## Inheritance
 
-The steps for a typical workflow of provisioning an object using RPP without knowing the location and capabilities of the server are as follows, the first three steps are optional, the client can choose to skip any of these steps if it already has the required information from a previous interaction or configuration.
+A profile can include another profile, which is referred to as "inheriting" from that profile. When a profile inherits from another profile, it means that the features and versions defined in the inherited profile are also included in the inheriting profile. This allows for the creation of more complex profiles by building upon existing profiles. For example, a profile named "example-profile" could inherit from a base profile named "base-profile", which includes a set of common features and versions. The "example-profile" could then add additional features and versions on top of the ones defined in the "base-profile", or it can override some of the features and versions from the "base-profile". This allows for greater flexibility and modularity in defining profiles, as well as promoting reuse of common features and versions across different profiles. However, it is important to note that the use of inheritance in profiles can also make things more complicated, as it can create dependencies between profiles and make it harder to understand the features and versions included in a profile. Therefore, it is recommended to use inheritance with caution and to clearly document the relationships between profiles. The depth of inheritance MUST be limited to 1 to provent excessive complexity, and profile designers MUST NOT create circular dependencies between profiles, where a profile inherits from itself directly.
 
-1. Bootstrap (optional): The client discovers the location of the RPP server by looking up the IANA registry for RPP servers or by performing a DNS SRV lookup as defined in [@!RFC2782].
-2. Discover capabilities (optional):  The client retrieves the capabilities of the RPP server by sending a GET request to the well-known endpoint at `/.well-known/rpp`.
-3. Extract RPP URLs (optional): The client extracts the base URL and endpoint URL templates from the discovery response, and uses this information to construct the URLs for the desired operations.
-4. Authenticate (optional): If the client needs to request an access token from an authorization server (OAuth 2.0), before being allowed to perform provisioning operations, then the client performs the authentication process and MUST use the obtained access token to authenticate subsequent requests to the RPP server.
-5. Perform provisioning operations: The client performs provisioning operations by sending HTTP requests to the appropriate endpoint URLs, using the HTTP method and request message body as required by the specific operation, each request MUST include the authorization details in the Authorization header.
+This is an example of the parent base-profile used in the previous example, it contains a single extension "rppOther" version 1.0 and does not include any other profiles:
+
+```json
+{
+  "name": "urn:ietf:params:rpp:profile:base-profile",
+  "description": "A base profile for provisioning objects using the RPP protocol.",
+  "version": "1.0",
+  "rpp_version": "1.0",
+  "objects": ["domains", "hosts", "entities"],
+  "extensions": [
+    {
+      "rppOther": {
+        "version": "1.0"
+      }
+    }
+  ],
+  "profile":
+}
+```
+
+The example profile definition shown in (#profile-example) uses the "base-profile" as its base and inherits its features and also overrides the version of the "rppOther" extension defined in the base profile.
+
+## Signalling
+
+This document descibes two distinct methods for signalling the profile used in a RPP request or response, the first method uses a dedicated HTTP header, the second method uses media type parameters. The two methods MUST not be used simultaneously in a single request or response. If both methods are used in a single request or response, then the server MUST return an HTTP error response and include a Problem Detail response in the message body.
+
+<!-- TODO: We need to make a choice here, do we want to use the RPP-Profile header or do we want to use media type parameters for signalling the profile used in the request? 
+ having both is probably not a good idea, having 2 methods for doing the same thing -->
+
+### Header signalling
+
+The client MUST use the `RPP-Profile` header to indicate the name of the profile that is to be used for the request. The value of this header MUST be of the type `parameter` described in [@!RFC8941], the first parameter MUST uniquely identify a profile, for example `urn:ietf:params:rpp:profile:example-profile`, followed by the version parameter. If the server does not support the indicated profile or version, then the server MUST return an HTTP error response and include a Problem Detail response in the message body.
+
+The ABNF for Profile header value is as follows:
+
+```abnf
+profile-header = "profile" "=" profile-name ";" OWS "version" "=" version
+profile-name   = token
+version        = 1*DIGIT "." 1*DIGIT
+```
+
+Example:
+
+```http
+RPP-Profile: profile=urn:ietf:params:rpp:profile:example-profile;version=1.0
+```
+
+### Media type parameter signalling
+
+When using Media type parameter signalling, the client and the server MUST use media type parameters in the Accept and Content-Type headers to indicate the name and version of the profile used in the request. The media type parameters MUST be defined as follows:
+
+- `profile`: The value of this parameter MUST uniquely identify the profile, for example `urn:ietf:params:rpp:profile:example-profile`.
+- `version`: The value of this parameter MUST indicate the version of the profile used in the request.
+
+The ABNF for media type parameter signalling is as follows:
+
+```abnf
+profile-parameter = "profile" "=" profile-name ";" OWS "version" "=" version
+profile-name      = token
+version           = 1*DIGIT "." 1*DIGIT
+```
+
+Example for the media type `application/rpp+json` with profile parameters indicating the use of the "example-profile" profile version 1.0.:
+
+```http
+Accept: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
+Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
+```
+
+
+<!--
+ TODO: use media type parameters to signal the profile in the Accept and Content-Type headers?
+ TODO: what about the server? does it also include this header in the response to indicate the profile used by the server?
+it should be the same as used by the client? not seeing why we need this. 
+-->
 
 # Endpoints
 
@@ -1012,89 +1109,78 @@ TODO
 
 TODO
 
+# RPP Result Codes
+
+RPP result codes are used to indicate the result of an RPP request. They are returned in the RPP-Code header of the HTTP response. The format of the RPP result code is a 5-digit string, where the first digit MUST always be "1", the second digit indicates the class of the result, and the remaining four digits indicate the specific result within that class, his allows implementers to define more specific result codes within each class. The classes of RPP result codes are designed to match the classes of HTTP status codes, to facilitate mapping between RPP result codes and HTTP status codes. The classes of RPP result codes are defined as follows:
+
+- 11xxx: Informational
+- 12xxx: Success
+- 13xxx: Reserved for future use
+- 14xxx: Client error
+- 15xxx: Server error
+
+The following RPP result codes are defined and used in this document:
+
+| RPP Result Code | HTTP Status Code | Description | 
+|-----------------|------------------|-------------|
+| 12000           | 200 OK           | Command completed successfully |
+| 12001           | 201 Created      | Command completed successfully and a new resource was created |
+
+<!-- TODO: add more result codes here -->
+
+# Authentication and Authorization
+
+<!--  TODO: this is for now placeholder section and maybe needs to be renamed or split into multiple sections to better fit the content, but for now it is added here to describe authentication and authorization mechanisms -->
+
+Due to the stateless nature of RPP, the client MUST include the authentication credentials in each HTTP request. This MAY be done by using JSON Web Tokens (JWT) [@!RFC7519] or Basic authentication [@!RFC7617]. The server MUST validate the authentication credentials on each request and reject any request with invalid credentials with an appropriate HTTP status code.
+
+When using JWTs for OAuth 2.0 [@!RFC6749] Access Tokens, the JWT profile described in [@!RFC9068] MUST be used. It is RECOMMENDED to use short-lived tokens and to implement token revocation mechanisms to mitigate the risk of token compromise. If sensitive information is included in the JWT payload, it MUST be encrypted to prevent unauthorized access when the token is persistent to a storage device. Furthermore, the best practices for JWT usage as outlined in [@!RFC8725] MUST be followed.
+
 # IANA Considerations
+
+## RPP Result Codes Registry
+
+The IANA is requested to create a new registry "RPP Result codes", this registry will be used to register RPP result codes defined in this document and in future RPP specifications and extensions.
+
+Name of the registry: RPP Result codes
+Registry group: RESTful Provisioning Protocol (RPP)
+Registration procedure: Expert Review
+Fields to be registered:
+
+- `code`: The RPP result code, for example "12000".
+- `description`: A human-readable description of the result code and its intended use.
 
 ## URN Sub-namespace for RPP (urn:ietf:params:rpp)
 
 The IANA is requested to add the following value to the "IETF URN Sub-namespace for Registered Protocol Parameter Identifiers" registry, following the template in [@!RFC3553]:
 
-Registry name: rpp  
-Specification: This Document
-Repository: ?
-Index value: ?
+TODO: add filled in template, if we decide to use URN for profile identification, for example "urn:ietf:params:rpp:profile:example-profile"
 
-<!-- see: https://datatracker.ietf.org/doc/html/rfc3553 -->
-<!-- see: https://www.iana.org/assignments/params/params.xml#urn-subnamespaces -->
+## RPP Media Type (application/rpp+json)
 
-## RPP registry group
+The IANA is requested to add the following RPP media type to the "Media Types" registry, following the template in [@!RFC6838]:
 
-The IANA is requested to create a new registry group for RPP, this will be used to group together all the RPP-related registries such as those for discovery URLs, extensions and profiles.
+Type name: application
+Subtype name: rpp+json
+Required parameters: version
+Optional parameters: "N/A"
+Encoding considerations: "N/A"
+Security considerations: "N/A"
+Interoperability considerations: "N/A"
+Published specification: This document
+Applications that use this media type: RPP protocol and extensions
+Fragment identifier considerations: "N/A"
+Additional information: "N/A"
+Person & email address to contact for further information: Author's email address
+Intended usage: COMMON
+Restrictions on usage: "N/A"
+Author: Document authors
+Change controller: Document authors
+Provisional registration: No
 
-Name of the registry: RESTful Provisioning Protocol (RPP)
-Reference: This Document
-IANA Registry Reference: TODO
-
-<!-- see: https://www.iana.org/help/protocol-registration -->
-
-## RPP Discovery registry
-
-The IANA is requested to create a new registry for RPP discovery URLs, this registry will be used to register the well-known URLs for RPP discovery endpoints, used by RPP clients to discover the capabilities of a RPP server.
-
-Name of the registry: RPP Discovery URLs
-Registry group: RESTful Provisioning Protocol (RPP)
-Registration procedure: Expert Review
-Fields to be registered:
-
-- `zone`: The DNS zone for which the discovery URL is applicable, for example "example".
-- `url`: The URL for the discovery endpoint, for example "https://rpp.example/.well-known/rpp".
-- `description`: A human-readable description of the discovery URL and its intended use.
-
-## RPP Extension registry
-
-The IANA is requested to create a new registry for RPP extensions, this registry will be used to register standardized extensions to the RPP protocol. Extensions are defined as additional features or capabilities that can be added to the base RPP protocol, for example support for additional resource types, additional operations or additional authentication methods.
-
-Name of the registry: RPP Extensions
-Registry group: RESTful Provisioning Protocol (RPP)
-Registration procedure: Expert Review
-Fields to be registered:
-
-- `name`: The name of the extension, for example "RPP example extension".
-- `id`: A unique URN identifier for the extension, for example "urn:ietf:params:rpp:extension:example".
-- `version`: The version of the extension, for example "1.0".
-- `status`: The status of the extension, for example "active" or "deprecated".
-- `category`: The IETF category of the extension, for example "Standard", or "Informational".
-- `url`: The URL for the extension specification, for example "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0".
-- `description`: A human-readable description of the extension and its intended use.
-
-<!-- TODO: add structured data, such as fields added by the extension -->
-
-## RPP Profile registry
-
-The IANA is requested to create a new registry for RPP profiles, this registry will be used to register standardized profiles for the RPP protocol. Profiles are defined as specific configurations of the RPP protocol that are designed to meet the needs of specific use cases or environments, for example an EPP compatibility profile that defines a set of RPP features and behaviors that are compatible with the Extensible Provisioning Protocol (EPP) [@!RFC5730].
-
-Name of the registry: RPP Profiles
-Registry group: RESTful Provisioning Protocol (RPP)
-Registration procedure: Expert Review
-Fields to be registered:
-
-- `name`: The name of the profile, for example "EPP compatibility profile".
-- `id`: A unique URN identifier for the profile, for example "urn:ietf:params:rpp:profile:epp-compatibility".
-- `version`: The version of the profile, for example "1.0".
-- `status`: The status of the profile, for example "active" or "deprecated".
-- `category`: The IETF category of the profile, for example "Standard", or "Informational".
-- `url`: The URL for the profile specification, for example "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0".
-- `description`: A human-readable description of the profile and its intended use. 
-
-## Well-Known URIs registry
-
-The IANA is requested to create a new RPP registration in the "Well-Known URIs" registry for the RPP discovery endpoint, this will allow RPP servers to be discoverable by clients using a standardized URL.
-
-URI suffix: rpp
-Change controller: IETF
-Specification: This Document
-Status: Permanent
-
-<!-- see: https://www.rfc-editor.org/rfc/rfc8615 -->
+<!-- TODO: Add additional parameters when needed, for example for content negotiation -->
+<!-- see: https://www.iana.org/assignments/media-types/media-types.xhtml#application -->
+<!-- Post request to media-types@iana.org list for review prior to submission  -->
 
 # Internationalization Considerations
 
@@ -1102,18 +1188,21 @@ TODO
 
 # Security Considerations
 
-RPP relies on the security of the underlying HTTP [@!RFC9110] transport, hence the best common practices for securing HTTP also apply to RPP. It is RECOMMENDED to follow them closely.
+RPP relies on the security of the underlying HTTP transport, hence the best common practices for securing HTTP described in [@!RFC9325] also apply to RPP and MUST be followed by RPP implementations.
 
-Data confidentiality and integrity MUST be enforced, all data transport between a client and server MUST be encrypted using TLS [@!RFC5246]. [@!RFC5734, Section 9] describes the level of security that is REQUIRED for all RPP endpoints.
-
-Due to the stateless nature of RPP, the client MUST include the authentication credentials in each HTTP request. This MAY be done by using JSON Web Tokens (JWT) [@!RFC7519] or Basic authentication [@!RFC7617].
+Data confidentiality and integrity MUST be enforced. Every client and server interaction MUST be encrypted using TLS version 1.3 [@!RFC8446]. Future versions of TLS MAY be used as they become available and are deemed secure.
 
 # Change History
 
 ## Version 03 to 04
 
-- Added Boostrap and Discovery sections to the document, describing how a client can discover the location and capabilities of an RPP server
-- Added IANA Considerations section with a request for new RPP discovery URLs, extensions and profile URLs.
+- Added a new section on versioning, describing how versioning is applied to different RPP elements. (Issue #39)
+- Added IANA request for RPP Result codes registry, and added a table with example RPP result codes. (Issue #39)
+- Added IANA request for URN sub-namespace for RPP. (Issue #39)
+- Added a new "Profiles" section to describe how to define and use profiles. (Issue #43)
+- Added a new section "Authentication and Authorization". (Issue #37)
+- Updated the "Security Considerations" section to include transport security. (Issue #37)
+- Added IANA registration request for the new RPP media type. (Issue #40)
 
 ## Version 02 to 03
 
@@ -1140,7 +1229,6 @@ Due to the stateless nature of RPP, the client MUST include the authentication c
 - Renamed Commands section to Endpoints
 - Removed text about extensions
 - Changed naming to be less EPP like and more RDAP like
-- 
 
 # Acknowledgements
 
@@ -1168,6 +1256,15 @@ The authors would like to thank the following people for their helpful text cont
       <organization>YAML Language Development Team</organization>
     </author>
     <date year="2000"/>
+  </front>
+</reference>
+
+<reference anchor="SemVer" target="https://semver.org/">
+  <front>
+    <title>Semantic Versioning 2.0.0</title>
+    <author>
+      <organization>Semantic Versioning</organization>
+    </author>
   </front>
 </reference>
 
