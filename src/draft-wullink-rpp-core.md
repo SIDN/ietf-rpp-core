@@ -278,13 +278,6 @@ The definition of profile parameters in media types is described in section ....
 
 <!-- TODO: add reference to the media type style of profile signalling defined in Issue #43 -->
 
-
-## Result codes
-
-Standard RPP result codes are defined in the RPP core specification and standard extensions, and MUST be registered in the IANA registry for RPP result codes. Each result code MUST include the minimum RPP version it is compatible with. The server MUST return a result code that is compatible with the RPP version used in the request.
-
-<!-- TODO: do we want to version rpp result codes? -->
-
 # Endpoints
 
 Endpoints are described using URI Templates [@!RFC6570] relative to a discoverable base URL, as recommended by [@!RFC9205]. Some RPP endpoints do not require a request and/or response message.
