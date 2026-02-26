@@ -1078,7 +1078,7 @@ Registration procedure: Expert Review
 Fields to be registered:
 
 - `name`: The name of the profile, for example "EPP compatibility profile".
-- `id`: A unique URN identifier for the profile, for example "urn:ietf:params:rpp:profile:epp-compatibility-1.0".
+- `id`: A unique URN identifier for the profile, for example "urn:ietf:params:rpp:profile:epp-compatibility".
 - `version`: The version of the profile, for example "1.0".
 - `status`: The status of the profile, for example "active" or "deprecated".
 - `category`: The IETF category of the profile, for example "Standard", or "Informational".
