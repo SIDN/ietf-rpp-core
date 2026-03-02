@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- name="GENERATOR" content="github.com/mmarkdown/mmark Mmark Markdown Processor - mmark.miek.nl" -->
-<rfc version="3" ipr="trust200902" docName="draft-wullink-rpp-core-03" submissionType="IETF" category="std" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" indexInclude="true" tocDepth="4">
+<rfc version="3" ipr="trust200902" docName="draft-wullink-rpp-core-04" submissionType="IETF" category="std" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" indexInclude="true" tocDepth="4">
 
 <front>
-<title abbrev="RESTful Provisioning Protocol">RESTful Provisioning Protocol (RPP)</title><seriesInfo value="draft-wullink-rpp-core-03" stream="IETF" status="standard" name="Internet-Draft"></seriesInfo>
+<title abbrev="RESTful Provisioning Protocol">RESTful Provisioning Protocol (RPP)</title><seriesInfo value="draft-wullink-rpp-core-04" stream="IETF" status="standard" name="Internet-Draft"></seriesInfo>
 <author initials="M." surname="Wullink" fullname="Maarten Wullink"><organization>SIDN Labs</organization><address><postal><street></street>
 </postal><email>maarten.wullink@sidn.nl</email>
 <uri>https://sidn.nl/</uri>
@@ -37,11 +37,12 @@
 <t>Resource - An object having a type, data, and possible relationship to other resources, identified by a URL.</t>
 <t>RPP client - An HTTP user agent performing an RPP request</t>
 <t>RPP server - An HTTP server responsible for processing requests and returning results in any supported media type.</t>
+<t>JWT - JSON Web Token as defined in <xref target="RFC7519"></xref>.</t>
 </section>
 
 <section anchor="conventions-used-in-this-document"><name>Conventions Used in This Document</name>
 <t>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,&quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be interpreted as described in <xref target="RFC2119"></xref>.</t>
-<t>In examples, lines starting with &quot;C:&quot; represent data sent by a RPP client and lines starting with &quot;S:&quot; represent data returned by a RPP server. Indentation and white space in examples are provided only to illustrate element relationships and are not REQUIRED features of the protocol.</t>
+<t>In examples, indentation and white space in examples are provided only to illustrate element relationships and are not REQUIRED features of the protocol.</t>
 <t>All example requests assume a RPP server using HTTP version 2 is listening on the standard HTTPS port on host rpp.example. An authorization token has been provided by an out of band process and MUST be used by the client to authenticate each request.</t>
 </section>
 
@@ -64,6 +65,10 @@
 </sourcecode>
 <t>The value of the <tt>RPP-Authorization</tt> header is case sensitive. The server MUST reject requests where the case of the header value does not match the expected case.
 The <tt>RPP-Authorization</tt> header is specific to the user agent and MUST NOT be cached, as recommended by <xref target="RFC9110" sectionFormat="bare" section="Section 16.4.2"></xref>, the server MUST use the correct HTTP cache directives to prevent caching of the <tt>RPP-Authorization</tt> header.</t>
+
+<ul spacing="compact">
+<li><tt>RPP-Profile</tt>: The client MUST use this header to indicate the profiles is used in the request.</li>
+</ul>
 </section>
 
 <section anchor="response-headers"><name>Response Headers</name>
@@ -196,29 +201,32 @@ The document MUST contain an <tt>errors</tt> element, as a list of objects detai
 
 <dl spacing="compact">
 <dt><tt>type</tt></dt>
-<dd>(required, string) This field SHOULD be a URN under the <tt>urn:ietf:params:rpp:code:</tt> namespace using the RPP response
-code; e.g. with a code of <tt>02005</tt> the <tt>type</tt> field is <tt>urn:ietf:params:rpp:code:02005</tt>.
-Implementations MAY use other URIs, for more specificity about custom error types.</dd>
-<dt><tt>detail</tt></dt>
-<dd>(required, string) A human-readable description of the error.</dd>
-<dt><tt>values</tt></dt>
-<dd>(optional, list of objects) References to which values in the original request were not acceptable to the server.</dd>
+<dd>(required, string) This field MUST always contain the fixed string value <tt>urn:ietf:params:rpp:error</tt> to indicate that this is an RPP Problem Detail response.</dd>
+<dt><tt>title</tt></dt>
+<dd>(required, string) A short human-readable description of the Problem Detail type.</dd>
+<dt><tt>errors</tt></dt>
+<dd>(optional, array of error objects) MUST contain objects detailing information about the specific errors that occurred, including optional references to which values in the original request were not acceptable to the server.</dd>
 </dl>
-<t>The <tt>values</tt> objects consist of the following fields:</t>
+<t>The <tt>error</tt> object consist of the following fields:</t>
 
 <dl spacing="compact">
-<dt><tt>path</tt></dt>
-<dd>(optional, string) The JSONPath <xref target="RFC9535"></xref> to the value referenced</dd>
+<dt><tt>type</tt></dt>
+<dd>(required, string) This field SHOULD be a URI that identifies the error type. This URI MAY be dereferenceable to obtain human-readable documentation about the error type.</dd>
+<dt><tt>result</tt></dt>
+<dd>(required, string) This field MUST contain the RPP result code associated with the error.</dd>
+<dt><tt>paths</tt></dt>
+<dd>(optional, list of strings) The JSONPath <xref target="RFC9535"></xref> to the value(s) in the request that caused the error. This field MAY be omitted if no specific value in the request can be identified as the cause of the error.</dd>
 <dt><tt>reason</tt></dt>
-<dd>(required, string) A human-readable description of why the value was not acceptable</dd>
+<dd>(required, string) A human-readable detailed description of the error.</dd>
 </dl>
-<t>Implementations MAY add extension fields to the <tt>errors</tt> document to convey additional information about the
-causes of the error. For example, to indicate the account balance on a billing failure, the following could be sent:</t>
+<t>RPP specifications and/or extensions MAY add extension fields to the error object, to convey additional information about the causes of the error. For example, to indicate the account balance on a billing failure, the following Problem Detail response could be used:</t>
 
 <sourcecode type="json"><![CDATA[{
-  "type": "urn:ietf:params:rpp:code:02104",
-  "detail": "Billing failure",
-  "values": [{
+  "type": "urn:ietf:params:rpp:error",
+  "title": "RPP Error",
+  "errors": [{
+    "type": "https://rpp.example/problems/billing/billing-failure",
+    "result": "02104",
     "reason": "Not enough balance on account to create domain",
     "balance": 10.0,
     "action_cost": 25.0
@@ -226,9 +234,198 @@ causes of the error. For example, to indicate the account balance on a billing f
 }
 ]]>
 </sourcecode>
+<t>Problem Detail response containing multiple errors for a domain create request using an invalid domain name (_$.example), JSONPaths are specified in the error objects to indicate which value in the request caused the error:</t>
+
+<sourcecode type="json"><![CDATA[{
+  "type": "urn:ietf:params:rpp:error",
+  "title": "RPP Error",
+  "errors": [{
+    "type": "https://rpp.example/problems/domains/domain-syntax",
+    "result": "02005",
+    "paths": ["$.domain.name"],
+    "reason": "Invalid character(s) in domain name",
+  },
+  {
+    "type": "https://rpp.example/problems/domains/domain-allowed-length",
+    "result": "02004",
+    "paths": ["$.domain.name"],
+    "reason": "Domain name length must be between 3 and 63 characters",
+  }]
+}
+]]>
+</sourcecode>
 </section>
 
+<section anchor="versioning"><name>Versioning</name>
+<t>RPP is designed to be extensible and backward compatible. The version of the RPP API is indicated in the URL path, for example: <tt>https://rpp.example/rpp/v1/</tt>. The server MUST support at least one version of the RPP API, and MUST return a 404 Not Found status code for requests using an unsupported version. The versioning scheme uses the Semantic Versioning format defined in <xref target="SemVer"></xref>, but only the major version number is used to indicate breaking changes. The minor and patch version numbers are not used in an URL path, but can be used in the media type or in the message body to indicate non-breaking changes.</t>
+<t>The following RPP elements include versioning support:</t>
+
+<ul spacing="compact">
+<li>Endpoints: The server MUST support at least one version of the RPP API, and MUST return a 404 Not Found status code for requests using an unsupported version.</li>
+<li>Messages: A request and response message MUST include the version of the RPP API it is compatible with.</li>
+<li>Extensions: RPP extensions MUST include the version of the RPP API they are compatible with.</li>
+<li>Profiles: RPP profiles MUST include the version of the RPP API they are compatible with.</li>
+<li>Media types: RPP media types MUST include the version of the RPP API they are compatible with.</li>
+<li>Result codes: RPP result codes may be added by extensions or updates to the core RPP specification.</li>
+</ul>
+
 <section anchor="endpoints"><name>Endpoints</name>
+<t>The <tt>base_url</tt> element of the RPP Discovery response MAY include the version of the RPP API supported by the server. The client MUST use this <tt>base_url</tt> for all subsequent requests to the server. For example, if the version is 1.2.3, the <tt>base_url</tt> is <tt>https://rpp.example/rpp/v1/</tt>, then the client MUST use this URL for all subsequent requests to the server, and MUST not use a different version in the URL path.</t>
+</section>
+
+<section anchor="messages"><name>Messages</name>
+<t>The <tt>version</tt> element of the RPP request and response messages MUST include the version of the RPP API that the message is compatible with. The server MUST reject requests with a version that is not supported by the server, and MUST return a RPP Client error code.</t>
+</section>
+
+<section anchor="extensions"><name>Extensions</name>
+<t>The RPP server MUST include the version for each extension in the RPP Discovery response. The client MUST use this version information to determine which extensions are supported by the server, and to ensure that it uses the correct version of the extension when making requests to the server.
+A request using an extension MUST include the version of the extension. The server MUST reject requests using extensions with a version that is not supported by the server, and MUST return a RPP Client error code. The following is an example of how the version information for an extension can be included in the RPP Discovery response:</t>
+
+<sourcecode type="json"><![CDATA["extensions": [
+    {
+      "name": "RPP example extension",
+      "id": "urn:ietf:params:rpp:extension:example-extension",
+      "version": "1.0",
+      "url": "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0"
+    }
+  ],
+]]>
+</sourcecode>
+</section>
+
+<section anchor="profiles"><name>Profiles</name>
+<t>The RPP server MUST include the version for each profile in the RPP Discovery response. The client MUST use this version information to determine which profiles are supported by the server, and to ensure that it uses the correct version of the profile when making requests to the server. A request using a profile MUST include the version of the profile. The server MUST reject requests using profiles with a version that is not supported by the server, and MUST return a RPP Client error code. The following is an example of how the version information for a profile can be included in the RPP Discovery response:</t>
+
+<sourcecode type="json"><![CDATA["profiles": [
+    {
+      "name": "EPP compatibility profile",
+      "id": "urn:ietf:params:rpp:profile:epp-compatibility",
+      "version": "1.0",
+      "url": "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0"
+    }
+  ]
+]]>
+</sourcecode>
+</section>
+</section>
+
+<section anchor="media-types"><name>Media types</name>
+<t>RPP media types are used to indicate the format of the request and response messages, and MUST include a parameter indicating the name of the profile they are compatible with. The server MUST use the profile information in the media type to determine which features, extensions and versions to use when processing the request, and to ensure that it returns a response that is compatible with the client. The client MUST use the profile information in the media type to determine which features, extensions and versions to use when processing the response, and to ensure that it can correctly interpret the response.</t>
+<t>The definition of profile parameters in media types is described in section ....</t>
+</section>
+
+<section anchor="profiles-1"><name>Profiles</name>
+<t>A profile is a named set of protocol features and versions that are used to define the compatibility and capabilities of RPP server implementations, allowing for better interoperability between different implementations. Using profiles helps to simplify the implementation and deployment of RPP by providing a clear and concise way for the client and server to communicate their capabilities and requirements.</t>
+<t>A profile is identified by a unique name and may be published as a standard profile in the IANA registry for RPP profiles, to promote interoperability and standardization across implementations. Standard profiles names MUST use the RPP URN namespace defined in this document, for example: <tt>urn:ietf:params:rpp:profile:{profile_name}</tt>. The profile name MUST be unique within the RPP URN namespace and SHOULD be descriptive of the features and versions included in the profile.</t>
+<t>A profile can also be defined as a private profile, which is not published in the IANA registry, but is used by specific server implementations only. A private profile can be defined by a server operator to specify the features and versions supported by their implementation. If the profile is not published in the IANA registry, then the server operator MUST ensure that the profile name is globally unique to avoid conflicts with other profiles, the use of reverse domain name notation is RECOMMENDED for private profiles to ensure uniqueness.</t>
+
+<section anchor="definition"><name>Definition</name>
+<t>A profile definition MUST contain the following fields, private profiles may contain additional fields as needed:</t>
+
+<ul spacing="compact">
+<li><tt>name</tt>: A unique name that identifies the profile.</li>
+<li><tt>description</tt>: A human-readable description of the profile and its intended use.</li>
+<li><tt>version</tt>: The version of the profile.</li>
+<li><tt>rpp_version</tt>: The minimum version of the RPP protocol that is supported or required for the profile.</li>
+<li><tt>objects</tt>: A list of objects allowed for provisioning operations, for example &quot;domains&quot;, &quot;hosts&quot;, &quot;entities&quot;, etc.</li>
+<li><tt>extensions</tt>: A list of extensions, including their versions, that are supported or required for the profile.</li>
+<li><tt>profile</tt>: A base profile that is extended by this profile. The base profile MUST be published in the IANA registry for RPP profiles, or be made available to the client using other means.</li>
+</ul>
+<t anchor="profile-example">Example JSON representation for a standard profile named &quot;example-profile&quot; that supports RPP version 1.0 and includes two extensions, &quot;rppExample&quot; version 1.0 and &quot;rppOther&quot; version 1.1. The profile also &quot;extends&quot; the &quot;base-profile&quot; profile, which is defined in the IANA registry for RPP profiles and supports RPP version 1.0.</t>
+
+<sourcecode type="json"><![CDATA[{
+  "name": "urn:ietf:params:rpp:profile:example-profile",
+  "description": "An example profile for provisioning objects using the RPP protocol.",
+  "version": "1.0",
+  "rpp_version": "1.0",
+  "objects": ["domains", "hosts", "entities"],
+  "extensions": [
+    {
+      "rppExample": {
+        "version": "1.0"
+      },
+      "rppOther": {
+        "version": "1.1"
+      }
+    }
+  ],
+  "profile": {
+    "name": "urn:ietf:params:rpp:profile:base-profile",
+    "version": "1.0"
+  }
+}
+]]>
+</sourcecode>
+</section>
+
+<section anchor="inheritance"><name>Inheritance</name>
+<t>A profile can include another profile, which is referred to as &quot;inheriting&quot; from that profile. When a profile inherits from another profile, it means that the features and versions defined in the inherited profile are also included in the inheriting profile. This allows for the creation of more complex profiles by building upon existing profiles. For example, a profile named &quot;example-profile&quot; could inherit from a base profile named &quot;base-profile&quot;, which includes a set of common features and versions. The &quot;example-profile&quot; could then add additional features and versions on top of the ones defined in the &quot;base-profile&quot;, or it can override some of the features and versions from the &quot;base-profile&quot;. This allows for greater flexibility and modularity in defining profiles, as well as promoting reuse of common features and versions across different profiles. However, it is important to note that the use of inheritance in profiles can also make things more complicated, as it can create dependencies between profiles and make it harder to understand the features and versions included in a profile. Therefore, it is recommended to use inheritance with caution and to clearly document the relationships between profiles. The depth of inheritance MUST be limited to 1 to provent excessive complexity, and profile designers MUST NOT create circular dependencies between profiles, where a profile inherits from itself directly.</t>
+<t>This is an example of the parent base-profile used in the previous example, it contains a single extension &quot;rppOther&quot; version 1.0 and does not include any other profiles:</t>
+
+<sourcecode type="json"><![CDATA[{
+  "name": "urn:ietf:params:rpp:profile:base-profile",
+  "description": "A base profile for provisioning objects using the RPP protocol.",
+  "version": "1.0",
+  "rpp_version": "1.0",
+  "objects": ["domains", "hosts", "entities"],
+  "extensions": [
+    {
+      "rppOther": {
+        "version": "1.0"
+      }
+    }
+  ],
+  "profile":
+}
+]]>
+</sourcecode>
+<t>The example profile definition shown in <xref target="profile-example"></xref> uses the &quot;base-profile&quot; as its base and inherits its features and also overrides the version of the &quot;rppOther&quot; extension defined in the base profile.</t>
+</section>
+
+<section anchor="signalling"><name>Signalling</name>
+<t>This document descibes two distinct methods for signalling the profile used in a RPP request or response, the first method uses a dedicated HTTP header, the second method uses media type parameters. The two methods MUST not be used simultaneously in a single request or response. If both methods are used in a single request or response, then the server MUST return an HTTP error response and include a Problem Detail response in the message body.</t>
+
+<section anchor="header-signalling"><name>Header signalling</name>
+<t>The client MUST use the <tt>RPP-Profile</tt> header to indicate the name of the profile that is to be used for the request. The value of this header MUST be of the type <tt>parameter</tt> described in <xref target="RFC8941"></xref>, the first parameter MUST uniquely identify a profile, for example <tt>urn:ietf:params:rpp:profile:example-profile</tt>, followed by the version parameter. If the server does not support the indicated profile or version, then the server MUST return an HTTP error response and include a Problem Detail response in the message body.</t>
+<t>The ABNF for Profile header value is as follows:</t>
+
+<sourcecode type="abnf"><![CDATA[profile-header = "profile" "=" profile-name ";" OWS "version" "=" version
+profile-name   = token
+version        = 1*DIGIT "." 1*DIGIT
+]]>
+</sourcecode>
+<t>Example:</t>
+
+<sourcecode type="http"><![CDATA[RPP-Profile: profile=urn:ietf:params:rpp:profile:example-profile;version=1.0
+]]>
+</sourcecode>
+</section>
+
+<section anchor="media-type-parameter-signalling"><name>Media type parameter signalling</name>
+<t>When using Media type parameter signalling, the client and the server MUST use media type parameters in the Accept and Content-Type headers to indicate the name and version of the profile used in the request. The media type parameters MUST be defined as follows:</t>
+
+<ul spacing="compact">
+<li><tt>profile</tt>: The value of this parameter MUST uniquely identify the profile, for example <tt>urn:ietf:params:rpp:profile:example-profile</tt>.</li>
+<li><tt>version</tt>: The value of this parameter MUST indicate the version of the profile used in the request.</li>
+</ul>
+<t>The ABNF for media type parameter signalling is as follows:</t>
+
+<sourcecode type="abnf"><![CDATA[profile-parameter = "profile" "=" profile-name ";" OWS "version" "=" version
+profile-name      = token
+version           = 1*DIGIT "." 1*DIGIT
+]]>
+</sourcecode>
+<t>Example for the media type <tt>application/rpp+json</tt> with profile parameters indicating the use of the &quot;example-profile&quot; profile version 1.0.:</t>
+
+<sourcecode type="http"><![CDATA[Accept: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
+Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
+]]>
+</sourcecode>
+</section>
+</section>
+</section>
+
+<section anchor="endpoints-1"><name>Endpoints</name>
 <t>Endpoints are described using URI Templates <xref target="RFC6570"></xref> relative to a discoverable base URL, as recommended by <xref target="RFC9205"></xref>. Some RPP endpoints do not require a request and/or response message.</t>
 <t>The RPP endpoints are defined using the following URI Template syntax:</t>
 
@@ -885,14 +1082,162 @@ TODO
 <t>TODO</t>
 </section>
 
+<section anchor="rpp-result-codes"><name>RPP Result Codes</name>
+<t>RPP result codes are used to indicate the result of an RPP request. They are returned in the RPP-Code header of the HTTP response. The format of the RPP result code is a 5-digit string, where the first digit MUST always be &quot;1&quot;, the second digit indicates the class of the result, and the remaining four digits indicate the specific result within that class, his allows implementers to define more specific result codes within each class. The classes of RPP result codes are designed to match the classes of HTTP status codes, to facilitate mapping between RPP result codes and HTTP status codes. The classes of RPP result codes are defined as follows:</t>
+
+<ul spacing="compact">
+<li>11xxx: Informational</li>
+<li>12xxx: Success</li>
+<li>13xxx: Reserved for future use</li>
+<li>14xxx: Client error</li>
+<li>15xxx: Server error</li>
+</ul>
+<t>The following RPP result codes are defined and used in this document:</t>
+<table>
+<thead>
+<tr>
+<th>RPP Result Code</th>
+<th>HTTP Status Code</th>
+<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>12000</td>
+<td>200 OK</td>
+<td>Command completed successfully</td>
+</tr>
+
+<tr>
+<td>12001</td>
+<td>201 Created</td>
+<td>Command completed successfully and a new resource was created</td>
+</tr>
+</tbody>
+</table></section>
+
+<section anchor="authentication-and-authorization"><name>Authentication and Authorization</name>
+<t>Due to the stateless nature of RPP, the client MUST include the authentication credentials in each HTTP request. This MAY be done by using JSON Web Tokens (JWT) <xref target="RFC7519"></xref> or Basic authentication <xref target="RFC7617"></xref>. The server MUST validate the authentication credentials on each request and reject any request with invalid credentials with an appropriate HTTP status code.</t>
+<t>When using JWTs for OAuth 2.0 <xref target="RFC6749"></xref> Access Tokens, the JWT profile described in <xref target="RFC9068"></xref> MUST be used. It is RECOMMENDED to use short-lived tokens and to implement token revocation mechanisms to mitigate the risk of token compromise. If sensitive information is included in the JWT payload, it MUST be encrypted to prevent unauthorized access when the token is persistent to a storage device. Furthermore, the best practices for JWT usage as outlined in <xref target="RFC8725"></xref> MUST be followed.</t>
+</section>
+
 <section anchor="iana-considerations"><name>IANA Considerations</name>
 
 <section anchor="urn-sub-namespace-for-rpp-urn-ietf-params-rpp"><name>URN Sub-namespace for RPP (urn:ietf:params:rpp)</name>
-<t>The IANA is requested to add the following value to the &quot;IETF URN Sub-namespace for Registered Protocol Parameter
-Identifiers&quot; registry, following the template in <xref target="RFC3553"></xref>:</t>
-<t>Registered Parameter Identifier: rpp<br />
-Reference:  This Document<br />
-IANA Registry Reference: <xref target="RFC5730"></xref></t>
+<t>The IANA is requested to add the following value to the &quot;IETF URN Sub-namespace for Registered Protocol Parameter Identifiers&quot; registry, following the template in <xref target="RFC3553"></xref>:
+TODO: add filled in template, if we decide to use URN for profile identification, for example &quot;urn:ietf:params:rpp:profile:example-profile&quot;</t>
+
+<sourcecode type="text"><![CDATA[Registry name: rpp 
+Specification: This Document
+Repository: ?
+Index value: ?
+]]>
+</sourcecode>
+</section>
+
+<section anchor="rpp-registry-group"><name>RPP registry group</name>
+<t>The IANA is requested to create a new registry group for RPP, this will be used to group together all the RPP-related registries such as those for discovery URLs, extensions and profiles.</t>
+
+<sourcecode type="text"><![CDATA[Name of the registry: RESTful Provisioning Protocol (RPP)
+Reference: This Document
+IANA Registry Reference: TODO
+]]>
+</sourcecode>
+</section>
+
+<section anchor="rpp-discovery-registry"><name>RPP Discovery registry</name>
+<t>The IANA is requested to create a new registry for RPP discovery URLs, this registry will be used to register the well-known URLs for RPP discovery endpoints, used by RPP clients to discover the capabilities of a RPP server.</t>
+
+<sourcecode type="text"><![CDATA[Name of the registry: RPP Discovery URLs
+Registry group: RESTful Provisioning Protocol (RPP)
+Registration procedure: Expert Review
+]]>
+</sourcecode>
+<t>Fields to be registered:</t>
+
+<ul spacing="compact">
+<li><tt>tld</tt>: The top-level domain (TLD) for which the discovery URL is applicable, for example &quot;example&quot;.</li>
+<li><tt>url</tt>: The URL for the discovery endpoint, for example &quot;<eref target="https://rpp.example/.well-known/rpp&quot;">https://rpp.example/.well-known/rpp"</eref>.</li>
+<li><tt>description</tt>: A human-readable description of the discovery URL and its intended use.</li>
+</ul>
+</section>
+
+<section anchor="rpp-extension-registry"><name>RPP Extension registry</name>
+<t>The IANA is requested to create a new registry for RPP extensions, this registry will be used to register standardized extensions to the RPP protocol. Extensions are defined as additional features or capabilities that can be added to the base RPP protocol, for example support for additional resource types, additional operations or additional authentication methods.</t>
+
+<sourcecode type="text"><![CDATA[Name of the registry: RPP Extensions
+Registry group: RESTful Provisioning Protocol (RPP)
+Registration procedure: Expert Review
+]]>
+</sourcecode>
+<t>Fields to be registered:</t>
+
+<ul spacing="compact">
+<li><tt>name</tt>: The name of the extension, for example &quot;RPP example extension&quot;.</li>
+<li><tt>version</tt>: The version of the extension, for example &quot;1.0&quot;.</li>
+<li><tt>url</tt>: The URL for the extension specification, for example &quot;<eref target="https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0&quot;">https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0"</eref>.</li>
+<li><tt>description</tt>: A human-readable description of the extension and its intended use.</li>
+</ul>
+</section>
+
+<section anchor="rpp-profile-registry"><name>RPP Profile registry</name>
+<t>The IANA is requested to create a new registry for RPP profiles, this registry will be used to register standardized profiles for the RPP protocol. Profiles are defined as specific configurations of the RPP protocol that are designed to meet the needs of specific use cases or environments, for example an EPP compatibility profile that defines a set of RPP features and behaviors that are compatible with the Extensible Provisioning Protocol (EPP) <xref target="RFC5730"></xref>.</t>
+
+<sourcecode type="text"><![CDATA[Name of the registry: RPP Profiles
+Registry group: RESTful Provisioning Protocol (RPP)
+Registration procedure: Expert Review
+]]>
+</sourcecode>
+<t>Fields to be registered:</t>
+
+<ul spacing="compact">
+<li><tt>name</tt>: The name of the profile, for example &quot;EPP compatibility profile&quot;.</li>
+<li><tt>id</tt>: A unique URN identifier for the profile, for example &quot;urn:ietf:params:rpp:profile:epp-compatibility-1.0&quot;.</li>
+<li><tt>version</tt>: The version of the profile, for example &quot;1.0&quot;.</li>
+<li><tt>url</tt>: The URL for the profile specification, for example &quot;<eref target="https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0&quot;">https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0"</eref>.</li>
+<li><tt>description</tt>: A human-readable description of the profile and its intended use.</li>
+</ul>
+</section>
+
+<section anchor="rpp-result-codes-registry"><name>RPP Result Codes Registry</name>
+<t>The IANA is requested to create a new registry &quot;RPP Result codes&quot;, this registry will be used to register RPP result codes defined in this document and in future RPP specifications and extensions.</t>
+
+<sourcecode type="text"><![CDATA[Name of the registry: RPP Result codes
+Registry group: RESTful Provisioning Protocol (RPP)
+Registration procedure: Expert Review
+]]>
+</sourcecode>
+<t>Fields to be registered:</t>
+
+<ul spacing="compact">
+<li><tt>code</tt>: The RPP result code, for example &quot;12000&quot;.</li>
+<li><tt>description</tt>: A human-readable description of the result code and its intended use.</li>
+</ul>
+</section>
+
+<section anchor="rpp-media-type-application-rpp-json"><name>RPP Media Type (application/rpp+json)</name>
+<t>The IANA is requested to add the following RPP media type to the &quot;Media Types&quot; registry, following the template in <xref target="RFC6838"></xref>:</t>
+
+<sourcecode type="text"><![CDATA[Type name: application
+Subtype name: rpp+json
+Required parameters: version
+Optional parameters: "N/A"
+Encoding considerations: "N/A"
+Security considerations: "N/A"
+Interoperability considerations: "N/A"
+Published specification: This document
+Applications that use this media type: RPP protocol and extensions
+Fragment identifier considerations: "N/A"
+Additional information: "N/A"
+Person & email address to contact for further information: Author's email address
+Intended usage: COMMON
+Restrictions on usage: "N/A"
+Author: Document authors
+Change controller: Document authors
+Provisional registration: No
+]]>
+</sourcecode>
 </section>
 </section>
 
@@ -901,12 +1246,24 @@ IANA Registry Reference: <xref target="RFC5730"></xref></t>
 </section>
 
 <section anchor="security-considerations"><name>Security Considerations</name>
-<t>RPP relies on the security of the underlying HTTP <xref target="RFC9110"></xref> transport, hence the best common practices for securing HTTP also apply to RPP. It is RECOMMENDED to follow them closely.</t>
-<t>Data confidentiality and integrity MUST be enforced, all data transport between a client and server MUST be encrypted using TLS <xref target="RFC5246"></xref>. <xref target="RFC5734" sectionFormat="bare" section="Section 9"></xref> describes the level of security that is REQUIRED for all RPP endpoints.</t>
-<t>Due to the stateless nature of RPP, the client MUST include the authentication credentials in each HTTP request. This MAY be done by using JSON Web Tokens (JWT) <xref target="RFC7519"></xref> or Basic authentication <xref target="RFC7617"></xref>.</t>
+<t>RPP relies on the security of the underlying HTTP transport, hence the best common practices for securing HTTP described in <xref target="RFC9325"></xref> also apply to RPP and MUST be followed by RPP implementations.</t>
+<t>Data confidentiality and integrity MUST be enforced. Every client and server interaction MUST be encrypted using TLS version 1.3 <xref target="RFC8446"></xref>. Future versions of TLS MAY be used as they become available and are deemed secure.</t>
 </section>
 
 <section anchor="change-history"><name>Change History</name>
+
+<section anchor="version-03-to-04"><name>Version 03 to 04</name>
+
+<ul spacing="compact">
+<li>Added a new section on versioning, describing how versioning is applied to different RPP elements. (Issue #39)</li>
+<li>Added IANA request for RPP Result codes registry, and added a table with example RPP result codes. (Issue #39)</li>
+<li>Added IANA request for URN sub-namespace for RPP. (Issue #39)</li>
+<li>Added a new &quot;Profiles&quot; section to describe how to define and use profiles. (Issue #43)</li>
+<li>Added a new section &quot;Authentication and Authorization&quot;. (Issue #37)</li>
+<li>Updated the &quot;Security Considerations&quot; section to include transport security. (Issue #37)</li>
+<li>Added IANA registration request for the new RPP media type. (Issue #40)</li>
+</ul>
+</section>
 
 <section anchor="version-02-to-03"><name>Version 02 to 03</name>
 
@@ -942,7 +1299,6 @@ IANA Registry Reference: <xref target="RFC5730"></xref></t>
 <li>Renamed Commands section to Endpoints</li>
 <li>Removed text about extensions</li>
 <li>Changed naming to be less EPP like and more RDAP like</li>
-<li></li>
 </ul>
 </section>
 </section>
@@ -973,20 +1329,33 @@ IANA Registry Reference: <xref target="RFC5730"></xref></t>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2616.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3553.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3986.xml"/>
-<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5246.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5730.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5731.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5732.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5733.xml"/>
-<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5734.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6570.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6648.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6749.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6838.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7519.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7617.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8446.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8725.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8941.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9068.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9110.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9205.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9325.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9457.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9535.xml"/>
+<reference anchor="SemVer" target="https://semver.org/">
+  <front>
+    <title>Semantic Versioning 2.0.0</title>
+    <author>
+      <organization>Semantic Versioning</organization>
+    </author>
+  </front>
+</reference>
 </references>
 <references><name>Informative References</name>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8748.xml"/>

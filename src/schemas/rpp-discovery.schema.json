@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ietf:params:rpp:schema:discovery",
+  "title": "RPP Discovery Response",
+  "type": "object",
+  "additionalProperties": false,
+  "patternProperties": {
+    "^x-": true
+  },
+  "required": ["base_url", "version", "tlds", "objects", "endpoints"],
+  "properties": {
+    "base_url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tlds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "extensions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/namedVersionedUrl" },
+      "uniqueItems": true
+    },
+    "profiles": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/namedVersionedUrl" },
+      "uniqueItems": true
+    },
+    "objects": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "authentication": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "endpoints": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/endpoint" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "maintenance": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/maintenanceWindow" },
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "namedVersionedUrl": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-": true
+      },
+      "required": ["id", "name", "version", "url"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "minLength": 1
+        }
+      }
+    },
+    "endpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-": true
+      },
+      "required": ["name", "url_template"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url_template": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^/"
+        }
+      }
+    },
+    "maintenanceWindow": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-": true
+      },
+      "required": ["start_time", "end_time"],
+      "properties": {
+        "start_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "end_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
