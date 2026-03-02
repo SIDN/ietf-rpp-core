@@ -5,8 +5,8 @@
 Network Working Group                                         M. Wullink
 Internet-Draft                                                 SIDN Labs
 Intended status: Standards Track                              P. Kowalik
-Expires: 30 August 2026                                            DENIC
-                                                        26 February 2026
+Expires: 3 September 2026                                          DENIC
+                                                            2 March 2026
 
 
                   RESTful Provisioning Protocol (RPP)
@@ -33,7 +33,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 August 2026.
+   This Internet-Draft will expire on 3 September 2026.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                 [Page 1]
+Wullink & Kowalik       Expires 3 September 2026                [Page 1]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 Table of Contents
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                 [Page 2]
+Wullink & Kowalik       Expires 3 September 2026                [Page 2]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    15. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  34
@@ -119,7 +119,7 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
      15.2.  RPP registry group . . . . . . . . . . . . . . . . . . .  34
      15.3.  RPP Discovery registry . . . . . . . . . . . . . . . . .  35
      15.4.  RPP Extension registry . . . . . . . . . . . . . . . . .  35
-     15.5.  RPP Profile registry . . . . . . . . . . . . . . . . . .  35
+     15.5.  RPP Profile registry . . . . . . . . . . . . . . . . . .  36
      15.6.  RPP Result Codes Registry  . . . . . . . . . . . . . . .  36
      15.7.  RPP Media Type (application/rpp+json)  . . . . . . . . .  36
    16. Internationalization Considerations . . . . . . . . . . . . .  37
@@ -165,9 +165,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                 [Page 3]
+Wullink & Kowalik       Expires 3 September 2026                [Page 3]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    RESTful Provisioning Protocol or RPP - The protocol described in this
@@ -221,9 +221,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                 [Page 4]
+Wullink & Kowalik       Expires 3 September 2026                [Page 4]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
       authorization being used.  For EPP object authorization
@@ -277,9 +277,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                 [Page 5]
+Wullink & Kowalik       Expires 3 September 2026                [Page 5]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    -  RPP-Cltrid: This header is the equivalent of the "clTRID" element
@@ -333,9 +333,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                 [Page 6]
+Wullink & Kowalik       Expires 3 September 2026                [Page 6]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    For common and well-defined outcomes, a specific HTTP status code is
@@ -389,9 +389,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                 [Page 7]
+Wullink & Kowalik       Expires 3 September 2026                [Page 7]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    |Request    |client-side   |                                               |
@@ -445,9 +445,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                 [Page 8]
+Wullink & Kowalik       Expires 3 September 2026                [Page 8]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 7.  Problem Detail responses for errors
@@ -501,9 +501,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                 [Page 9]
+Wullink & Kowalik       Expires 3 September 2026                [Page 9]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    {
@@ -557,9 +557,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 10]
+Wullink & Kowalik       Expires 3 September 2026               [Page 10]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    -  Endpoints: The server MUST support at least one version of the RPP
@@ -613,9 +613,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 11]
+Wullink & Kowalik       Expires 3 September 2026               [Page 11]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    "extensions": [
@@ -669,9 +669,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 12]
+Wullink & Kowalik       Expires 3 September 2026               [Page 12]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 10.  Profiles
@@ -725,9 +725,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 13]
+Wullink & Kowalik       Expires 3 September 2026               [Page 13]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    Example JSON representation for a standard profile named "example-
@@ -781,9 +781,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 14]
+Wullink & Kowalik       Expires 3 September 2026               [Page 14]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    clearly document the relationships between profiles.  The depth of
@@ -837,9 +837,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 15]
+Wullink & Kowalik       Expires 3 September 2026               [Page 15]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    version, then the server MUST return an HTTP error response and
@@ -893,9 +893,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 16]
+Wullink & Kowalik       Expires 3 September 2026               [Page 16]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    -  {c}: An abbreviation for {collection}: this MUST be substituted
@@ -949,9 +949,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 17]
+Wullink & Kowalik       Expires 3 September 2026               [Page 17]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    functionality would add query parameters, which could be used with
@@ -1005,9 +1005,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 18]
+Wullink & Kowalik       Expires 3 September 2026               [Page 18]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    GET domains/foo.example HTTP/2
@@ -1061,9 +1061,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 19]
+Wullink & Kowalik       Expires 3 September 2026               [Page 19]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    GET messages HTTP/2
@@ -1117,9 +1117,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 20]
+Wullink & Kowalik       Expires 3 September 2026               [Page 20]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    HTTP/2 200 OK
@@ -1173,9 +1173,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 21]
+Wullink & Kowalik       Expires 3 September 2026               [Page 21]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 11.6.  Delete Resource
@@ -1229,9 +1229,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 22]
+Wullink & Kowalik       Expires 3 September 2026               [Page 22]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    A process MAY also expose a resource at
@@ -1285,9 +1285,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 23]
+Wullink & Kowalik       Expires 3 September 2026               [Page 23]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 11.7.1.2.  Cancelling:
@@ -1341,9 +1341,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 24]
+Wullink & Kowalik       Expires 3 September 2026               [Page 24]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    GET /{collection}/{id}/processes/{process_name}/
@@ -1397,9 +1397,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 25]
+Wullink & Kowalik       Expires 3 September 2026               [Page 25]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    POST /rpp/v1/domains HTTP/2
@@ -1453,9 +1453,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 26]
+Wullink & Kowalik       Expires 3 September 2026               [Page 26]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    HTTP/2 200 OK
@@ -1509,9 +1509,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 27]
+Wullink & Kowalik       Expires 3 September 2026               [Page 27]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    POST /rpp/v1/domains/foo.example/processes/transfers HTTP/2
@@ -1565,9 +1565,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 28]
+Wullink & Kowalik       Expires 3 September 2026               [Page 28]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 11.9.2.  Status
@@ -1621,9 +1621,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 29]
+Wullink & Kowalik       Expires 3 September 2026               [Page 29]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    GET /rpp/v1/domains/foo.example/processes/transfers HTTP/2
@@ -1677,9 +1677,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 30]
+Wullink & Kowalik       Expires 3 September 2026               [Page 30]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    HTTP/2 200 OK
@@ -1733,9 +1733,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 31]
+Wullink & Kowalik       Expires 3 September 2026               [Page 31]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    Example Approve request:
@@ -1789,9 +1789,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 32]
+Wullink & Kowalik       Expires 3 September 2026               [Page 32]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    HTTP/2 200 OK
@@ -1845,9 +1845,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 33]
+Wullink & Kowalik       Expires 3 September 2026               [Page 33]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 14.  Authentication and Authorization
@@ -1901,9 +1901,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 34]
+Wullink & Kowalik       Expires 3 September 2026               [Page 34]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 15.3.  RPP Discovery registry
@@ -1916,10 +1916,16 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
    Name of the registry: RPP Discovery URLs
    Registry group: RESTful Provisioning Protocol (RPP)
    Registration procedure: Expert Review
+
    Fields to be registered:
-   - `tld`: The top-level domain (TLD) for which the discovery URL is applicable, for example "example".
-   - `url`: The URL for the discovery endpoint, for example "https://rpp.example/.well-known/rpp".
-   - `description`: A human-readable description of the discovery URL and its intended use.
+
+   -  tld: The top-level domain (TLD) for which the discovery URL is
+      applicable, for example "example".
+   -  url: The URL for the discovery endpoint, for example
+      "https://rpp.example/.well-known/rpp" (https://rpp.example/.well-
+      known/rpp").
+   -  description: A human-readable description of the discovery URL and
+      its intended use.
 
 15.4.  RPP Extension registry
 
@@ -1946,6 +1952,16 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
    -  description: A human-readable description of the extension and its
       intended use.
 
+
+
+
+
+
+Wullink & Kowalik       Expires 3 September 2026               [Page 35]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
 15.5.  RPP Profile registry
 
    The IANA is requested to create a new registry for RPP profiles, this
@@ -1954,14 +1970,6 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
    protocol that are designed to meet the needs of specific use cases or
    environments, for example an EPP compatibility profile that defines a
    set of RPP features and behaviors that are compatible with the
-
-
-
-Wullink & Kowalik        Expires 30 August 2026                [Page 35]
-
-Internet-Draft        RESTful Provisioning Protocol        February 2026
-
-
    Extensible Provisioning Protocol (EPP) [RFC5730].
 
    Name of the registry: RPP Profiles
@@ -2005,17 +2013,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-
-
-
-
-
-
-
-
-Wullink & Kowalik        Expires 30 August 2026                [Page 36]
+Wullink & Kowalik       Expires 3 September 2026               [Page 36]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    Type name: application
@@ -2069,9 +2069,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 37]
+Wullink & Kowalik       Expires 3 September 2026               [Page 37]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    -  Added IANA registration request for the new RPP media type.
@@ -2125,9 +2125,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 38]
+Wullink & Kowalik       Expires 3 September 2026               [Page 38]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    [REST]     Fielding, R., "Architectural Styles and the Design of
@@ -2181,9 +2181,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 39]
+Wullink & Kowalik       Expires 3 September 2026               [Page 39]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    [RFC6648]  Saint-Andre, P., Crocker, D., and M. Nottingham,
@@ -2237,9 +2237,9 @@ Internet-Draft        RESTful Provisioning Protocol        February 2026
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 40]
+Wullink & Kowalik       Expires 3 September 2026               [Page 40]
 
-Internet-Draft        RESTful Provisioning Protocol        February 2026
+Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
    [RFC9325]  Sheffer, Y., Saint-Andre, P., and T. Fossati,
@@ -2293,4 +2293,4 @@ Authors' Addresses
 
 
 
-Wullink & Kowalik        Expires 30 August 2026                [Page 41]
+Wullink & Kowalik       Expires 3 September 2026               [Page 41]

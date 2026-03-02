@@ -1152,12 +1152,15 @@ IANA Registry Reference: TODO
 <sourcecode type="text"><![CDATA[Name of the registry: RPP Discovery URLs
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
-Fields to be registered:
-- `tld`: The top-level domain (TLD) for which the discovery URL is applicable, for example "example".
-- `url`: The URL for the discovery endpoint, for example "https://rpp.example/.well-known/rpp".
-- `description`: A human-readable description of the discovery URL and its intended use.
 ]]>
 </sourcecode>
+<t>Fields to be registered:</t>
+
+<ul spacing="compact">
+<li><tt>tld</tt>: The top-level domain (TLD) for which the discovery URL is applicable, for example &quot;example&quot;.</li>
+<li><tt>url</tt>: The URL for the discovery endpoint, for example &quot;<eref target="https://rpp.example/.well-known/rpp&quot;">https://rpp.example/.well-known/rpp"</eref>.</li>
+<li><tt>description</tt>: A human-readable description of the discovery URL and its intended use.</li>
+</ul>
 </section>
 
 <section anchor="rpp-extension-registry"><name>RPP Extension registry</name>
