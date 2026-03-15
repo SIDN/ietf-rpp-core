@@ -49,97 +49,79 @@ Copyright Notice
    described in Section 4.e of the Trust Legal Provisions and are
    provided without warranty as described in the Revised BSD License.
 
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026               [Page 1]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
 Table of Contents
 
-   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
-   2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   3
-   3.  Conventions Used in This Document . . . . . . . . . . . . . .   4
-   4.  Request Headers . . . . . . . . . . . . . . . . . . . . . . .   4
-   5.  Response Headers  . . . . . . . . . . . . . . . . . . . . . .   5
+   1.  Introduction
+   2.  Terminology
+   3.  Conventions Used in This Document
+   4.  Request Headers
+   5.  Response Headers
    6.  Error handling and relation between HTTP status codes and RPP
-           codes . . . . . . . . . . . . . . . . . . . . . . . . . .   6
-   7.  Problem Detail responses for errors . . . . . . . . . . . . .   8
-   8.  Bootstrapping . . . . . . . . . . . . . . . . . . . . . . . .  10
-   9.  Discoverability . . . . . . . . . . . . . . . . . . . . . . .  11
-     9.1.  Workflow  . . . . . . . . . . . . . . . . . . . . . . . .  14
-   10. Versioning  . . . . . . . . . . . . . . . . . . . . . . . . .  14
-     10.1.  Endpoints  . . . . . . . . . . . . . . . . . . . . . . .  15
-     10.2.  Messages . . . . . . . . . . . . . . . . . . . . . . . .  15
-     10.3.  Extensions . . . . . . . . . . . . . . . . . . . . . . .  15
-     10.4.  Profiles . . . . . . . . . . . . . . . . . . . . . . . .  16
-   11. Media types . . . . . . . . . . . . . . . . . . . . . . . . .  16
-   12. Profiles  . . . . . . . . . . . . . . . . . . . . . . . . . .  16
-     12.1.  Definition . . . . . . . . . . . . . . . . . . . . . . .  17
-     12.2.  Inheritance  . . . . . . . . . . . . . . . . . . . . . .  18
-     12.3.  Signalling . . . . . . . . . . . . . . . . . . . . . . .  19
-       12.3.1.  Header signalling  . . . . . . . . . . . . . . . . .  19
-       12.3.2.  Media type parameter signalling  . . . . . . . . . .  20
-   13. Endpoints . . . . . . . . . . . . . . . . . . . . . . . . . .  20
-     13.1.  Availability for Creation  . . . . . . . . . . . . . . .  21
-     13.2.  Resource Information . . . . . . . . . . . . . . . . . .  22
-     13.3.  Poll for Messages  . . . . . . . . . . . . . . . . . . .  23
-     13.4.  Delete Message . . . . . . . . . . . . . . . . . . . . .  24
-     13.5.  Create Resource  . . . . . . . . . . . . . . . . . . . .  25
-     13.6.  Delete Resource  . . . . . . . . . . . . . . . . . . . .  25
-     13.7.  Processes Path Segment . . . . . . . . . . . . . . . . .  26
-       13.7.1.  Generic proces interface . . . . . . . . . . . . . .  27
-         13.7.1.1.  Starting:  . . . . . . . . . . . . . . . . . . .  27
-         13.7.1.2.  Cancelling:  . . . . . . . . . . . . . . . . . .  27
-         13.7.1.3.  Status . . . . . . . . . . . . . . . . . . . . .  28
-         13.7.1.4.  Other operations . . . . . . . . . . . . . . . .  28
-         13.7.1.5.  Listing  . . . . . . . . . . . . . . . . . . . .  28
-       13.7.2.  Relation to object representation  . . . . . . . . .  29
-     13.8.  Renew Resource . . . . . . . . . . . . . . . . . . . . .  30
-     13.9.  Transfer Resource  . . . . . . . . . . . . . . . . . . .  31
-       13.9.1.  Start  . . . . . . . . . . . . . . . . . . . . . . .  31
-       13.9.2.  Status . . . . . . . . . . . . . . . . . . . . . . .  33
-       13.9.3.  Cancel . . . . . . . . . . . . . . . . . . . . . . .  34
-       13.9.4.  Reject . . . . . . . . . . . . . . . . . . . . . . .  35
-       13.9.5.  Approve  . . . . . . . . . . . . . . . . . . . . . .  35
-     13.10. Update Resource  . . . . . . . . . . . . . . . . . . . .  36
-
-
-
-Wullink & Kowalik       Expires 16 September 2026               [Page 2]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
-   14. Extension Framework . . . . . . . . . . . . . . . . . . . . .  37
-   15. RPP Result Codes  . . . . . . . . . . . . . . . . . . . . . .  37
-   16. Authentication and Authorization  . . . . . . . . . . . . . .  38
-   17. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  38
-     17.1.  URN Sub-namespace for RPP (urn:ietf:params:rpp)  . . . .  38
-     17.2.  RPP registry group . . . . . . . . . . . . . . . . . . .  38
-     17.3.  RPP Discovery registry . . . . . . . . . . . . . . . . .  39
-     17.4.  RPP Extension registry . . . . . . . . . . . . . . . . .  39
-     17.5.  RPP Profile registry . . . . . . . . . . . . . . . . . .  40
-     17.6.  RPP Result Codes Registry  . . . . . . . . . . . . . . .  40
-     17.7.  RPP Media Type (application/rpp+json)  . . . . . . . . .  40
-   18. Internationalization Considerations . . . . . . . . . . . . .  41
-   19. Security Considerations . . . . . . . . . . . . . . . . . . .  41
-   20. Change History  . . . . . . . . . . . . . . . . . . . . . . .  41
-     20.1.  Version 04 to 05 . . . . . . . . . . . . . . . . . . . .  41
-     20.2.  Version 03 to 04 . . . . . . . . . . . . . . . . . . . .  41
-     20.3.  Version 02 to 03 . . . . . . . . . . . . . . . . . . . .  42
-     20.4.  Version 01 to 02 . . . . . . . . . . . . . . . . . . . .  42
-     20.5.  Version 00 to 01 . . . . . . . . . . . . . . . . . . . .  42
-     20.6.  Version 00 (draft-rpp-core) to 00
-            (draft-wullink-rpp-core) . . . . . . . . . . . . . . . .  42
-   21. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  42
-   22. References  . . . . . . . . . . . . . . . . . . . . . . . . .  43
-     22.1.  Normative References . . . . . . . . . . . . . . . . . .  43
-     22.2.  Informative References . . . . . . . . . . . . . . . . .  45
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  45
+           codes
+   7.  Problem Detail responses for errors
+   8.  Bootstrapping
+   9.  Discoverability
+     9.1.  Workflow
+   10. Versioning
+     10.1.  Endpoints
+     10.2.  Messages
+     10.3.  Extensions
+     10.4.  Profiles
+   11. Media types
+   12. Profiles
+     12.1.  Definition
+     12.2.  Inheritance
+     12.3.  Signalling
+       12.3.1.  Header signalling
+       12.3.2.  Media type parameter signalling
+   13. Endpoints
+     13.1.  Availability for Creation
+     13.2.  Resource Information
+     13.3.  Poll for Messages
+     13.4.  Delete Message
+     13.5.  Create Resource
+     13.6.  Delete Resource
+     13.7.  Processes Path Segment
+       13.7.1.  Generic proces interface
+         13.7.1.1.  Starting:
+         13.7.1.2.  Cancelling:
+         13.7.1.3.  Status
+         13.7.1.4.  Other operations
+         13.7.1.5.  Listing
+       13.7.2.  Relation to object representation
+     13.8.  Renew Resource
+     13.9.  Transfer Resource
+       13.9.1.  Start
+       13.9.2.  Status
+       13.9.3.  Cancel
+       13.9.4.  Reject
+       13.9.5.  Approve
+     13.10. Update Resource
+   14. Extension Framework
+   15. RPP Result Codes
+   16. Authentication and Authorization
+   17. IANA Considerations
+     17.1.  URN Sub-namespace for RPP (urn:ietf:params:rpp)
+     17.2.  RPP registry group
+     17.3.  RPP Discovery registry
+     17.4.  RPP Extension registry
+     17.5.  RPP Profile registry
+     17.6.  RPP Result Codes Registry
+     17.7.  RPP Media Type (application/rpp+json)
+   18. Internationalization Considerations
+   19. Security Considerations
+   20. Change History
+     20.1.  Version 04 to 05
+     20.2.  Version 03 to 04
+     20.3.  Version 02 to 03
+     20.4.  Version 01 to 02
+     20.5.  Version 00 to 01
+     20.6.  Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)
+   21. Acknowledgements
+   22. References
+     22.1.  Normative References
+     22.2.  Informative References
+   Authors' Addresses
 
 1.  Introduction
 
@@ -162,13 +144,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    RESTful - A RESTful web service is a web service or API implemented
    using HTTP and the principles of [REST].
-
-
-
-Wullink & Kowalik       Expires 16 September 2026               [Page 3]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    EPP RFCs - This is a reference to the EPP version 1.0 specifications
    [RFC5730], [RFC5731], [RFC5732] and [RFC5733].
@@ -217,15 +192,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       the clTRID element defined in [RFC5730] and MUST be used
       accordingly, when the HTTP message body does not contain an EPP
       request that includes a cltrid.
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026               [Page 4]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    -  RPP-Authorization: The client MAY use this header to send
       authorization information in the format <method> <authorization
       information>, similar to the HTTP Authorization header, defined in
@@ -275,13 +241,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       body.  If an HTTP message body with the EPP XML equivalent
       "svTRID" exists, both values MUST be consistent.
 
-
-
-Wullink & Kowalik       Expires 16 September 2026               [Page 5]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    -  RPP-Cltrid: This header is the equivalent of the "clTRID" element
       defined in [RFC5730] and MUST be used accordingly when the RPP
       response does not contain an EPP response in the HTTP message
@@ -325,18 +284,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    The mapping strategy is to use the most specific HTTP code that
    accurately reflects the operation's result.
-
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026               [Page 6]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    For common and well-defined outcomes, a specific HTTP status code is
    used.  For example, an attempt to access a non-existent resource (EPP
@@ -386,14 +333,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    |             | parameters, policy).     | 02300-02301,             |
    |             |                          | 02304-02308              |
    +-------------+--------------------------+--------------------------+
-
-
-
-Wullink & Kowalik       Expires 16 September 2026               [Page 7]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    | 403         | Authentication or        | 02200-02202              |
    | Forbidden   | authorization failed.    |                          |
    +-------------+--------------------------+--------------------------+
@@ -442,14 +381,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    title  (required, string) A short human-readable description of the
       Problem Detail type.
    errors  (optional, array of error objects) MUST contain objects
-
-
-
-Wullink & Kowalik       Expires 16 September 2026               [Page 8]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
       detailing information about the specific errors that occurred,
       including optional references to which values in the original
       request were not acceptable to the server.
@@ -489,22 +420,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    create request using an invalid domain name (_$.example), JSONPaths
    are specified in the error objects to indicate which value in the
    request caused the error:
-
-
-
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026               [Page 9]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    {
      "type": "urn:ietf:params:rpp:error",
@@ -552,15 +467,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    The client MUST use the constructed URL to discover the capabilities
    of the RPP server, as defined in the Discoverability section below.
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 10]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    Example SRV record for an RPP server for the TLD "example" running
    HTTPS on port 443 at rpp.example.:
@@ -610,14 +516,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       profiles, each profile object MUST contain the following fields:
       -  name: (required, string) A short name for the profile, for
          example "domain provisioning profile".
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 11]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
       -  id: (required, string) A unique URN identifier for the profile,
          for example "urn:ietf:params:rpp:profile:domain-provisioning-
          1.0".
@@ -662,17 +560,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    -  process_id: The unique identifier for a specific process instance
 
    Example discovery response document:
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 12]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    {
      "base_url": "https://rpp.example/rpp/v1",
@@ -722,14 +609,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
        }
      ]
 
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 13]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    }
 
 9.1.  Workflow
@@ -778,14 +657,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       they are compatible with.
    -  Profiles: RPP profiles MUST include the version of the RPP API
       they are compatible with.
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 14]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    -  Media types: RPP media types MUST include the version of the RPP
       API they are compatible with.
    -  Result codes: RPP result codes may be added by extensions or
@@ -829,18 +700,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
          "url": "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0"
        }
      ],
-
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 15]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
 10.4.  Profiles
 
@@ -890,14 +749,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    way for the client and server to communicate their capabilities and
    requirements.
 
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 16]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    A profile is identified by a unique name and may be published as a
    standard profile in the IANA registry for RPP profiles, to promote
    interoperability and standardization across implementations.
@@ -941,18 +792,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    "rppExample" version 1.0 and "rppOther" version 1.1.  The profile
    also "extends" the "base-profile" profile, which is defined in the
    IANA registry for RPP profiles and supports RPP version 1.0.
-
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 17]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    {
      "name": "urn:ietf:params:rpp:profile:example-profile",
@@ -1001,15 +840,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    profile designers MUST NOT create circular dependencies between
    profiles, where a profile inherits from itself directly.
 
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 18]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    This is an example of the parent base-profile used in the previous
    example, it contains a single extension "rppOther" version 1.0 and
    does not include any other profiles:
@@ -1057,14 +887,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    include a Problem Detail response in the message body.
 
    The ABNF for Profile header value is as follows:
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 19]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    profile-header = "profile" "=" profile-name ";" OWS "version" "=" version
    profile-name   = token
@@ -1115,13 +937,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       substituted with the value of a domain name, hostname, contact-id
       or a message-id or any other defined object.
 
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 20]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    A RPP client MAY use the HTTP GET method for executing informational
    request only when no request data has to be added to the HTTP message
    body.  Sending content using an HTTP GET request is discouraged in
@@ -1170,14 +985,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    The server MUST respond with the same HTTP status code if the same
    URL is requested with HEAD and with GET.
 
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 21]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    - Request: HEAD|GET {collection}/{id}/availability
    - Request message: None
    - Response message: Optional availability response
@@ -1225,15 +1032,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    Accept-Language: en
    RPP-Cltrid: ABC-12345
 
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 22]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    Example request using RPP-Authorization header for an object that has
    attached authorization information.
 
@@ -1279,16 +1077,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    RPP-Cltrid: ABC-12345
 
    Example response:
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 23]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    HTTP/2 200 OK
    Date: Wed, 24 Jan 2024 12:00:00 UTC
@@ -1337,14 +1125,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    Content-Length: 145
 
    TODO
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 24]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
 13.5.  Create Resource
 
@@ -1395,13 +1175,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    Example Domain Delete request:
 
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 25]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    DELETE domains/foo.example HTTP/2
    Host: rpp.example
    Authorization: Bearer <token>
@@ -1451,13 +1224,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    completed processes remain available for retrieval is defined by
    server policy.
 
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 26]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
 13.7.1.  Generic proces interface
 
    A generic interface for interacting with the processes is defined as
@@ -1504,15 +1270,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    request MUST be:
 
    DELETE /{collection}/{id}/processes/{process_name}/{process_id}
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 27]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    This request is intended to stop the running process.  The server
    MUST return a 204 response if the process has been stopped and the
@@ -1563,13 +1320,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    also choose not implement this end point at all returning either the
    HTPP status code 404 Not Found or a 501 Not Implemented status code.
 
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 28]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
 13.7.2.  Relation to object representation
 
    In certain situations a resource creation may require additional
@@ -1602,29 +1352,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    }
 
    Example: Domain Create request with 2-year registration:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 29]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    POST /rpp/v1/domains HTTP/2
    Host: rpp.example
@@ -1668,19 +1395,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    TODO: add renew request data here
 
    Example Renew response:
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 30]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    HTTP/2 200 OK
    Date: Wed, 24 Jan 2024 12:00:00 UTC
@@ -1730,14 +1444,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    Example request using object authorization:
 
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 31]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    POST /rpp/v1/domains/foo.example/processes/transfers HTTP/2
    Host: rpp.example
    Authorization: Bearer <token>
@@ -1782,18 +1488,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
      "exDate": "2002-09-08T22:00:00.0Z
    }
 
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 32]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
 13.9.2.  Status
 
    A transfer object may not exist, when no transfer has been initiated
@@ -1837,19 +1531,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    Example domain name Transfer Query request and authorization using
    RPP-Authorization header:
 
-
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 33]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    GET /rpp/v1/domains/foo.example/processes/transfers HTTP/2
    Host: rpp.example
    Authorization: Bearer <token>
@@ -1889,22 +1570,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    RPP-Cltrid: ABC-12345
 
    Example response:
-
-
-
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 34]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    HTTP/2 200 OK
    Date: Wed, 24 Jan 2024 12:00:00 UTC
@@ -1955,13 +1620,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    The currently sponsoring client MUST use the HTTP POST method to
    approve a transfer requested by the new sponsoring client.
 
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 35]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    Example Approve request:
 
    POST /rpp/v1/domains/foo.example/processes/transfers/approval HTTP/2
@@ -2010,14 +1668,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    Example response:
 
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 36]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    HTTP/2 200 OK
    Date: Wed, 24 Jan 2024 12:00:00 UTC
    Server: Example RPP server v1.0
@@ -2065,15 +1715,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
                                  Table 2
 
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 37]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
 16.  Authentication and Authorization
 
    Due to the stateless nature of RPP, the client MUST include the
@@ -2116,19 +1757,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    Name of the registry: RESTful Provisioning Protocol (RPP)
    Reference: This Document
    IANA Registry Reference: TODO
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 38]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
 17.3.  RPP Discovery registry
 
@@ -2175,16 +1803,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       rpp-example-extension-1.0").
    -  description: A human-readable description of the extension and its
       intended use.
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 39]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
 17.5.  RPP Profile registry
 
@@ -2235,13 +1853,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    The IANA is requested to add the following RPP media type to the
    "Media Types" registry, following the template in [RFC6838]:
 
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 40]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    Type name: application
    Subtype name: rpp+json
    Required parameters: version
@@ -2289,15 +1900,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    -  Added a new section on versioning, describing how versioning is
       applied to different RPP elements.  (Issue #39)
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 41]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    -  Added IANA request for RPP Result codes registry, and added a
       table with example RPP result codes.  (Issue #39)
    -  Added IANA request for URN sub-namespace for RPP.  (Issue #39)
@@ -2346,14 +1948,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    The authors would like to thank the following people for their
    helpful text contributions, comments and suggestions.
 
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 42]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    -  Q Misell, AS207960 Cyfyngedig
 
 22.  References
@@ -2399,16 +1993,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
               Domain Name Mapping", STD 69, RFC 5731,
               DOI 10.17487/RFC5731, August 2009,
               <https://www.rfc-editor.org/info/rfc5731>.
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 43]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    [RFC5732]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
               Host Mapping", STD 69, RFC 5732, DOI 10.17487/RFC5732,
@@ -2459,13 +2043,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
               HTTP", RFC 8941, DOI 10.17487/RFC8941, February 2021,
               <https://www.rfc-editor.org/info/rfc8941>.
 
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 44]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    [RFC9068]  Bertocci, V., "JSON Web Token (JWT) Profile for OAuth 2.0
               Access Tokens", RFC 9068, DOI 10.17487/RFC9068, October
               2021, <https://www.rfc-editor.org/info/rfc9068>.
@@ -2514,63 +2091,5 @@ Authors' Addresses
 
    Pawel Kowalik
    DENIC
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 45]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    Email: pawel.kowalik@denic.de
    URI:   https://denic.de/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 46]
