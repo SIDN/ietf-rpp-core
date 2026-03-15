@@ -10,7 +10,7 @@ date = 2026-03-15
 
 [seriesInfo]
 name = "Internet-Draft"
-value = "draft-wullink-rpp-core-05"
+value = "draft-wullink-rpp-core-06-dev"
 stream = "IETF"
 status = "standard"
 
@@ -1408,7 +1408,7 @@ Data confidentiality and integrity MUST be enforced. Every client and server int
 ## Version 05 to 06
 
 - Updated Bootstrap section, now uses DNS HTTPS resource record. (Issue #56)
-
+  
 ## Version 04 to 05
 
 - Added Bootstrap and Discovery sections to the document, describing how a client can discover the location and capabilities of an RPP server

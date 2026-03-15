@@ -10,7 +10,7 @@ Expires: 16 September 2026                                         DENIC
 
 
                   RESTful Provisioning Protocol (RPP)
-                       draft-wullink-rpp-core-05
+                     draft-wullink-rpp-core-06-dev
 
 Abstract
 
@@ -1909,6 +1909,11 @@ Table of Contents
 20.  Change History
 
 20.1.  Version 05 to 06
+<<<<<<< HEAD
+=======
+
+20.2.  Version 04 to 05
+>>>>>>> 317d476 (EDITORIAL: change actual version to -06)
 
    -  Updated Bootstrap section, now uses DNS HTTPS resource record.
       (Issue #56)

@@ -10,7 +10,7 @@ Expires: 16 September 2026                                         DENIC
 
 
                   RESTful Provisioning Protocol (RPP)
-                       draft-wullink-rpp-core-05
+                     draft-wullink-rpp-core-06-dev
 
 Abstract
 
@@ -114,6 +114,7 @@ Wullink & Kowalik       Expires 16 September 2026               [Page 2]
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
+<<<<<<< HEAD
    14. Extension Framework . . . . . . . . . . . . . . . . . . . . .  38
    15. RPP Result Codes  . . . . . . . . . . . . . . . . . . . . . .  38
    16. Authentication and Authorization  . . . . . . . . . . . . . .  39
@@ -141,6 +142,35 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
      22.1.  Normative References . . . . . . . . . . . . . . . . . .  44
      22.2.  Informative References . . . . . . . . . . . . . . . . .  46
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  47
+=======
+   14. Extension Framework . . . . . . . . . . . . . . . . . . . . .  37
+   15. RPP Result Codes  . . . . . . . . . . . . . . . . . . . . . .  37
+   16. Authentication and Authorization  . . . . . . . . . . . . . .  38
+   17. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  38
+     17.1.  URN Sub-namespace for RPP (urn:ietf:params:rpp)  . . . .  38
+     17.2.  RPP registry group . . . . . . . . . . . . . . . . . . .  38
+     17.3.  RPP Discovery registry . . . . . . . . . . . . . . . . .  39
+     17.4.  RPP Extension registry . . . . . . . . . . . . . . . . .  39
+     17.5.  RPP Profile registry . . . . . . . . . . . . . . . . . .  40
+     17.6.  RPP Result Codes Registry  . . . . . . . . . . . . . . .  40
+     17.7.  RPP Media Type (application/rpp+json)  . . . . . . . . .  40
+   18. Internationalization Considerations . . . . . . . . . . . . .  41
+   19. Security Considerations . . . . . . . . . . . . . . . . . . .  41
+   20. Change History  . . . . . . . . . . . . . . . . . . . . . . .  41
+     20.1.  Version 05 to 06 . . . . . . . . . . . . . . . . . . . .  41
+     20.2.  Version 04 to 05 . . . . . . . . . . . . . . . . . . . .  41
+     20.3.  Version 03 to 04 . . . . . . . . . . . . . . . . . . . .  41
+     20.4.  Version 02 to 03 . . . . . . . . . . . . . . . . . . . .  42
+     20.5.  Version 01 to 02 . . . . . . . . . . . . . . . . . . . .  42
+     20.6.  Version 00 to 01 . . . . . . . . . . . . . . . . . . . .  42
+     20.7.  Version 00 (draft-rpp-core) to 00
+            (draft-wullink-rpp-core) . . . . . . . . . . . . . . . .  42
+   21. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  43
+   22. References  . . . . . . . . . . . . . . . . . . . . . . . . .  43
+     22.1.  Normative References . . . . . . . . . . . . . . . . . .  43
+     22.2.  Informative References . . . . . . . . . . . . . . . . .  45
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  46
+>>>>>>> 317d476 (EDITORIAL: change actual version to -06)
 
 1.  Introduction
 
@@ -2334,6 +2364,11 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 20.  Change History
 
 20.1.  Version 05 to 06
+<<<<<<< HEAD
+=======
+
+20.2.  Version 04 to 05
+>>>>>>> 317d476 (EDITORIAL: change actual version to -06)
 
    -  Updated Bootstrap section, now uses DNS HTTPS resource record.
       (Issue #56)
@@ -2346,6 +2381,11 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    -  Added IANA Considerations section with a request for new RPP
       discovery URLs, extensions and profile URLs.
 
+<<<<<<< HEAD
+=======
+20.3.  Version 03 to 04
+
+>>>>>>> 317d476 (EDITORIAL: change actual version to -06)
 
 
 
@@ -2354,8 +2394,11 @@ Wullink & Kowalik       Expires 16 September 2026              [Page 42]
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
+<<<<<<< HEAD
 20.3.  Version 03 to 04
 
+=======
+>>>>>>> 317d476 (EDITORIAL: change actual version to -06)
    -  Added a new section on versioning, describing how versioning is
       applied to different RPP elements.  (Issue #39)
    -  Added IANA request for RPP Result codes registry, and added a
@@ -2401,6 +2444,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    -  Removed text about extensions
    -  Changed naming to be less EPP like and more RDAP like
 
+<<<<<<< HEAD
 
 
 
@@ -2411,10 +2455,27 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 21.  Acknowledgements
+=======
+>>>>>>> 317d476 (EDITORIAL: change actual version to -06)
+
+
+
+<<<<<<< HEAD
+=======
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 42]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+21.  Acknowledgements
 
    The authors would like to thank the following people for their
    helpful text contributions, comments and suggestions.
 
+>>>>>>> 317d476 (EDITORIAL: change actual version to -06)
    -  Q Misell, AS207960 Cyfyngedig
 
 22.  References
@@ -2461,7 +2522,11 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 
+<<<<<<< HEAD
 Wullink & Kowalik       Expires 16 September 2026              [Page 44]
+=======
+Wullink & Kowalik       Expires 16 September 2026              [Page 43]
+>>>>>>> 317d476 (EDITORIAL: change actual version to -06)
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
@@ -2517,7 +2582,11 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 
+<<<<<<< HEAD
 Wullink & Kowalik       Expires 16 September 2026              [Page 45]
+=======
+Wullink & Kowalik       Expires 16 September 2026              [Page 44]
+>>>>>>> 317d476 (EDITORIAL: change actual version to -06)
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
@@ -2583,6 +2652,15 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
               RFC 8748, DOI 10.17487/RFC8748, March 2020,
               <https://www.rfc-editor.org/info/rfc8748>.
 
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 45]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
 Authors' Addresses
 
    Maarten Wullink
@@ -2629,4 +2707,13 @@ Authors' Addresses
 
 
 
+<<<<<<< HEAD
 Wullink & Kowalik       Expires 16 September 2026              [Page 47]
+=======
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 46]
+>>>>>>> 317d476 (EDITORIAL: change actual version to -06)
