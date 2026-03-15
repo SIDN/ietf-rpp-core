@@ -10,7 +10,7 @@ Expires: 16 September 2026                                         DENIC
 
 
                   RESTful Provisioning Protocol (RPP)
-                       draft-wullink-rpp-core-05
+                     draft-wullink-rpp-core-06-dev
 
 Abstract
 
@@ -111,12 +111,13 @@ Table of Contents
    18. Internationalization Considerations
    19. Security Considerations
    20. Change History
-     20.1.  Version 04 to 05
-     20.2.  Version 03 to 04
-     20.3.  Version 02 to 03
-     20.4.  Version 01 to 02
-     20.5.  Version 00 to 01
-     20.6.  Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)
+     20.1.  Version 05 to 06
+     20.2.  Version 04 to 05
+     20.3.  Version 03 to 04
+     20.4.  Version 02 to 03
+     20.5.  Version 01 to 02
+     20.6.  Version 00 to 01
+     20.7.  Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)
    21. Acknowledgements
    22. References
      22.1.  Normative References
@@ -1888,7 +1889,9 @@ Table of Contents
 
 20.  Change History
 
-20.1.  Version 04 to 05
+20.1.  Version 05 to 06
+
+20.2.  Version 04 to 05
 
    -  Added Boostrap and Discovery sections to the document, describing
       how a client can discover the location and capabilities of an RPP
@@ -1896,7 +1899,7 @@ Table of Contents
    -  Added IANA Considerations section with a request for new RPP
       discovery URLs, extensions and profile URLs.
 
-20.2.  Version 03 to 04
+20.3.  Version 03 to 04
 
    -  Added a new section on versioning, describing how versioning is
       applied to different RPP elements.  (Issue #39)
@@ -1912,11 +1915,11 @@ Table of Contents
    -  Added IANA registration request for the new RPP media type.
       (Issue #40)
 
-20.3.  Version 02 to 03
+20.4.  Version 02 to 03
 
    -  Added use of Problem Detail [RFC9457] for error responses
 
-20.4.  Version 01 to 02
+20.5.  Version 01 to 02
 
    -  Updated the examples, changed from "_.example.org" to "_.example"
    -  Merged the RPP-EPP-Code and RPP-Code headers into a single RPP-
@@ -1927,13 +1930,13 @@ Table of Contents
    -  Updated the Check request to now use an "availability" path
       segment and support both GET and HEAD methods
 
-20.5.  Version 00 to 01
+20.6.  Version 00 to 01
 
    -  Updated "Request Headers" and "Response Headers" section
    -  Changed transfer resource URL and HTTP method for reject, approve
       and cancel, in order to make the API easier to use
 
-20.6.  Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)
+20.7.  Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)
 
    -  Renamed the document name to "draft-wullink-rpp-core"
    -  Removed sections: Design Considerations, Resource Naming

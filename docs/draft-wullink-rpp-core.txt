@@ -10,7 +10,7 @@ Expires: 16 September 2026                                         DENIC
 
 
                   RESTful Provisioning Protocol (RPP)
-                       draft-wullink-rpp-core-05
+                     draft-wullink-rpp-core-06-dev
 
 Abstract
 
@@ -128,18 +128,19 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    18. Internationalization Considerations . . . . . . . . . . . . .  41
    19. Security Considerations . . . . . . . . . . . . . . . . . . .  41
    20. Change History  . . . . . . . . . . . . . . . . . . . . . . .  41
-     20.1.  Version 04 to 05 . . . . . . . . . . . . . . . . . . . .  41
-     20.2.  Version 03 to 04 . . . . . . . . . . . . . . . . . . . .  41
-     20.3.  Version 02 to 03 . . . . . . . . . . . . . . . . . . . .  42
-     20.4.  Version 01 to 02 . . . . . . . . . . . . . . . . . . . .  42
-     20.5.  Version 00 to 01 . . . . . . . . . . . . . . . . . . . .  42
-     20.6.  Version 00 (draft-rpp-core) to 00
+     20.1.  Version 05 to 06 . . . . . . . . . . . . . . . . . . . .  41
+     20.2.  Version 04 to 05 . . . . . . . . . . . . . . . . . . . .  41
+     20.3.  Version 03 to 04 . . . . . . . . . . . . . . . . . . . .  41
+     20.4.  Version 02 to 03 . . . . . . . . . . . . . . . . . . . .  42
+     20.5.  Version 01 to 02 . . . . . . . . . . . . . . . . . . . .  42
+     20.6.  Version 00 to 01 . . . . . . . . . . . . . . . . . . . .  42
+     20.7.  Version 00 (draft-rpp-core) to 00
             (draft-wullink-rpp-core) . . . . . . . . . . . . . . . .  42
-   21. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  42
+   21. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  43
    22. References  . . . . . . . . . . . . . . . . . . . . . . . . .  43
      22.1.  Normative References . . . . . . . . . . . . . . . . . .  43
      22.2.  Informative References . . . . . . . . . . . . . . . . .  45
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  45
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  46
 
 1.  Introduction
 
@@ -160,8 +161,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    REST - Representational State Transfer ([REST]).  An architectural
    style.
 
-   RESTful - A RESTful web service is a web service or API implemented
-   using HTTP and the principles of [REST].
+
 
 
 
@@ -169,6 +169,9 @@ Wullink & Kowalik       Expires 16 September 2026               [Page 3]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
+
+   RESTful - A RESTful web service is a web service or API implemented
+   using HTTP and the principles of [REST].
 
    EPP RFCs - This is a reference to the EPP version 1.0 specifications
    [RFC5730], [RFC5731], [RFC5732] and [RFC5733].
@@ -213,10 +216,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    request message.  The RPP HTTP headers listed below use the "RPP-"
    prefix, following the recommendations in [RFC6648].
 
-   -  RPP-Cltrid: The client transaction identifier is the equivalent of
-      the clTRID element defined in [RFC5730] and MUST be used
-      accordingly, when the HTTP message body does not contain an EPP
-      request that includes a cltrid.
+
 
 
 
@@ -226,6 +226,10 @@ Wullink & Kowalik       Expires 16 September 2026               [Page 4]
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
+   -  RPP-Cltrid: The client transaction identifier is the equivalent of
+      the clTRID element defined in [RFC5730] and MUST be used
+      accordingly, when the HTTP message body does not contain an EPP
+      request that includes a cltrid.
    -  RPP-Authorization: The client MAY use this header to send
       authorization information in the format <method> <authorization
       information>, similar to the HTTP Authorization header, defined in
@@ -269,11 +273,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    RPP MUST use the "RPP-" prefix, the following response headers have
    been defined for RPP.
 
-   -  RPP-Svtrid: This header is the equivalent of the "svTRID" element
-      defined in [RFC5730] and MUST be used accordingly when the RPP
-      response does not contain an EPP response in the HTTP message
-      body.  If an HTTP message body with the EPP XML equivalent
-      "svTRID" exists, both values MUST be consistent.
+
 
 
 
@@ -281,6 +281,12 @@ Wullink & Kowalik       Expires 16 September 2026               [Page 5]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
+
+   -  RPP-Svtrid: This header is the equivalent of the "svTRID" element
+      defined in [RFC5730] and MUST be used accordingly when the RPP
+      response does not contain an EPP response in the HTTP message
+      body.  If an HTTP message body with the EPP XML equivalent
+      "svTRID" exists, both values MUST be consistent.
 
    -  RPP-Cltrid: This header is the equivalent of the "clTRID" element
       defined in [RFC5730] and MUST be used accordingly when the RPP
@@ -323,12 +329,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    code MUST still be provided in the RPP-Code HTTP header for detailed
    diagnostics.
 
-   The mapping strategy is to use the most specific HTTP code that
-   accurately reflects the operation's result.
-
-
-
-
 
 
 
@@ -337,6 +337,9 @@ Wullink & Kowalik       Expires 16 September 2026               [Page 6]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
+
+   The mapping strategy is to use the most specific HTTP code that
+   accurately reflects the operation's result.
 
    For common and well-defined outcomes, a specific HTTP status code is
    used.  For example, an attempt to access a non-existent resource (EPP
@@ -383,9 +386,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    +-------------+--------------------------+--------------------------+
    | 400 Bad     | Generic client-side      | 02000-02005,             |
    | Request     | error (syntax,           | 02104-02106,             |
-   |             | parameters, policy).     | 02300-02301,             |
-   |             |                          | 02304-02308              |
-   +-------------+--------------------------+--------------------------+
 
 
 
@@ -394,6 +394,9 @@ Wullink & Kowalik       Expires 16 September 2026               [Page 7]
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
+   |             | parameters, policy).     | 02300-02301,             |
+   |             |                          | 02304-02308              |
+   +-------------+--------------------------+--------------------------+
    | 403         | Authentication or        | 02200-02202              |
    | Forbidden   | authorization failed.    |                          |
    +-------------+--------------------------+--------------------------+
@@ -439,9 +442,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    type  (required, string) This field MUST always contain the fixed
       string value urn:ietf:params:rpp:error to indicate that this is an
       RPP Problem Detail response.
-   title  (required, string) A short human-readable description of the
-      Problem Detail type.
-   errors  (optional, array of error objects) MUST contain objects
 
 
 
@@ -450,6 +450,9 @@ Wullink & Kowalik       Expires 16 September 2026               [Page 8]
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
+   title  (required, string) A short human-readable description of the
+      Problem Detail type.
+   errors  (optional, array of error objects) MUST contain objects
       detailing information about the specific errors that occurred,
       including optional references to which values in the original
       request were not acceptable to the server.
@@ -489,9 +492,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    create request using an invalid domain name (_$.example), JSONPaths
    are specified in the error objects to indicate which value in the
    request caused the error:
-
-
-
 
 
 
@@ -2277,7 +2277,9 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 20.  Change History
 
-20.1.  Version 04 to 05
+20.1.  Version 05 to 06
+
+20.2.  Version 04 to 05
 
    -  Added Boostrap and Discovery sections to the document, describing
       how a client can discover the location and capabilities of an RPP
@@ -2285,10 +2287,8 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    -  Added IANA Considerations section with a request for new RPP
       discovery URLs, extensions and profile URLs.
 
-20.2.  Version 03 to 04
+20.3.  Version 03 to 04
 
-   -  Added a new section on versioning, describing how versioning is
-      applied to different RPP elements.  (Issue #39)
 
 
 
@@ -2298,6 +2298,8 @@ Wullink & Kowalik       Expires 16 September 2026              [Page 41]
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
+   -  Added a new section on versioning, describing how versioning is
+      applied to different RPP elements.  (Issue #39)
    -  Added IANA request for RPP Result codes registry, and added a
       table with example RPP result codes.  (Issue #39)
    -  Added IANA request for URN sub-namespace for RPP.  (Issue #39)
@@ -2310,11 +2312,11 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    -  Added IANA registration request for the new RPP media type.
       (Issue #40)
 
-20.3.  Version 02 to 03
+20.4.  Version 02 to 03
 
    -  Added use of Problem Detail [RFC9457] for error responses
 
-20.4.  Version 01 to 02
+20.5.  Version 01 to 02
 
    -  Updated the examples, changed from "_.example.org" to "_.example"
    -  Merged the RPP-EPP-Code and RPP-Code headers into a single RPP-
@@ -2325,13 +2327,13 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    -  Updated the Check request to now use an "availability" path
       segment and support both GET and HEAD methods
 
-20.5.  Version 00 to 01
+20.6.  Version 00 to 01
 
    -  Updated "Request Headers" and "Response Headers" section
    -  Changed transfer resource URL and HTTP method for reject, approve
       and cancel, in order to make the API easier to use
 
-20.6.  Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)
+20.7.  Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)
 
    -  Renamed the document name to "draft-wullink-rpp-core"
    -  Removed sections: Design Considerations, Resource Naming
@@ -2341,10 +2343,8 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    -  Removed text about extensions
    -  Changed naming to be less EPP like and more RDAP like
 
-21.  Acknowledgements
 
-   The authors would like to thank the following people for their
-   helpful text contributions, comments and suggestions.
+
 
 
 
@@ -2353,6 +2353,11 @@ Wullink & Kowalik       Expires 16 September 2026              [Page 42]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
+
+21.  Acknowledgements
+
+   The authors would like to thank the following people for their
+   helpful text contributions, comments and suggestions.
 
    -  Q Misell, AS207960 Cyfyngedig
 
@@ -2395,11 +2400,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
               STD 69, RFC 5730, DOI 10.17487/RFC5730, August 2009,
               <https://www.rfc-editor.org/info/rfc5730>.
 
-   [RFC5731]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
-              Domain Name Mapping", STD 69, RFC 5731,
-              DOI 10.17487/RFC5731, August 2009,
-              <https://www.rfc-editor.org/info/rfc5731>.
-
 
 
 
@@ -2409,6 +2409,11 @@ Wullink & Kowalik       Expires 16 September 2026              [Page 43]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
+
+   [RFC5731]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
+              Domain Name Mapping", STD 69, RFC 5731,
+              DOI 10.17487/RFC5731, August 2009,
+              <https://www.rfc-editor.org/info/rfc5731>.
 
    [RFC5732]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
               Host Mapping", STD 69, RFC 5732, DOI 10.17487/RFC5732,
@@ -2450,6 +2455,17 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
               Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
               <https://www.rfc-editor.org/info/rfc8446>.
 
+
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 44]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    [RFC8725]  Sheffer, Y., Hardt, D., and M. Jones, "JSON Web Token Best
               Current Practices", BCP 225, RFC 8725,
               DOI 10.17487/RFC8725, February 2020,
@@ -2458,13 +2474,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    [RFC8941]  Nottingham, M. and P. Kamp, "Structured Field Values for
               HTTP", RFC 8941, DOI 10.17487/RFC8941, February 2021,
               <https://www.rfc-editor.org/info/rfc8941>.
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 44]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    [RFC9068]  Bertocci, V., "JSON Web Token (JWT) Profile for OAuth 2.0
               Access Tokens", RFC 9068, DOI 10.17487/RFC9068, October
@@ -2504,6 +2513,15 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
               RFC 8748, DOI 10.17487/RFC8748, March 2020,
               <https://www.rfc-editor.org/info/rfc8748>.
 
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 45]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
 Authors' Addresses
 
    Maarten Wullink
@@ -2514,26 +2532,8 @@ Authors' Addresses
 
    Pawel Kowalik
    DENIC
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 45]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    Email: pawel.kowalik@denic.de
    URI:   https://denic.de/
-
-
-
-
-
-
-
-
-
-
 
 
 

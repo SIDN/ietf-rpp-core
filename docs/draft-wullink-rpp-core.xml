@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- name="GENERATOR" content="github.com/mmarkdown/mmark Mmark Markdown Processor - mmark.miek.nl" -->
-<rfc version="3" ipr="trust200902" docName="draft-wullink-rpp-core-05" submissionType="IETF" category="std" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" indexInclude="true" tocDepth="4">
+<rfc version="3" ipr="trust200902" docName="draft-wullink-rpp-core-06-dev" submissionType="IETF" category="std" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" indexInclude="true" tocDepth="4">
 
 <front>
-<title abbrev="RESTful Provisioning Protocol">RESTful Provisioning Protocol (RPP)</title><seriesInfo value="draft-wullink-rpp-core-05" stream="IETF" status="standard" name="Internet-Draft"></seriesInfo>
+<title abbrev="RESTful Provisioning Protocol">RESTful Provisioning Protocol (RPP)</title><seriesInfo value="draft-wullink-rpp-core-06-dev" stream="IETF" status="standard" name="Internet-Draft"></seriesInfo>
 <author initials="M." surname="Wullink" fullname="Maarten Wullink"><organization>SIDN Labs</organization><address><postal><street></street>
 </postal><email>maarten.wullink@sidn.nl</email>
 <uri>https://sidn.nl/</uri>
@@ -1329,6 +1329,9 @@ Provisional registration: No
 </section>
 
 <section anchor="change-history"><name>Change History</name>
+
+<section anchor="version-05-to-06"><name>Version 05 to 06</name>
+</section>
 
 <section anchor="version-04-to-05"><name>Version 04 to 05</name>
 

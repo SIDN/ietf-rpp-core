@@ -10,7 +10,7 @@ date = 2026-03-15
 
 [seriesInfo]
 name = "Internet-Draft"
-value = "draft-wullink-rpp-core-05"
+value = "draft-wullink-rpp-core-06-dev"
 stream = "IETF"
 status = "standard"
 
@@ -1394,6 +1394,10 @@ RPP relies on the security of the underlying HTTP transport, hence the best comm
 Data confidentiality and integrity MUST be enforced. Every client and server interaction MUST be encrypted using TLS version 1.3 [@!RFC8446]. Future versions of TLS MAY be used as they become available and are deemed secure.
 
 # Change History
+
+
+## Version 05 to 06
+
 
 ## Version 04 to 05
 
