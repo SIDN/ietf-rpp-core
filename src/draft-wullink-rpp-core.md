@@ -6,10 +6,11 @@ workgroup = "Network Working Group"
 submissiontype = "IETF"
 keyword = [""]
 TocDepth = 4
+date = 2026-03-15
 
 [seriesInfo]
 name = "Internet-Draft"
-value = "draft-wullink-rpp-core-04"
+value = "draft-wullink-rpp-core-05"
 stream = "IETF"
 status = "standard"
 
@@ -89,7 +90,7 @@ A RPP request does not always require a request message body. The information co
 Use of the RPP-Authorization header:
 
  ```http
-RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu, roid=REG-XYZ-12345
+RPP-Authorization: authinfo value=TXkgU2VjcmFRva2Vu, roid=REG-X-123
  ```
 
 The value of the `RPP-Authorization` header is case sensitive. The server MUST reject requests where the case of the header value does not match the expected case.
@@ -137,12 +138,12 @@ Table 1: RPP result code and HTTP Status-Code mapping.
 | HTTP Status-Code | Description | Corresponding RPP result code(s) |
 | ---------------- | ----------- | -------------------------------- |
 | Success (2xx)    |             |                                  |
-| 200 OK | The request was successful (e.g., for GET or UPDATE). | 01000 (in all cases not specified otherwise),01300,01301 |
+| 200 OK | The request was successful (e.g., for GET or UPDATE). | 01000 (in all cases not specified otherwise), 01300, 01301 |
 | 201 Created | The resource was created successfully. | 01000 for resource creating requests (POST/PUT) |
 | 202 Accepted | The request was accepted for asynchronous processing. | 01001 |
 | 204 No Content | The resource was deleted successfully. | 01000 for DELETE |
 | Client Errors (4xx) |   |   |
-| 400 Bad Request | Generic client-side error (syntax, parameters, policy). | 02000-02005,02104-02106,02300-02301,02304-02308 |
+| 400 Bad Request | Generic client-side error (syntax, parameters, policy). | 02000-02005, 02104-02106, 02300-02301, 02304-02308 |
 | 403 Forbidden | Authentication or authorization failed. | 02200-02202 |
 | 404 Not Found | The requested resource does not exist. | 02303 |
 | 409 Conflict | The resource could not be created because it already exists. | 02302 |
