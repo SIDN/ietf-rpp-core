@@ -61,7 +61,8 @@
 <t>Use of the RPP-Authorization header:</t>
 
 <sourcecode type="http"><![CDATA[RPP-Authorization: authinfo value=TXkgU2VjcmFRva2Vu, roid=REG-X-123
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>The value of the <tt>RPP-Authorization</tt> header is case sensitive. The server MUST reject requests where the case of the header value does not match the expected case.
 The <tt>RPP-Authorization</tt> header is specific to the user agent and MUST NOT be cached, as recommended by <xref target="RFC9110" sectionFormat="bare" section="Section 16.4.2"></xref>, the server MUST use the correct HTTP cache directives to prevent caching of the <tt>RPP-Authorization</tt> header.</t>
 
@@ -231,7 +232,8 @@ The document MUST contain an <tt>errors</tt> element, as a list of objects detai
     "action_cost": 25.0
   }]
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Problem Detail response containing multiple errors for a domain create request using an invalid domain name (_$.example), JSONPaths are specified in the error objects to indicate which value in the request caused the error:</t>
 
 <sourcecode type="json"><![CDATA[{
@@ -250,25 +252,33 @@ The document MUST contain an <tt>errors</tt> element, as a list of objects detai
     "reason": "Domain name length must be between 3 and 63 characters",
   }]
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="bootstrapping"><name>Bootstrapping</name>
-<t>The client MUST be able to bootstrap itself by discovering the location of an RPP server. Not having a fixed location for the RPP server is a fundamental design principle of RPP, as it allows for a more flexible and scalable architecture. The client MUST use either the IANA registry for RPP servers or a DNS lookup using an SRV record as defined in <xref target="RFC2782"></xref>. The format and procedure for adding an RPP server to the IANA registry is defined in the IANA Considerations section below.</t>
-<t>For DNS-based bootstrapping, an RPP server MUST publish an SRV record in each DNS zone that is served by the RPP server. The owner name of the SRV record MUST be <tt>_rpp._tcp.&lt;zone&gt;</tt>.</t>
-<t>If multiple SRV records are returned, the client MUST select the RPP server according to the priority and weight rules in <xref target="RFC2782"></xref>. The client MUST ignore SRV records with a target of <tt>.</tt> (service not available).</t>
-<t>The SRV record provides the target host and port of the RPP service. The client MUST construct the URL for the well-known endpoint (defined in the Discoverability section below) as:</t>
+<t>The client MUST be able to bootstrap itself by discovering the location of an RPP server. Not having a fixed location for the RPP server is a fundamental design principle of RPP, as it allows for a more flexible and scalable architecture. The client MUST use either the IANA registry for RPP servers or a DNS lookup using an HTTPS resource record as defined in <xref target="RFC9460"></xref>. The format and procedure for adding an RPP server to the IANA registry is defined in the IANA Considerations section below.</t>
+<t>For DNS-based bootstrapping, an RPP server MUST publish an HTTPS resource record for each DNS zone that is served by the RPP server. The owner name of the HTTPS resource record MUST be the provisionedzone name itself (e.g., <tt>&lt;zone&gt;</tt>).</t>
+<t>If multiple HTTPS resource records are returned, the client MUST process them according to the priority rules defined in <xref target="RFC9460"></xref>. If multiple records have the same SvcPriority, the client SHOULD select one based on local policy. The client MUST ignore HTTPS SvcParams in AliasMode (SvcPriority = 0) and follow the alias to the target name. The client MUST ignore HTTPS resource records with a TargetName of <tt>.</tt> (service not available).</t>
+<t>The HTTPS resource record provides the target host and optional port of the RPP service. The client MUST construct the URL for the well-known endpoint (defined in the Discoverability section below) as:</t>
 
 <ul spacing="compact">
-<li><tt>https://&lt;target&gt;:&lt;port&gt;/.well-known/rpp</tt> when <tt>&lt;port&gt;</tt> is not 443</li>
-<li><tt>https://&lt;target&gt;/.well-known/rpp</tt> when <tt>&lt;port&gt;</tt> is 443</li>
+<li><tt>https://&lt;TargetName&gt;:&lt;port&gt;/.well-known/rpp</tt> when the <tt>port</tt> SvcParam is present and not 443</li>
+<li><tt>https://&lt;TargetName&gt;/.well-known/rpp</tt> when the <tt>port</tt> SvcParam is absent or is 443</li>
 </ul>
 <t>The client MUST use the constructed URL to discover the capabilities of the RPP server, as defined in the Discoverability section below.</t>
-<t>Example SRV record for an RPP server for the TLD &quot;example&quot; running HTTPS on port 443 at <tt>rpp.example.</tt>:</t>
+<t>Example HTTPS resource record for an RPP server for the TLD &quot;example&quot; running HTTPS on port 443 at <tt>rpp.example.</tt>:</t>
 
-<sourcecode type="dns"><![CDATA[_rpp._tcp.example. 3600 IN SRV 0 0 443 rpp.example.
-]]></sourcecode>
+<sourcecode type="dns"><![CDATA[example. 3600 IN HTTPS 1 rpp.example. alpn=h2,h3
+]]>
+</sourcecode>
 <t>In this example, the well-known endpoint URL is <tt>https://rpp.example/.well-known/rpp</tt>.</t>
+<t>Example HTTPS resource record for an RPP server running on a non-standard port 8443:</t>
+
+<sourcecode type="dns"><![CDATA[example. 3600 IN HTTPS 1 rpp.example. alpn=h2,h3 port=8443
+]]>
+</sourcecode>
+<t>In this example, the well-known endpoint URL is <tt>https://rpp.example:8443/.well-known/rpp</tt>.</t>
 </section>
 
 <section anchor="discoverability"><name>Discoverability</name>
@@ -370,7 +380,8 @@ The document MUST contain an <tt>errors</tt> element, as a list of objects detai
   ]
 
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 
 <section anchor="workflow"><name>Workflow</name>
 <t>The steps for a typical workflow of provisioning an object using RPP without knowing the location and capabilities of the server are as follows, the first three steps are optional, the client can choose to skip any of these steps if it already has the required information from a previous interaction or configuration.</t>
@@ -417,7 +428,8 @@ A request using an extension MUST include the version of the extension. The serv
       "url": "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0"
     }
   ],
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="profiles"><name>Profiles</name>
@@ -431,7 +443,8 @@ A request using an extension MUST include the version of the extension. The serv
       "url": "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0"
     }
   ]
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 </section>
 
@@ -480,7 +493,8 @@ A request using an extension MUST include the version of the extension. The serv
     "version": "1.0"
   }
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="inheritance"><name>Inheritance</name>
@@ -502,7 +516,8 @@ A request using an extension MUST include the version of the extension. The serv
   ],
   "profile":
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>The example profile definition shown in <xref target="profile-example"></xref> uses the &quot;base-profile&quot; as its base and inherits its features and also overrides the version of the &quot;rppOther&quot; extension defined in the base profile.</t>
 </section>
 
@@ -516,11 +531,13 @@ A request using an extension MUST include the version of the extension. The serv
 <sourcecode type="abnf"><![CDATA[profile-header = "profile" "=" profile-name ";" OWS "version" "=" version
 profile-name   = token
 version        = 1*DIGIT "." 1*DIGIT
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example:</t>
 
 <sourcecode type="http"><![CDATA[RPP-Profile: profile=urn:ietf:params:rpp:profile:example-profile;version=1.0
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="media-type-parameter-signalling"><name>Media type parameter signalling</name>
@@ -535,12 +552,14 @@ version        = 1*DIGIT "." 1*DIGIT
 <sourcecode type="abnf"><![CDATA[profile-parameter = "profile" "=" profile-name ";" OWS "version" "=" version
 profile-name      = token
 version           = 1*DIGIT "." 1*DIGIT
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example for the media type <tt>application/rpp+json</tt> with profile parameters indicating the use of the &quot;example-profile&quot; profile version 1.0.:</t>
 
 <sourcecode type="http"><![CDATA[Accept: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
 Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 </section>
 </section>
@@ -566,7 +585,8 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 <artwork><![CDATA[- Request: HEAD|GET {collection}/{id}/availability
 - Request message: None
 - Response message: Optional availability response
-]]></artwork>
+]]>
+</artwork>
 <t>Example request for a domain name that is not available for provisioning:</t>
 
 <sourcecode type="http"><![CDATA[HEAD domains/foo.example/availability HTTP/2
@@ -575,7 +595,8 @@ Authorization: Bearer <token>
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 404 Not Found
@@ -586,7 +607,8 @@ RPP-Svtrid: XYZ-12345
 RPP-code: 01000
 Content-Length: 0
 
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="resource-information"><name>Resource Information</name>
@@ -606,7 +628,8 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example request using RPP-Authorization header for an object that has attached authorization information.</t>
 
 <sourcecode type="http"><![CDATA[GET domains/foo.example HTTP/2
@@ -617,7 +640,8 @@ Accept-Language: en
 RPP-Cltrid: ABC-12345
 RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example Info response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -629,7 +653,8 @@ Content-Language: en
 RPP-code: 01000
 
 TODO: JSON message here
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="poll-for-messages"><name>Poll for Messages</name>
@@ -650,7 +675,8 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -662,7 +688,8 @@ Content-Language: en
 RPP-code: 01301
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="delete-message"><name>Delete Message</name>
@@ -682,7 +709,8 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -696,7 +724,8 @@ RPP-Cltrid: ABC-12345
 Content-Length: 145
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="create-resource"><name>Create Resource</name>
@@ -718,7 +747,8 @@ Accept-Language: en
 Content-Length: 220
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example Domain Create response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200
@@ -731,7 +761,8 @@ Location: https://rpp.example/domains/foo.example
 RPP-code: 01000
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="delete-resource"><name>Delete Resource</name>
@@ -751,7 +782,8 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example Domain Delete response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -763,7 +795,8 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="processes-path-segment"><name>Processes Path Segment</name>
@@ -789,7 +822,8 @@ TODO
 {
     "duration": "P2Y"
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="cancelling"><name>Cancelling:</name>
@@ -838,7 +872,8 @@ TODO
     }
     ...
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example: Domain Create request with 2-year registration:</t>
 
 <sourcecode type="http"><![CDATA[POST /rpp/v1/domains HTTP/2
@@ -858,7 +893,8 @@ Content-Length: 220
     }
     ... other domain data ...
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 </section>
 
@@ -882,7 +918,8 @@ Accept-Language: en
 Content-Length: 210
 
 TODO: add renew request data here
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example Renew response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -897,7 +934,8 @@ Content-Type: application/rpp+json
 RPP-code: 01000
 
 TODO add renew response data here
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="transfer-resource"><name>Transfer Resource</name>
@@ -922,7 +960,8 @@ Accept-Language: en
 RPP-Cltrid: ABC-12345
 Content-Length: 0
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example request using object authorization:</t>
 
 <sourcecode type="http"><![CDATA[POST /rpp/v1/domains/foo.example/processes/transfers HTTP/2
@@ -934,7 +973,8 @@ RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 Accept-Language: en
 Content-Length: 0
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example request using 1 year renewal period, using the <tt>unit</tt> and <tt>value</tt> query parameters:</t>
 
 <sourcecode type="http"><![CDATA[POST /rpp/v1/domains/foo.example/processes/transfers HTTP/2
@@ -948,7 +988,8 @@ Content-Length: 23
 {
   "duration": "P2Y"
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example Transfer response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -968,7 +1009,8 @@ RPP-code: 01001
   "acDate": "2000-06-11T22:00:00.0Z",
   "exDate": "2002-09-08T22:00:00.0Z
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="status-1"><name>Status</name>
@@ -989,7 +1031,8 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>If the requested transfer object has associated authorization information that is not linked to another database object, then the HTTP GET method MUST be used and the authorization information MUST be included using the RPP-Authorization header.</t>
 <t>Example domain name Transfer Query request using RPP-Authorization header:</t>
 
@@ -1001,7 +1044,8 @@ Accept-Language: en
 RPP-Cltrid: ABC-12345
 RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>If the requested object has associated authorization information linked to another database object, then the HTTP GET method MUST be used and the RPP-Authorization header MUST be included.</t>
 <t>Example domain name Transfer Query request and authorization using RPP-Authorization header:</t>
 
@@ -1013,7 +1057,8 @@ Accept-Language: en
 RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 Content-Length: 0
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example Transfer Query response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1025,7 +1070,8 @@ Content-Language: en
 RPP-code: 01000
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="cancel"><name>Cancel</name>
@@ -1045,7 +1091,8 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1057,7 +1104,8 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="reject"><name>Reject</name>
@@ -1077,7 +1125,8 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example Reject response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1090,7 +1139,8 @@ RPP-code: 01000
 
 TODO
 
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="approve"><name>Approve</name>
@@ -1111,7 +1161,8 @@ Accept-Language: en
 RPP-Cltrid: ABC-12345
 Content-Length: 0
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example Approve response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1123,7 +1174,8 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 </section>
 
@@ -1147,7 +1199,8 @@ Accept-Language: en
 Content-Length: 252
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1159,7 +1212,8 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 </section>
 
@@ -1217,7 +1271,8 @@ TODO: add filled in template, if we decide to use URN for profile identification
 Specification: This Document
 Repository: ?
 Index value: ?
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="rpp-registry-group"><name>RPP registry group</name>
@@ -1226,7 +1281,8 @@ Index value: ?
 <sourcecode type="text"><![CDATA[Name of the registry: RESTful Provisioning Protocol (RPP)
 Reference: This Document
 IANA Registry Reference: TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="rpp-discovery-registry"><name>RPP Discovery registry</name>
@@ -1235,7 +1291,8 @@ IANA Registry Reference: TODO
 <sourcecode type="text"><![CDATA[Name of the registry: RPP Discovery URLs
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Fields to be registered:</t>
 
 <ul spacing="compact">
@@ -1251,7 +1308,8 @@ Registration procedure: Expert Review
 <sourcecode type="text"><![CDATA[Name of the registry: RPP Extensions
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Fields to be registered:</t>
 
 <ul spacing="compact">
@@ -1268,7 +1326,8 @@ Registration procedure: Expert Review
 <sourcecode type="text"><![CDATA[Name of the registry: RPP Profiles
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Fields to be registered:</t>
 
 <ul spacing="compact">
@@ -1286,7 +1345,8 @@ Registration procedure: Expert Review
 <sourcecode type="text"><![CDATA[Name of the registry: RPP Result codes
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Fields to be registered:</t>
 
 <ul spacing="compact">
@@ -1315,7 +1375,8 @@ Restrictions on usage: "N/A"
 Author: Document authors
 Change controller: Document authors
 Provisional registration: No
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 </section>
 
@@ -1330,10 +1391,17 @@ Provisional registration: No
 
 <section anchor="change-history"><name>Change History</name>
 
+<section anchor="version-05-to-06"><name>Version 05 to 06</name>
+
+<ul spacing="compact">
+<li>Updated Bootstrap section, now uses DNS HTTPS resource record. (Issue #56)</li>
+</ul>
+</section>
+
 <section anchor="version-04-to-05"><name>Version 04 to 05</name>
 
 <ul spacing="compact">
-<li>Added Boostrap and Discovery sections to the document, describing how a client can discover the location and capabilities of an RPP server</li>
+<li>Added Bootstrap and Discovery sections to the document, describing how a client can discover the location and capabilities of an RPP server</li>
 <li>Added IANA Considerations section with a request for new RPP discovery URLs, extensions and profile URLs.</li>
 </ul>
 </section>
@@ -1434,6 +1502,7 @@ Provisional registration: No
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9205.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9325.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9457.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9460.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9535.xml"/>
 <reference anchor="SemVer" target="https://semver.org/">
   <front>

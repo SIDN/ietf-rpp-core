@@ -225,26 +225,34 @@ Problem Detail response containing multiple errors for a domain create request u
 
 # Bootstrapping
 
-The client MUST be able to bootstrap itself by discovering the location of an RPP server. Not having a fixed location for the RPP server is a fundamental design principle of RPP, as it allows for a more flexible and scalable architecture. The client MUST use either the IANA registry for RPP servers or a DNS lookup using an SRV record as defined in [@!RFC2782]. The format and procedure for adding an RPP server to the IANA registry is defined in the IANA Considerations section below.
+The client MUST be able to bootstrap itself by discovering the location of an RPP server. Not having a fixed location for the RPP server is a fundamental design principle of RPP, as it allows for a more flexible and scalable architecture. The client MUST use either the IANA registry for RPP servers or a DNS lookup using an HTTPS resource record as defined in [@!RFC9460]. The format and procedure for adding an RPP server to the IANA registry is defined in the IANA Considerations section below.
 
-For DNS-based bootstrapping, an RPP server MUST publish an SRV record in each DNS zone that is served by the RPP server. The owner name of the SRV record MUST be `_rpp._tcp.<zone>`.
+For DNS-based bootstrapping, an RPP server MUST publish an HTTPS resource record for each DNS zone that is served by the RPP server. The owner name of the HTTPS resource record MUST be the provisionedzone name itself (e.g., `<zone>`).
 
-If multiple SRV records are returned, the client MUST select the RPP server according to the priority and weight rules in [@!RFC2782]. The client MUST ignore SRV records with a target of `.` (service not available).
+If multiple HTTPS resource records are returned, the client MUST process them according to the priority rules defined in [@!RFC9460]. If multiple records have the same SvcPriority, the client SHOULD select one based on local policy. The client MUST ignore HTTPS SvcParams in AliasMode (SvcPriority = 0) and follow the alias to the target name. The client MUST ignore HTTPS resource records with a TargetName of `.` (service not available).
 
-The SRV record provides the target host and port of the RPP service. The client MUST construct the URL for the well-known endpoint (defined in the Discoverability section below) as:
+The HTTPS resource record provides the target host and optional port of the RPP service. The client MUST construct the URL for the well-known endpoint (defined in the Discoverability section below) as:
 
-- `https://<target>:<port>/.well-known/rpp` when `<port>` is not 443
-- `https://<target>/.well-known/rpp` when `<port>` is 443
+- `https://<TargetName>:<port>/.well-known/rpp` when the `port` SvcParam is present and not 443
+- `https://<TargetName>/.well-known/rpp` when the `port` SvcParam is absent or is 443
 
 The client MUST use the constructed URL to discover the capabilities of the RPP server, as defined in the Discoverability section below.
 
-Example SRV record for an RPP server for the TLD "example" running HTTPS on port 443 at `rpp.example.`:
+Example HTTPS resource record for an RPP server for the TLD "example" running HTTPS on port 443 at `rpp.example.`:
 
 ```dns
-_rpp._tcp.example. 3600 IN SRV 0 0 443 rpp.example.
+example. 3600 IN HTTPS 1 rpp.example. alpn=h2,h3
 ```
 
 In this example, the well-known endpoint URL is `https://rpp.example/.well-known/rpp`.
+
+Example HTTPS resource record for an RPP server running on a non-standard port 8443:
+
+```dns
+example. 3600 IN HTTPS 1 rpp.example. alpn=h2,h3 port=8443
+```
+
+In this example, the well-known endpoint URL is `https://rpp.example:8443/.well-known/rpp`.
 
 # Discoverability
 
@@ -1395,9 +1403,13 @@ Data confidentiality and integrity MUST be enforced. Every client and server int
 
 # Change History
 
+## Version 05 to 06
+
+- Updated Bootstrap section, now uses DNS HTTPS resource record. (Issue #56)
+
 ## Version 04 to 05
 
-- Added Boostrap and Discovery sections to the document, describing how a client can discover the location and capabilities of an RPP server
+- Added Bootstrap and Discovery sections to the document, describing how a client can discover the location and capabilities of an RPP server
 - Added IANA Considerations section with a request for new RPP discovery URLs, extensions and profile URLs.
 
 ## Version 03 to 04

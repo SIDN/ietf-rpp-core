@@ -10,24 +10,26 @@
 <meta content="
        This document describes the endpoints for the RESTful Provisioning Protocol, used for the provisioning and management of objects in a shared database. 
     " name="description">
-<meta content="xml2rfc 3.31.0" name="generator">
+<meta content="xml2rfc 3.18.2" name="generator">
 <meta content="draft-wullink-rpp-core-05" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.31.0
-    Python 3.10.12
-    ConfigArgParse 1.7.1
-    google-i18n-address 3.1.1
-    intervaltree 3.2.1
-    Jinja2 3.1.6
-    lxml 6.0.2
-    platformdirs 4.9.2
-    pycountry 26.2.16
-    PyYAML 6.0.3
-    requests 2.32.5
-    wcwidth 0.6.0
-    weasyprint 65.0
+  xml2rfc 3.18.2
+    Python 3.11.12
+    ConfigArgParse 1.7
+    google-i18n-address 3.1.0
+    intervaltree 3.1.0
+    jinja2 3.1.6
+    lxml 5.3.1
+    platformdirs 4.0.0
+    pycountry 22.3.5
+    PyYAML 6.0.1
+    requests 2.31.0
+    setuptools 78.1.0
+    six 1.16.0
+    wcwidth 0.2.9
+    weasyprint 55.0
 -->
-<link href="draft-wullink-rpp-core.xml" rel="alternate" type="application/rfc+xml">
+<link href="../docs/draft-wullink-rpp-core.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
 <style type="text/css">/*
 
@@ -43,9 +45,9 @@
 */
 
 /* fonts */
-@import url('https://static.ietf.org/fonts/noto-sans/import.css'); /* Sans-serif */
-@import url('https://static.ietf.org/fonts/noto-serif/import.css'); /* Serif (print) */
-@import url('https://static.ietf.org/fonts/roboto-mono/import.css'); /* Monospace */
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans'); /* Sans-serif */
+@import url('https://fonts.googleapis.com/css?family=Noto+Serif'); /* Serif (print) */
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono'); /* Monospace */
 
 :root {
   --font-sans: 'Noto Sans', Arial, Helvetica, sans-serif;
@@ -159,12 +161,6 @@ div {
 svg {
   display: block;
 }
-@media print {
-  svg {
-    max-height: 850px;
-    max-width: 660px;
-  }
-}
 svg[font-family~="serif" i], svg [font-family~="serif" i] {
   font-family: var(--font-serif);
 }
@@ -257,7 +253,8 @@ a[href]:hover {
   background-color: #f2f2f2;
 }
 figcaption a[href],
-a[href].selfRef {
+a[href].selfRef,
+.iref + a[href].internal {
   color: #222;
 }
 /* XXX probably not this:
@@ -316,9 +313,6 @@ cite {
   display: block;
   text-align: right;
   font-style: italic;
-}
-.xref {
-  overflow-wrap: normal;
 }
 
 /* tables */
@@ -408,7 +402,7 @@ hr {
 /* Fix PDF info block run off issue */
 @media print {
   #identifiers dd {
-    max-width: 100%;
+    float: none;
   }
 }
 #identifiers .authors .author {
@@ -461,10 +455,6 @@ nav.toc li {
 }
 
 .refInstance {
-  margin-bottom: 1.25em;
-}
-
-.refSubseries {
   margin-bottom: 1.25em;
 }
 
@@ -1084,7 +1074,7 @@ table {
 ol.type-a { list-style-type: lower-alpha; }
 ol.type-A { list-style-type: upper-alpha; }
 ol.type-i { list-style-type: lower-roman; }
-ol.type-I { list-style-type: upper-roman; }
+ol.type-I { list-style-type: lower-roman; }
 /* Apply the print table and row borders in general, on request from the RPC,
 and increase the contrast between border and odd row background slightly */
 table {
@@ -1164,7 +1154,7 @@ section .olCompact {
 tt, code {
   background-color: transparent;
 }
-p tt, p code, li tt, li code, dt tt, dt code {
+p tt, p code, li tt, li code {
   background-color: #f8f8f8;
 }
 /* Tweak the pre margin -- 0px doesn't come out well */
@@ -1187,7 +1177,6 @@ dl > dd > dl {
 /* This should match the element list in writer.text.TextWriter.render_dl() */
 dd > div.artwork:first-child,
 dd > aside:first-child,
-dd > blockquote:first-child,
 dd > figure:first-child,
 dd > ol:first-child,
 dd > div.sourcecode:first-child,
@@ -1211,6 +1200,7 @@ li > p:last-of-type:only-child {
 <link href="rfc-local.css" rel="stylesheet" type="text/css">
 </head>
 <body class="xml2rfc">
+<script src="metadata.min.js"></script>
 <table class="ears">
 <thead><tr>
 <td class="left">Internet-Draft</td>
@@ -1500,22 +1490,25 @@ li > p:last-of-type:only-child {
             <p id="section-toc.1-1.20.1"><a href="#section-20" class="auto internal xref">20</a>. <a href="#name-change-history" class="internal xref">Change History</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.20.2.1">
-                <p id="section-toc.1-1.20.2.1.1"><a href="#section-20.1" class="auto internal xref">20.1</a>.  <a href="#name-version-04-to-05" class="internal xref">Version 04 to 05</a></p>
+                <p id="section-toc.1-1.20.2.1.1"><a href="#section-20.1" class="auto internal xref">20.1</a>.  <a href="#name-version-05-to-06" class="internal xref">Version 05 to 06</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.20.2.2">
-                <p id="section-toc.1-1.20.2.2.1"><a href="#section-20.2" class="auto internal xref">20.2</a>.  <a href="#name-version-03-to-04" class="internal xref">Version 03 to 04</a></p>
+                <p id="section-toc.1-1.20.2.2.1"><a href="#section-20.2" class="auto internal xref">20.2</a>.  <a href="#name-version-04-to-05" class="internal xref">Version 04 to 05</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.20.2.3">
-                <p id="section-toc.1-1.20.2.3.1"><a href="#section-20.3" class="auto internal xref">20.3</a>.  <a href="#name-version-02-to-03" class="internal xref">Version 02 to 03</a></p>
+                <p id="section-toc.1-1.20.2.3.1"><a href="#section-20.3" class="auto internal xref">20.3</a>.  <a href="#name-version-03-to-04" class="internal xref">Version 03 to 04</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.20.2.4">
-                <p id="section-toc.1-1.20.2.4.1"><a href="#section-20.4" class="auto internal xref">20.4</a>.  <a href="#name-version-01-to-02" class="internal xref">Version 01 to 02</a></p>
+                <p id="section-toc.1-1.20.2.4.1"><a href="#section-20.4" class="auto internal xref">20.4</a>.  <a href="#name-version-02-to-03" class="internal xref">Version 02 to 03</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.20.2.5">
-                <p id="section-toc.1-1.20.2.5.1"><a href="#section-20.5" class="auto internal xref">20.5</a>.  <a href="#name-version-00-to-01" class="internal xref">Version 00 to 01</a></p>
+                <p id="section-toc.1-1.20.2.5.1"><a href="#section-20.5" class="auto internal xref">20.5</a>.  <a href="#name-version-01-to-02" class="internal xref">Version 01 to 02</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.20.2.6">
-                <p id="section-toc.1-1.20.2.6.1"><a href="#section-20.6" class="auto internal xref">20.6</a>.  <a href="#name-version-00-draft-rpp-core-t" class="internal xref">Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)</a></p>
+                <p id="section-toc.1-1.20.2.6.1"><a href="#section-20.6" class="auto internal xref">20.6</a>.  <a href="#name-version-00-to-01" class="internal xref">Version 00 to 01</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.20.2.7">
+                <p id="section-toc.1-1.20.2.7.1"><a href="#section-20.7" class="auto internal xref">20.7</a>.  <a href="#name-version-00-draft-rpp-core-t" class="internal xref">Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)</a></p>
 </li>
             </ul>
 </li>
@@ -1599,6 +1592,7 @@ li > p:last-of-type:only-child {
 <p id="section-4-3">Use of the RPP-Authorization header:<a href="#section-4-3" class="pilcrow">¶</a></p>
 <div class="lang-http sourcecode" id="section-4-4">
 <pre>RPP-Authorization: authinfo value=TXkgU2VjcmFRva2Vu, roid=REG-X-123
+
 </pre><a href="#section-4-4" class="pilcrow">¶</a>
 </div>
 <p id="section-4-5">The value of the <code>RPP-Authorization</code> header is case sensitive. The server MUST reject requests where the case of the header value does not match the expected case.
@@ -1787,6 +1781,7 @@ The document MUST contain an <code>errors</code> element, as a list of objects d
     "action_cost": 25.0
   }]
 }
+
 </pre><a href="#section-7-7" class="pilcrow">¶</a>
 </div>
 <p id="section-7-8">Problem Detail response containing multiple errors for a domain create request using an invalid domain name (_$.example), JSONPaths are specified in the error objects to indicate which value in the request caused the error:<a href="#section-7-8" class="pilcrow">¶</a></p>
@@ -1807,6 +1802,7 @@ The document MUST contain an <code>errors</code> element, as a list of objects d
     "reason": "Domain name length must be between 3 and 63 characters",
   }]
 }
+
 </pre><a href="#section-7-9" class="pilcrow">¶</a>
 </div>
 </section>
@@ -1816,25 +1812,33 @@ The document MUST contain an <code>errors</code> element, as a list of objects d
       <h2 id="name-bootstrapping">
 <a href="#section-8" class="section-number selfRef">8. </a><a href="#name-bootstrapping" class="section-name selfRef">Bootstrapping</a>
       </h2>
-<p id="section-8-1">The client MUST be able to bootstrap itself by discovering the location of an RPP server. Not having a fixed location for the RPP server is a fundamental design principle of RPP, as it allows for a more flexible and scalable architecture. The client MUST use either the IANA registry for RPP servers or a DNS lookup using an SRV record as defined in <span>[<a href="#RFC2782" class="cite xref">RFC2782</a>]</span>. The format and procedure for adding an RPP server to the IANA registry is defined in the IANA Considerations section below.<a href="#section-8-1" class="pilcrow">¶</a></p>
-<p id="section-8-2">For DNS-based bootstrapping, an RPP server MUST publish an SRV record in each DNS zone that is served by the RPP server. The owner name of the SRV record MUST be <code>_rpp._tcp.&lt;zone&gt;</code>.<a href="#section-8-2" class="pilcrow">¶</a></p>
-<p id="section-8-3">If multiple SRV records are returned, the client MUST select the RPP server according to the priority and weight rules in <span>[<a href="#RFC2782" class="cite xref">RFC2782</a>]</span>. The client MUST ignore SRV records with a target of <code>.</code> (service not available).<a href="#section-8-3" class="pilcrow">¶</a></p>
-<p id="section-8-4">The SRV record provides the target host and port of the RPP service. The client MUST construct the URL for the well-known endpoint (defined in the Discoverability section below) as:<a href="#section-8-4" class="pilcrow">¶</a></p>
+<p id="section-8-1">The client MUST be able to bootstrap itself by discovering the location of an RPP server. Not having a fixed location for the RPP server is a fundamental design principle of RPP, as it allows for a more flexible and scalable architecture. The client MUST use either the IANA registry for RPP servers or a DNS lookup using an HTTPS resource record as defined in <span>[<a href="#RFC9460" class="cite xref">RFC9460</a>]</span>. The format and procedure for adding an RPP server to the IANA registry is defined in the IANA Considerations section below.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-2">For DNS-based bootstrapping, an RPP server MUST publish an HTTPS resource record for each DNS zone that is served by the RPP server. The owner name of the HTTPS resource record MUST be the provisionedzone name itself (e.g., <code>&lt;zone&gt;</code>).<a href="#section-8-2" class="pilcrow">¶</a></p>
+<p id="section-8-3">If multiple HTTPS resource records are returned, the client MUST process them according to the priority rules defined in <span>[<a href="#RFC9460" class="cite xref">RFC9460</a>]</span>. If multiple records have the same SvcPriority, the client SHOULD select one based on local policy. The client MUST ignore HTTPS SvcParams in AliasMode (SvcPriority = 0) and follow the alias to the target name. The client MUST ignore HTTPS resource records with a TargetName of <code>.</code> (service not available).<a href="#section-8-3" class="pilcrow">¶</a></p>
+<p id="section-8-4">The HTTPS resource record provides the target host and optional port of the RPP service. The client MUST construct the URL for the well-known endpoint (defined in the Discoverability section below) as:<a href="#section-8-4" class="pilcrow">¶</a></p>
 <ul class="compact">
 <li class="compact" id="section-8-5.1">
-          <code>https://&lt;target&gt;:&lt;port&gt;/.well-known/rpp</code> when <code>&lt;port&gt;</code> is not 443<a href="#section-8-5.1" class="pilcrow">¶</a>
+          <code>https://&lt;TargetName&gt;:&lt;port&gt;/.well-known/rpp</code> when the <code>port</code> SvcParam is present and not 443<a href="#section-8-5.1" class="pilcrow">¶</a>
 </li>
         <li class="compact" id="section-8-5.2">
-          <code>https://&lt;target&gt;/.well-known/rpp</code> when <code>&lt;port&gt;</code> is 443<a href="#section-8-5.2" class="pilcrow">¶</a>
+          <code>https://&lt;TargetName&gt;/.well-known/rpp</code> when the <code>port</code> SvcParam is absent or is 443<a href="#section-8-5.2" class="pilcrow">¶</a>
 </li>
       </ul>
 <p id="section-8-6">The client MUST use the constructed URL to discover the capabilities of the RPP server, as defined in the Discoverability section below.<a href="#section-8-6" class="pilcrow">¶</a></p>
-<p id="section-8-7">Example SRV record for an RPP server for the TLD "example" running HTTPS on port 443 at <code>rpp.example.</code>:<a href="#section-8-7" class="pilcrow">¶</a></p>
+<p id="section-8-7">Example HTTPS resource record for an RPP server for the TLD "example" running HTTPS on port 443 at <code>rpp.example.</code>:<a href="#section-8-7" class="pilcrow">¶</a></p>
 <div class="lang-dns sourcecode" id="section-8-8">
-<pre>_rpp._tcp.example. 3600 IN SRV 0 0 443 rpp.example.
+<pre>example. 3600 IN HTTPS 1 rpp.example. alpn=h2,h3
+
 </pre><a href="#section-8-8" class="pilcrow">¶</a>
 </div>
 <p id="section-8-9">In this example, the well-known endpoint URL is <code>https://rpp.example/.well-known/rpp</code>.<a href="#section-8-9" class="pilcrow">¶</a></p>
+<p id="section-8-10">Example HTTPS resource record for an RPP server running on a non-standard port 8443:<a href="#section-8-10" class="pilcrow">¶</a></p>
+<div class="lang-dns sourcecode" id="section-8-11">
+<pre>example. 3600 IN HTTPS 1 rpp.example. alpn=h2,h3 port=8443
+
+</pre><a href="#section-8-11" class="pilcrow">¶</a>
+</div>
+<p id="section-8-12">In this example, the well-known endpoint URL is <code>https://rpp.example:8443/.well-known/rpp</code>.<a href="#section-8-12" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="discoverability">
@@ -1935,7 +1939,7 @@ The document MUST contain an <code>errors</code> element, as a list of objects d
 </li>
       </ul>
 <p id="section-9-5">Example discovery response document:<a href="#section-9-5" class="pilcrow">¶</a></p>
-<div class="lang-json sourcecode" id="section-9-6">
+<div class="breakable lang-json sourcecode" id="section-9-6">
 <pre>{
   "base_url": "https://rpp.example/rpp/v1",
   "version": "1.0",
@@ -1985,6 +1989,7 @@ The document MUST contain an <code>errors</code> element, as a list of objects d
   ]
 
 }
+
 </pre><a href="#section-9-6" class="pilcrow">¶</a>
 </div>
 <div id="workflow">
@@ -2060,6 +2065,7 @@ A request using an extension MUST include the version of the extension. The serv
       "url": "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0"
     }
   ],
+
 </pre><a href="#section-10.3-2" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2079,6 +2085,7 @@ A request using an extension MUST include the version of the extension. The serv
       "url": "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0"
     }
   ]
+
 </pre><a href="#section-10.4-2" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2156,6 +2163,7 @@ A request using an extension MUST include the version of the extension. The serv
     "version": "1.0"
   }
 }
+
 </pre><a href="#section-12.1-4" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2183,6 +2191,7 @@ A request using an extension MUST include the version of the extension. The serv
   ],
   "profile":
 }
+
 </pre><a href="#section-12.2-3" class="pilcrow">¶</a>
 </div>
 <p id="section-12.2-4">The example profile definition shown in <a href="#profile-example" class="auto internal xref">Section 12.1, Paragraph 3</a> uses the "base-profile" as its base and inherits its features and also overrides the version of the "rppOther" extension defined in the base profile.<a href="#section-12.2-4" class="pilcrow">¶</a></p>
@@ -2205,11 +2214,13 @@ A request using an extension MUST include the version of the extension. The serv
 <pre>profile-header = "profile" "=" profile-name ";" OWS "version" "=" version
 profile-name   = token
 version        = 1*DIGIT "." 1*DIGIT
+
 </pre><a href="#section-12.3.1-3" class="pilcrow">¶</a>
 </div>
 <p id="section-12.3.1-4">Example:<a href="#section-12.3.1-4" class="pilcrow">¶</a></p>
 <div class="lang-http sourcecode" id="section-12.3.1-5">
 <pre>RPP-Profile: profile=urn:ietf:params:rpp:profile:example-profile;version=1.0
+
 </pre><a href="#section-12.3.1-5" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2233,12 +2244,14 @@ version        = 1*DIGIT "." 1*DIGIT
 <pre>profile-parameter = "profile" "=" profile-name ";" OWS "version" "=" version
 profile-name      = token
 version           = 1*DIGIT "." 1*DIGIT
+
 </pre><a href="#section-12.3.2-4" class="pilcrow">¶</a>
 </div>
 <p id="section-12.3.2-5">Example for the media type <code>application/rpp+json</code> with profile parameters indicating the use of the "example-profile" profile version 1.0.:<a href="#section-12.3.2-5" class="pilcrow">¶</a></p>
 <div class="lang-http sourcecode" id="section-12.3.2-6">
 <pre>Accept: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
 Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
+
 </pre><a href="#section-12.3.2-6" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2276,6 +2289,7 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 <pre>- Request: HEAD|GET {collection}/{id}/availability
 - Request message: None
 - Response message: Optional availability response
+
 </pre><a href="#section-13.1-7" class="pilcrow">¶</a>
 </div>
 <p id="section-13.1-8">Example request for a domain name that is not available for provisioning:<a href="#section-13.1-8" class="pilcrow">¶</a></p>
@@ -2285,6 +2299,7 @@ Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept-Language: en
 RPP-Cltrid: ABC-12345
+
 
 </pre><a href="#section-13.1-9" class="pilcrow">¶</a>
 </div>
@@ -2297,6 +2312,7 @@ RPP-Cltrid: ABC-12345
 RPP-Svtrid: XYZ-12345
 RPP-code: 01000
 Content-Length: 0
+
 
 </pre><a href="#section-13.1-11" class="pilcrow">¶</a>
 </div>
@@ -2325,6 +2341,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
+
 </pre><a href="#section-13.2-4" class="pilcrow">¶</a>
 </div>
 <p id="section-13.2-5">Example request using RPP-Authorization header for an object that has attached authorization information.<a href="#section-13.2-5" class="pilcrow">¶</a></p>
@@ -2336,6 +2353,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
+
 
 </pre><a href="#section-13.2-6" class="pilcrow">¶</a>
 </div>
@@ -2350,6 +2368,7 @@ Content-Language: en
 RPP-code: 01000
 
 TODO: JSON message here
+
 </pre><a href="#section-13.2-8" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2378,6 +2397,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
+
 </pre><a href="#section-13.3-5" class="pilcrow">¶</a>
 </div>
 <p id="section-13.3-6">Example response:<a href="#section-13.3-6" class="pilcrow">¶</a></p>
@@ -2391,6 +2411,7 @@ Content-Language: en
 RPP-code: 01301
 
 TODO
+
 </pre><a href="#section-13.3-7" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2418,6 +2439,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
+
 </pre><a href="#section-13.4-4" class="pilcrow">¶</a>
 </div>
 <p id="section-13.4-5">Example response:<a href="#section-13.4-5" class="pilcrow">¶</a></p>
@@ -2433,6 +2455,7 @@ RPP-Cltrid: ABC-12345
 Content-Length: 145
 
 TODO
+
 </pre><a href="#section-13.4-6" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2462,6 +2485,7 @@ Accept-Language: en
 Content-Length: 220
 
 TODO
+
 </pre><a href="#section-13.5-4" class="pilcrow">¶</a>
 </div>
 <p id="section-13.5-5">Example Domain Create response:<a href="#section-13.5-5" class="pilcrow">¶</a></p>
@@ -2476,6 +2500,7 @@ Location: https://rpp.example/domains/foo.example
 RPP-code: 01000
 
 TODO
+
 </pre><a href="#section-13.5-6" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2503,6 +2528,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
+
 </pre><a href="#section-13.6-4" class="pilcrow">¶</a>
 </div>
 <p id="section-13.6-5">Example Domain Delete response:<a href="#section-13.6-5" class="pilcrow">¶</a></p>
@@ -2516,6 +2542,7 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
+
 </pre><a href="#section-13.6-6" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2553,6 +2580,7 @@ TODO
 {
     "duration": "P2Y"
 }
+
 </pre><a href="#section-13.7.1.1-6" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2624,6 +2652,7 @@ TODO
     }
     ...
 }
+
 </pre><a href="#section-13.7.2-4" class="pilcrow">¶</a>
 </div>
 <p id="section-13.7.2-5">Example: Domain Create request with 2-year registration:<a href="#section-13.7.2-5" class="pilcrow">¶</a></p>
@@ -2645,6 +2674,7 @@ Content-Length: 220
     }
     ... other domain data ...
 }
+
 </pre><a href="#section-13.7.2-6" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2677,6 +2707,7 @@ Accept-Language: en
 Content-Length: 210
 
 TODO: add renew request data here
+
 </pre><a href="#section-13.8-4" class="pilcrow">¶</a>
 </div>
 <p id="section-13.8-5">Example Renew response:<a href="#section-13.8-5" class="pilcrow">¶</a></p>
@@ -2693,6 +2724,7 @@ Content-Type: application/rpp+json
 RPP-code: 01000
 
 TODO add renew response data here
+
 </pre><a href="#section-13.8-6" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2728,6 +2760,7 @@ Accept-Language: en
 RPP-Cltrid: ABC-12345
 Content-Length: 0
 
+
 </pre><a href="#section-13.9.1-5" class="pilcrow">¶</a>
 </div>
 <p id="section-13.9.1-6">Example request using object authorization:<a href="#section-13.9.1-6" class="pilcrow">¶</a></p>
@@ -2740,6 +2773,7 @@ RPP-Cltrid: ABC-12345
 RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 Accept-Language: en
 Content-Length: 0
+
 
 </pre><a href="#section-13.9.1-7" class="pilcrow">¶</a>
 </div>
@@ -2756,6 +2790,7 @@ Content-Length: 23
 {
   "duration": "P2Y"
 }
+
 </pre><a href="#section-13.9.1-9" class="pilcrow">¶</a>
 </div>
 <p id="section-13.9.1-10">Example Transfer response:<a href="#section-13.9.1-10" class="pilcrow">¶</a></p>
@@ -2777,6 +2812,7 @@ RPP-code: 01001
   "acDate": "2000-06-11T22:00:00.0Z",
   "exDate": "2002-09-08T22:00:00.0Z
 }
+
 </pre><a href="#section-13.9.1-11" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2805,6 +2841,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
+
 </pre><a href="#section-13.9.2-4" class="pilcrow">¶</a>
 </div>
 <p id="section-13.9.2-5">If the requested transfer object has associated authorization information that is not linked to another database object, then the HTTP GET method MUST be used and the authorization information MUST be included using the RPP-Authorization header.<a href="#section-13.9.2-5" class="pilcrow">¶</a></p>
@@ -2817,6 +2854,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
+
 
 </pre><a href="#section-13.9.2-7" class="pilcrow">¶</a>
 </div>
@@ -2831,6 +2869,7 @@ Accept-Language: en
 RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 Content-Length: 0
 
+
 </pre><a href="#section-13.9.2-10" class="pilcrow">¶</a>
 </div>
 <p id="section-13.9.2-11">Example Transfer Query response:<a href="#section-13.9.2-11" class="pilcrow">¶</a></p>
@@ -2844,6 +2883,7 @@ Content-Language: en
 RPP-code: 01000
 
 TODO
+
 </pre><a href="#section-13.9.2-12" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2871,6 +2911,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
+
 </pre><a href="#section-13.9.3-4" class="pilcrow">¶</a>
 </div>
 <p id="section-13.9.3-5">Example response:<a href="#section-13.9.3-5" class="pilcrow">¶</a></p>
@@ -2884,6 +2925,7 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
+
 </pre><a href="#section-13.9.3-6" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2911,6 +2953,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
+
 </pre><a href="#section-13.9.4-4" class="pilcrow">¶</a>
 </div>
 <p id="section-13.9.4-5">Example Reject response:<a href="#section-13.9.4-5" class="pilcrow">¶</a></p>
@@ -2924,6 +2967,7 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
+
 
 </pre><a href="#section-13.9.4-6" class="pilcrow">¶</a>
 </div>
@@ -2953,6 +2997,7 @@ Accept-Language: en
 RPP-Cltrid: ABC-12345
 Content-Length: 0
 
+
 </pre><a href="#section-13.9.5-4" class="pilcrow">¶</a>
 </div>
 <p id="section-13.9.5-5">Example Approve response:<a href="#section-13.9.5-5" class="pilcrow">¶</a></p>
@@ -2966,6 +3011,7 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
+
 </pre><a href="#section-13.9.5-6" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2998,6 +3044,7 @@ Accept-Language: en
 Content-Length: 252
 
 TODO
+
 </pre><a href="#section-13.10-5" class="pilcrow">¶</a>
 </div>
 <p id="section-13.10-6">Example response:<a href="#section-13.10-6" class="pilcrow">¶</a></p>
@@ -3011,6 +3058,7 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
+
 </pre><a href="#section-13.10-7" class="pilcrow">¶</a>
 </div>
 </section>
@@ -3094,6 +3142,7 @@ TODO: add filled in template, if we decide to use URN for profile identification
 Specification: This Document
 Repository: ?
 Index value: ?
+
 </pre><a href="#section-17.1-2" class="pilcrow">¶</a>
 </div>
 </section>
@@ -3108,6 +3157,7 @@ Index value: ?
 <pre>Name of the registry: RESTful Provisioning Protocol (RPP)
 Reference: This Document
 IANA Registry Reference: TODO
+
 </pre><a href="#section-17.2-2" class="pilcrow">¶</a>
 </div>
 </section>
@@ -3122,6 +3172,7 @@ IANA Registry Reference: TODO
 <pre>Name of the registry: RPP Discovery URLs
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
+
 </pre><a href="#section-17.3-2" class="pilcrow">¶</a>
 </div>
 <p id="section-17.3-3">Fields to be registered:<a href="#section-17.3-3" class="pilcrow">¶</a></p>
@@ -3148,6 +3199,7 @@ Registration procedure: Expert Review
 <pre>Name of the registry: RPP Extensions
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
+
 </pre><a href="#section-17.4-2" class="pilcrow">¶</a>
 </div>
 <p id="section-17.4-3">Fields to be registered:<a href="#section-17.4-3" class="pilcrow">¶</a></p>
@@ -3177,6 +3229,7 @@ Registration procedure: Expert Review
 <pre>Name of the registry: RPP Profiles
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
+
 </pre><a href="#section-17.5-2" class="pilcrow">¶</a>
 </div>
 <p id="section-17.5-3">Fields to be registered:<a href="#section-17.5-3" class="pilcrow">¶</a></p>
@@ -3209,6 +3262,7 @@ Registration procedure: Expert Review
 <pre>Name of the registry: RPP Result codes
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
+
 </pre><a href="#section-17.6-2" class="pilcrow">¶</a>
 </div>
 <p id="section-17.6-3">Fields to be registered:<a href="#section-17.6-3" class="pilcrow">¶</a></p>
@@ -3246,6 +3300,7 @@ Restrictions on usage: "N/A"
 Author: Document authors
 Change controller: Document authors
 Provisional registration: No
+
 </pre><a href="#section-17.7-2" class="pilcrow">¶</a>
 </div>
 </section>
@@ -3274,100 +3329,111 @@ Provisional registration: No
       <h2 id="name-change-history">
 <a href="#section-20" class="section-number selfRef">20. </a><a href="#name-change-history" class="section-name selfRef">Change History</a>
       </h2>
-<div id="version-04-to-05">
+<div id="version-05-to-06">
 <section id="section-20.1">
-        <h3 id="name-version-04-to-05">
-<a href="#section-20.1" class="section-number selfRef">20.1. </a><a href="#name-version-04-to-05" class="section-name selfRef">Version 04 to 05</a>
+        <h3 id="name-version-05-to-06">
+<a href="#section-20.1" class="section-number selfRef">20.1. </a><a href="#name-version-05-to-06" class="section-name selfRef">Version 05 to 06</a>
         </h3>
 <ul class="compact">
-<li class="compact" id="section-20.1-1.1">Added Boostrap and Discovery sections to the document, describing how a client can discover the location and capabilities of an RPP server<a href="#section-20.1-1.1" class="pilcrow">¶</a>
+<li class="compact" id="section-20.1-1.1">Updated Bootstrap section, now uses DNS HTTPS resource record. (Issue #56)<a href="#section-20.1-1.1" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-20.1-1.2">Added IANA Considerations section with a request for new RPP discovery URLs, extensions and profile URLs.<a href="#section-20.1-1.2" class="pilcrow">¶</a>
+        </ul>
+</section>
+</div>
+<div id="version-04-to-05">
+<section id="section-20.2">
+        <h3 id="name-version-04-to-05">
+<a href="#section-20.2" class="section-number selfRef">20.2. </a><a href="#name-version-04-to-05" class="section-name selfRef">Version 04 to 05</a>
+        </h3>
+<ul class="compact">
+<li class="compact" id="section-20.2-1.1">Added Bootstrap and Discovery sections to the document, describing how a client can discover the location and capabilities of an RPP server<a href="#section-20.2-1.1" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-20.2-1.2">Added IANA Considerations section with a request for new RPP discovery URLs, extensions and profile URLs.<a href="#section-20.2-1.2" class="pilcrow">¶</a>
 </li>
         </ul>
 </section>
 </div>
 <div id="version-03-to-04">
-<section id="section-20.2">
+<section id="section-20.3">
         <h3 id="name-version-03-to-04">
-<a href="#section-20.2" class="section-number selfRef">20.2. </a><a href="#name-version-03-to-04" class="section-name selfRef">Version 03 to 04</a>
+<a href="#section-20.3" class="section-number selfRef">20.3. </a><a href="#name-version-03-to-04" class="section-name selfRef">Version 03 to 04</a>
         </h3>
 <ul class="compact">
-<li class="compact" id="section-20.2-1.1">Added a new section on versioning, describing how versioning is applied to different RPP elements. (Issue #39)<a href="#section-20.2-1.1" class="pilcrow">¶</a>
+<li class="compact" id="section-20.3-1.1">Added a new section on versioning, describing how versioning is applied to different RPP elements. (Issue #39)<a href="#section-20.3-1.1" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-20.2-1.2">Added IANA request for RPP Result codes registry, and added a table with example RPP result codes. (Issue #39)<a href="#section-20.2-1.2" class="pilcrow">¶</a>
+          <li class="compact" id="section-20.3-1.2">Added IANA request for RPP Result codes registry, and added a table with example RPP result codes. (Issue #39)<a href="#section-20.3-1.2" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-20.2-1.3">Added IANA request for URN sub-namespace for RPP. (Issue #39)<a href="#section-20.2-1.3" class="pilcrow">¶</a>
+          <li class="compact" id="section-20.3-1.3">Added IANA request for URN sub-namespace for RPP. (Issue #39)<a href="#section-20.3-1.3" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-20.2-1.4">Added a new "Profiles" section to describe how to define and use profiles. (Issue #43)<a href="#section-20.2-1.4" class="pilcrow">¶</a>
+          <li class="compact" id="section-20.3-1.4">Added a new "Profiles" section to describe how to define and use profiles. (Issue #43)<a href="#section-20.3-1.4" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-20.2-1.5">Added a new section "Authentication and Authorization". (Issue #37)<a href="#section-20.2-1.5" class="pilcrow">¶</a>
+          <li class="compact" id="section-20.3-1.5">Added a new section "Authentication and Authorization". (Issue #37)<a href="#section-20.3-1.5" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-20.2-1.6">Updated the "Security Considerations" section to include transport security. (Issue #37)<a href="#section-20.2-1.6" class="pilcrow">¶</a>
+          <li class="compact" id="section-20.3-1.6">Updated the "Security Considerations" section to include transport security. (Issue #37)<a href="#section-20.3-1.6" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-20.2-1.7">Added IANA registration request for the new RPP media type. (Issue #40)<a href="#section-20.2-1.7" class="pilcrow">¶</a>
+          <li class="compact" id="section-20.3-1.7">Added IANA registration request for the new RPP media type. (Issue #40)<a href="#section-20.3-1.7" class="pilcrow">¶</a>
 </li>
         </ul>
 </section>
 </div>
 <div id="version-02-to-03">
-<section id="section-20.3">
+<section id="section-20.4">
         <h3 id="name-version-02-to-03">
-<a href="#section-20.3" class="section-number selfRef">20.3. </a><a href="#name-version-02-to-03" class="section-name selfRef">Version 02 to 03</a>
+<a href="#section-20.4" class="section-number selfRef">20.4. </a><a href="#name-version-02-to-03" class="section-name selfRef">Version 02 to 03</a>
         </h3>
 <ul class="compact">
-<li class="compact" id="section-20.3-1.1">Added use of Problem Detail <span>[<a href="#RFC9457" class="cite xref">RFC9457</a>]</span> for error responses<a href="#section-20.3-1.1" class="pilcrow">¶</a>
+<li class="compact" id="section-20.4-1.1">Added use of Problem Detail <span>[<a href="#RFC9457" class="cite xref">RFC9457</a>]</span> for error responses<a href="#section-20.4-1.1" class="pilcrow">¶</a>
 </li>
         </ul>
 </section>
 </div>
 <div id="version-01-to-02">
-<section id="section-20.4">
+<section id="section-20.5">
         <h3 id="name-version-01-to-02">
-<a href="#section-20.4" class="section-number selfRef">20.4. </a><a href="#name-version-01-to-02" class="section-name selfRef">Version 01 to 02</a>
+<a href="#section-20.5" class="section-number selfRef">20.5. </a><a href="#name-version-01-to-02" class="section-name selfRef">Version 01 to 02</a>
         </h3>
 <ul class="compact">
-<li class="compact" id="section-20.4-1.1">Updated the examples, changed from "<em>.example.org" to "</em>.example"<a href="#section-20.4-1.1" class="pilcrow">¶</a>
+<li class="compact" id="section-20.5-1.1">Updated the examples, changed from "<em>.example.org" to "</em>.example"<a href="#section-20.5-1.1" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-20.4-1.2">Merged the RPP-EPP-Code and RPP-Code headers into a single RPP-Code header<a href="#section-20.4-1.2" class="pilcrow">¶</a>
+          <li class="compact" id="section-20.5-1.2">Merged the RPP-EPP-Code and RPP-Code headers into a single RPP-Code header<a href="#section-20.5-1.2" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-20.4-1.3">Update the RPP-Authorization header to match the HTTP Authorization header format<a href="#section-20.4-1.3" class="pilcrow">¶</a>
+          <li class="compact" id="section-20.5-1.3">Update the RPP-Authorization header to match the HTTP Authorization header format<a href="#section-20.5-1.3" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-20.4-1.4">Added new process path segment and process representations<a href="#section-20.4-1.4" class="pilcrow">¶</a>
+          <li class="compact" id="section-20.5-1.4">Added new process path segment and process representations<a href="#section-20.5-1.4" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-20.4-1.5">Updated the Check request to now use an "availability" path segment and support both GET and HEAD methods<a href="#section-20.4-1.5" class="pilcrow">¶</a>
+          <li class="compact" id="section-20.5-1.5">Updated the Check request to now use an "availability" path segment and support both GET and HEAD methods<a href="#section-20.5-1.5" class="pilcrow">¶</a>
 </li>
         </ul>
 </section>
 </div>
 <div id="version-00-to-01">
-<section id="section-20.5">
+<section id="section-20.6">
         <h3 id="name-version-00-to-01">
-<a href="#section-20.5" class="section-number selfRef">20.5. </a><a href="#name-version-00-to-01" class="section-name selfRef">Version 00 to 01</a>
+<a href="#section-20.6" class="section-number selfRef">20.6. </a><a href="#name-version-00-to-01" class="section-name selfRef">Version 00 to 01</a>
         </h3>
 <ul class="compact">
-<li class="compact" id="section-20.5-1.1">Updated "Request Headers" and "Response Headers" section<a href="#section-20.5-1.1" class="pilcrow">¶</a>
+<li class="compact" id="section-20.6-1.1">Updated "Request Headers" and "Response Headers" section<a href="#section-20.6-1.1" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-20.5-1.2">Changed transfer resource URL and HTTP method for reject, approve and cancel, in order to make the API easier to use<a href="#section-20.5-1.2" class="pilcrow">¶</a>
+          <li class="compact" id="section-20.6-1.2">Changed transfer resource URL and HTTP method for reject, approve and cancel, in order to make the API easier to use<a href="#section-20.6-1.2" class="pilcrow">¶</a>
 </li>
         </ul>
 </section>
 </div>
 <div id="version-00-draft-rpp-core-to-00-draft-wullink-rpp-core">
-<section id="section-20.6">
+<section id="section-20.7">
         <h3 id="name-version-00-draft-rpp-core-t">
-<a href="#section-20.6" class="section-number selfRef">20.6. </a><a href="#name-version-00-draft-rpp-core-t" class="section-name selfRef">Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)</a>
+<a href="#section-20.7" class="section-number selfRef">20.7. </a><a href="#name-version-00-draft-rpp-core-t" class="section-name selfRef">Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)</a>
         </h3>
 <ul class="compact">
-<li class="compact" id="section-20.6-1.1">Renamed the document name to "draft-wullink-rpp-core"<a href="#section-20.6-1.1" class="pilcrow">¶</a>
+<li class="compact" id="section-20.7-1.1">Renamed the document name to "draft-wullink-rpp-core"<a href="#section-20.7-1.1" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-20.6-1.2">Removed sections: Design Considerations, Resource Naming Convention, Session Management, HTTP Layer, Content Negotiation, Object Filtering, Error Handling<a href="#section-20.6-1.2" class="pilcrow">¶</a>
+          <li class="compact" id="section-20.7-1.2">Removed sections: Design Considerations, Resource Naming Convention, Session Management, HTTP Layer, Content Negotiation, Object Filtering, Error Handling<a href="#section-20.7-1.2" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-20.6-1.3">Renamed Commands section to Endpoints<a href="#section-20.6-1.3" class="pilcrow">¶</a>
+          <li class="compact" id="section-20.7-1.3">Renamed Commands section to Endpoints<a href="#section-20.7-1.3" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-20.6-1.4">Removed text about extensions<a href="#section-20.6-1.4" class="pilcrow">¶</a>
+          <li class="compact" id="section-20.7-1.4">Removed text about extensions<a href="#section-20.7-1.4" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-20.6-1.5">Changed naming to be less EPP like and more RDAP like<a href="#section-20.6-1.5" class="pilcrow">¶</a>
+          <li class="compact" id="section-20.7-1.5">Changed naming to be less EPP like and more RDAP like<a href="#section-20.7-1.5" class="pilcrow">¶</a>
 </li>
         </ul>
 </section>
@@ -3490,6 +3556,10 @@ Provisional registration: No
 <dt id="RFC9457">[RFC9457]</dt>
         <dd>
 <span class="refAuthor">Nottingham, M.</span>, <span class="refAuthor">Wilde, E.</span>, and <span class="refAuthor">S. Dalal</span>, <span class="refTitle">"Problem Details for HTTP APIs"</span>, <span class="seriesInfo">RFC 9457</span>, <span class="seriesInfo">DOI 10.17487/RFC9457</span>, <time datetime="2023-07" class="refDate">July 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9457">https://www.rfc-editor.org/info/rfc9457</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9460">[RFC9460]</dt>
+        <dd>
+<span class="refAuthor">Schwartz, B.</span>, <span class="refAuthor">Bishop, M.</span>, and <span class="refAuthor">E. Nygren</span>, <span class="refTitle">"Service Binding and Parameter Specification via the DNS (SVCB and HTTPS Resource Records)"</span>, <span class="seriesInfo">RFC 9460</span>, <span class="seriesInfo">DOI 10.17487/RFC9460</span>, <time datetime="2023-11" class="refDate">November 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9460">https://www.rfc-editor.org/info/rfc9460</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9535">[RFC9535]</dt>
         <dd>
