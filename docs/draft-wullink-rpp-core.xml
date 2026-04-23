@@ -61,7 +61,8 @@
 <t>Use of the RPP-Authorization header:</t>
 
 <sourcecode type="http"><![CDATA[RPP-Authorization: authinfo value=TXkgU2VjcmFRva2Vu, roid=REG-X-123
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>The value of the <tt>RPP-Authorization</tt> header is case sensitive. The server MUST reject requests where the case of the header value does not match the expected case.
 The <tt>RPP-Authorization</tt> header is specific to the user agent and MUST NOT be cached, as recommended by <xref target="RFC9110" sectionFormat="bare" section="Section 16.4.2"></xref>, the server MUST use the correct HTTP cache directives to prevent caching of the <tt>RPP-Authorization</tt> header.</t>
 
@@ -231,7 +232,8 @@ The document MUST contain an <tt>errors</tt> element, as a list of objects detai
     "action_cost": 25.0
   }]
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Problem Detail response containing multiple errors for a domain create request using an invalid domain name (_$.example), JSONPaths are specified in the error objects to indicate which value in the request caused the error:</t>
 
 <sourcecode type="json"><![CDATA[{
@@ -250,7 +252,8 @@ The document MUST contain an <tt>errors</tt> element, as a list of objects detai
     "reason": "Domain name length must be between 3 and 63 characters",
   }]
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="bootstrapping"><name>Bootstrapping</name>
@@ -267,7 +270,8 @@ The document MUST contain an <tt>errors</tt> element, as a list of objects detai
 <t>Example SRV record for an RPP server for the TLD &quot;example&quot; running HTTPS on port 443 at <tt>rpp.example.</tt>:</t>
 
 <sourcecode type="dns"><![CDATA[_rpp._tcp.example. 3600 IN SRV 0 0 443 rpp.example.
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>In this example, the well-known endpoint URL is <tt>https://rpp.example/.well-known/rpp</tt>.</t>
 </section>
 
@@ -370,7 +374,8 @@ The document MUST contain an <tt>errors</tt> element, as a list of objects detai
   ]
 
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 
 <section anchor="workflow"><name>Workflow</name>
 <t>The steps for a typical workflow of provisioning an object using RPP without knowing the location and capabilities of the server are as follows, the first three steps are optional, the client can choose to skip any of these steps if it already has the required information from a previous interaction or configuration.</t>
@@ -417,7 +422,8 @@ A request using an extension MUST include the version of the extension. The serv
       "url": "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0"
     }
   ],
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="profiles"><name>Profiles</name>
@@ -431,7 +437,8 @@ A request using an extension MUST include the version of the extension. The serv
       "url": "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0"
     }
   ]
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 </section>
 
@@ -480,7 +487,8 @@ A request using an extension MUST include the version of the extension. The serv
     "version": "1.0"
   }
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="inheritance"><name>Inheritance</name>
@@ -502,7 +510,8 @@ A request using an extension MUST include the version of the extension. The serv
   ],
   "profile":
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>The example profile definition shown in <xref target="profile-example"></xref> uses the &quot;base-profile&quot; as its base and inherits its features and also overrides the version of the &quot;rppOther&quot; extension defined in the base profile.</t>
 </section>
 
@@ -516,11 +525,13 @@ A request using an extension MUST include the version of the extension. The serv
 <sourcecode type="abnf"><![CDATA[profile-header = "profile" "=" profile-name ";" OWS "version" "=" version
 profile-name   = token
 version        = 1*DIGIT "." 1*DIGIT
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example:</t>
 
 <sourcecode type="http"><![CDATA[RPP-Profile: profile=urn:ietf:params:rpp:profile:example-profile;version=1.0
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="media-type-parameter-signalling"><name>Media type parameter signalling</name>
@@ -535,12 +546,14 @@ version        = 1*DIGIT "." 1*DIGIT
 <sourcecode type="abnf"><![CDATA[profile-parameter = "profile" "=" profile-name ";" OWS "version" "=" version
 profile-name      = token
 version           = 1*DIGIT "." 1*DIGIT
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example for the media type <tt>application/rpp+json</tt> with profile parameters indicating the use of the &quot;example-profile&quot; profile version 1.0.:</t>
 
 <sourcecode type="http"><![CDATA[Accept: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
 Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 </section>
 </section>
@@ -566,7 +579,8 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 <artwork><![CDATA[- Request: HEAD|GET {collection}/{id}/availability
 - Request message: None
 - Response message: Optional availability response
-]]></artwork>
+]]>
+</artwork>
 <t>Example request for a domain name that is not available for provisioning:</t>
 
 <sourcecode type="http"><![CDATA[HEAD domains/foo.example/availability HTTP/2
@@ -575,7 +589,8 @@ Authorization: Bearer <token>
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 404 Not Found
@@ -586,7 +601,8 @@ RPP-Svtrid: XYZ-12345
 RPP-code: 01000
 Content-Length: 0
 
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="resource-information"><name>Resource Information</name>
@@ -606,7 +622,8 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example request using RPP-Authorization header for an object that has attached authorization information.</t>
 
 <sourcecode type="http"><![CDATA[GET domains/foo.example HTTP/2
@@ -617,7 +634,8 @@ Accept-Language: en
 RPP-Cltrid: ABC-12345
 RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example Info response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -629,7 +647,8 @@ Content-Language: en
 RPP-code: 01000
 
 TODO: JSON message here
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="poll-for-messages"><name>Poll for Messages</name>
@@ -650,7 +669,8 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -662,7 +682,8 @@ Content-Language: en
 RPP-code: 01301
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="delete-message"><name>Delete Message</name>
@@ -682,7 +703,8 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -696,7 +718,8 @@ RPP-Cltrid: ABC-12345
 Content-Length: 145
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="create-resource"><name>Create Resource</name>
@@ -718,7 +741,8 @@ Accept-Language: en
 Content-Length: 220
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example Domain Create response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200
@@ -731,7 +755,8 @@ Location: https://rpp.example/domains/foo.example
 RPP-code: 01000
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="delete-resource"><name>Delete Resource</name>
@@ -751,7 +776,8 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example Domain Delete response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -763,7 +789,8 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="processes-path-segment"><name>Processes Path Segment</name>
@@ -789,7 +816,8 @@ TODO
 {
     "duration": "P2Y"
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="cancelling"><name>Cancelling:</name>
@@ -838,7 +866,8 @@ TODO
     }
     ...
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example: Domain Create request with 2-year registration:</t>
 
 <sourcecode type="http"><![CDATA[POST /rpp/v1/domains HTTP/2
@@ -858,7 +887,8 @@ Content-Length: 220
     }
     ... other domain data ...
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 </section>
 
@@ -882,7 +912,8 @@ Accept-Language: en
 Content-Length: 210
 
 TODO: add renew request data here
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example Renew response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -897,7 +928,8 @@ Content-Type: application/rpp+json
 RPP-code: 01000
 
 TODO add renew response data here
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="transfer-resource"><name>Transfer Resource</name>
@@ -922,7 +954,8 @@ Accept-Language: en
 RPP-Cltrid: ABC-12345
 Content-Length: 0
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example request using object authorization:</t>
 
 <sourcecode type="http"><![CDATA[POST /rpp/v1/domains/foo.example/processes/transfers HTTP/2
@@ -934,7 +967,8 @@ RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 Accept-Language: en
 Content-Length: 0
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example request using 1 year renewal period, using the <tt>unit</tt> and <tt>value</tt> query parameters:</t>
 
 <sourcecode type="http"><![CDATA[POST /rpp/v1/domains/foo.example/processes/transfers HTTP/2
@@ -948,7 +982,8 @@ Content-Length: 23
 {
   "duration": "P2Y"
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example Transfer response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -968,7 +1003,8 @@ RPP-code: 01001
   "acDate": "2000-06-11T22:00:00.0Z",
   "exDate": "2002-09-08T22:00:00.0Z
 }
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="status-1"><name>Status</name>
@@ -989,7 +1025,8 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>If the requested transfer object has associated authorization information that is not linked to another database object, then the HTTP GET method MUST be used and the authorization information MUST be included using the RPP-Authorization header.</t>
 <t>Example domain name Transfer Query request using RPP-Authorization header:</t>
 
@@ -1001,7 +1038,8 @@ Accept-Language: en
 RPP-Cltrid: ABC-12345
 RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>If the requested object has associated authorization information linked to another database object, then the HTTP GET method MUST be used and the RPP-Authorization header MUST be included.</t>
 <t>Example domain name Transfer Query request and authorization using RPP-Authorization header:</t>
 
@@ -1013,7 +1051,8 @@ Accept-Language: en
 RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 Content-Length: 0
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example Transfer Query response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1025,7 +1064,8 @@ Content-Language: en
 RPP-code: 01000
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="cancel"><name>Cancel</name>
@@ -1045,7 +1085,8 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1057,7 +1098,8 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="reject"><name>Reject</name>
@@ -1077,7 +1119,8 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example Reject response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1090,7 +1133,8 @@ RPP-code: 01000
 
 TODO
 
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="approve"><name>Approve</name>
@@ -1111,7 +1155,8 @@ Accept-Language: en
 RPP-Cltrid: ABC-12345
 Content-Length: 0
 
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example Approve response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1123,7 +1168,8 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 </section>
 
@@ -1147,7 +1193,8 @@ Accept-Language: en
 Content-Length: 252
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1159,7 +1206,8 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 </section>
 
@@ -1178,6 +1226,7 @@ TODO
 <li>15xxx: Server error</li>
 </ul>
 <t>The following RPP result codes are defined and used in this document:</t>
+<t>Table 2: RPP result codes</t>
 <table>
 <thead>
 <tr>
@@ -1203,8 +1252,766 @@ TODO
 </table></section>
 
 <section anchor="authentication-and-authorization"><name>Authentication and Authorization</name>
-<t>Due to the stateless nature of RPP, the client MUST include the authentication credentials in each HTTP request. This MAY be done by using JSON Web Tokens (JWT) <xref target="RFC7519"></xref> or Basic authentication <xref target="RFC7617"></xref>. The server MUST validate the authentication credentials on each request and reject any request with invalid credentials with an appropriate HTTP status code.</t>
-<t>When using JWTs for OAuth 2.0 <xref target="RFC6749"></xref> Access Tokens, the JWT profile described in <xref target="RFC9068"></xref> MUST be used. It is RECOMMENDED to use short-lived tokens and to implement token revocation mechanisms to mitigate the risk of token compromise. If sensitive information is included in the JWT payload, it MUST be encrypted to prevent unauthorized access when the token is persistent to a storage device. Furthermore, the best practices for JWT usage as outlined in <xref target="RFC8725"></xref> MUST be followed.</t>
+<t>A key design goal of RPP's authorization model is fine-grained access control. A registrar MUST be able to operate multiple user accounts within the registry, each carrying a distinct set of permissions appropriate to the user's role (e.g., read-only reporting accounts, accounts limited to a specific set of operations, or fully privileged administrative accounts). This allows registrars to implement the principle of least privilege within their own organizations without requiring separate registry-level registrar accounts. The registry's authorization server MUST support registrar self-service management of these user accounts, enabling registrars to create, modify, and revoke user credentials and their associated permission scopes without requiring manual intervention by the registry operator.</t>
+<t>Due to the stateless nature of RPP, the client MUST include authorization credentials in each HTTP request. RPP uses OAuth 2.0 <xref target="RFC6749"></xref> for delegated authorization via Bearer tokens. Basic authentication <xref target="RFC7617"></xref> SHOULD NOT be used. The server MUST validate the Bearer token on each request and reject any request with an invalid or expired token with an appropriate HTTP status code.</t>
+
+<section anchor="oauth-2-0"><name>OAuth 2.0</name>
+<t>RPP MAY use OAuth 2.0 <xref target="RFC6749"></xref> as its authorization framework. OAuth 2.0 is an authorization protocol and does not perform authentication itself; authentication of the client or end-user is handled by the authorization server before a token is issued. RPP acts as an OAuth 2.0 Resource Server and MUST validate every incoming request against a Bearer token presented in the <tt>Authorization</tt> header. The registry MAY operate its own authorization server or MAY delegate to an external authorization server. Access control decisions are derived exclusively from verified claims in the presented JWT access token.</t>
+<t>Access tokens MUST be JWTs conforming to the JWT Profile for OAuth 2.0 Access Tokens <xref target="RFC9068"></xref>. Tokens MUST be signed using asymmetric cryptography; symmetric signing algorithms (e.g., HS256) MUST NOT be used for tokens issued by external authorization servers. Short-lived tokens are RECOMMENDED and token caching and refresh strategies MUST follow the best practices defined in <xref target="RFC8725"></xref>. Sensitive claims in the JWT payload MUST be encrypted if the token is persisted to storage.</t>
+<t>RPP operates as a Policy Enforcement Point (PEP). The authorization server that issues a token is identified by the <tt>iss</tt> claim; the RPP server MUST validate the token's signature against the issuing authorization server's public key, fetched and cached via OAuth 2.0 Authorization Server Metadata <xref target="RFC8414"></xref>.</t>
+<t>RPP supports two registry authorization modes:</t>
+
+<ul spacing="compact">
+<li><strong>Internal mode</strong>: the registry operates its own authorization server and issues tokens directly to clients.</li>
+</ul>
+<t><tt>Client → Registry Authorization Server → JWT → RPP API</tt></t>
+
+<ul spacing="compact">
+<li><strong>External mode</strong>: the registry trusts one or more external authorization servers and validates tokens they issue. This mode is also required for federated object transfers, where tokens are issued by a registrar's own authorization server.</li>
+</ul>
+<t><tt>Client → External Authorization Server → JWT → RPP API</tt></t>
+<t>In both modes authorization is enforced identically. The <tt>aud</tt> claim MUST identify the RPP server as the intended audience; the RPP server MUST reject tokens where its own identifier is absent from <tt>aud</tt>.</t>
+</section>
+
+<section anchor="scopes"><name>Scopes</name>
+<t>OAuth scopes are used for enforcing access control when accessing RPP resources. The server MUST define a set of scopes that can be requested by clients when obtaining access tokens. The scopes MUST be based on the principle of least privilege, allowing clients to request only the permissions they need to perform their intended operations. The server MUST also define the mapping between scopes and the specific resources and operations that they grant access to.</t>
+<t>When a client requests an access token from the authorization server, it MUST include the desired scopes in the scope parameter of the token request. The authorization server MUST validate the requested scopes against the client's registered permissions and issue an access token with the appropriate scopes if the request is valid. The server MUST enforce access control based on the scopes included in the access token, allowing or denying access to resources based on the client's authorized scopes. The server MUST also implement appropriate error handling for cases where a client attempts to access a resource without the necessary scopes, returning an appropriate HTTP status code and error message.</t>
+<t>RPP scopes are based on the objects, processes and operations defined in RESTful Provisioning Protocol (RPP) data objects in <xref target="I-D.kowalik-rpp-data-objects"></xref>. Each scope corresponds to a specific set of permissions for accessing and manipulating RPP resources.</t>
+
+<section anchor="scope-derivation-rules"><name>Scope Derivation Rules</name>
+<t>RPP scopes are derived systematically from the data object types and operation categories defined in <xref target="I-D.kowalik-rpp-data-objects"></xref>. The derivation rules are as follows:</t>
+
+<ul spacing="compact">
+<li>The scope identifier MUST use the format <tt>&lt;object&gt;:&lt;access-level&gt;</tt>, where <tt>&lt;object&gt;</tt> is the lowercase stable identifier of the data object and <tt>&lt;access-level&gt;</tt> is one of the access levels defined below.</li>
+<li>The <tt>create</tt> access level grants permission to perform the Create operation on the corresponding data object.</li>
+<li>The <tt>read</tt> access level grants permission to perform the Read operation on the corresponding data object.</li>
+<li>The <tt>update</tt> access level grants permission to perform Update, Renew, and Restore operations on the corresponding data object.</li>
+<li>The <tt>delete</tt> access level grants permission to perform the Delete operation on the corresponding data object.</li>
+<li>The <tt>transfer</tt> access level grants permission to perform all Transfer operations on the corresponding data object.</li>
+<li><t>For interactive OAuth 2.0 federated transfers, authorization MUST convey the specific object being transferred so the registrant can give informed, object-scoped consent. Two mechanisms are defined in order of preference:</t>
+
+<ul spacing="compact">
+<li><strong>Primary - Rich Authorization Requests (RAR) <xref target="RFC9396"></xref></strong>: The gaining registrar MUST include an <tt>authorization_details</tt> parameter in the authorization request containing an object of type <tt>rpp_transfer</tt> with <tt>object_type</tt> and <tt>object_identifier</tt> fields (see Table 3). This is the RECOMMENDED approach when the losing registrar's authorization server supports RAR.</li>
+<li><strong>Fallback - Transfer Scope</strong>: When the losing registrar's authorization server does not support RAR, a static transfer scope of the form <tt>transfer:&lt;object&gt;</tt> MUST be used (e.g., <tt>transfer:domain</tt>). The specific object identifier MUST be carried in the <tt>rpp_object_id</tt> claim in the issued JWT (see <xref target="rpp-specific-claims"></xref>). This scope MUST be presented to the registrant for approval, and the authorization server MUST include the <tt>rpp_object_id</tt> claim in the token.</li>
+</ul></li>
+<li>Extensions and additional data objects registered in the IANA RPP Data Object Registry <xref target="I-D.kowalik-rpp-data-objects"></xref> SHOULD define their own scopes following the same derivation rules, using the registered stable identifier of the extension object as the <tt>&lt;object&gt;</tt> component.</li>
+</ul>
+</section>
+
+<section anchor="scope-registry"><name>Scope Registry</name>
+<t>Table <xref target="tbl-scopes"></xref> defines the RPP scopes derived from the data objects specified in <xref target="I-D.kowalik-rpp-data-objects"></xref>.</t>
+<table anchor="tbl-scopes"><name>RPP OAuth 2.0 Scopes</name>
+<thead>
+<tr>
+<th>Scope</th>
+<th>Data Object</th>
+<th>Operations Granted</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><tt>domain:create</tt></td>
+<td>Domain Name</td>
+<td>Create</td>
+</tr>
+
+<tr>
+<td><tt>domain:read</tt></td>
+<td>Domain Name</td>
+<td>Read</td>
+</tr>
+
+<tr>
+<td><tt>domain:update</tt></td>
+<td>Domain Name</td>
+<td>Update, Renew, Restore</td>
+</tr>
+
+<tr>
+<td><tt>domain:delete</tt></td>
+<td>Domain Name</td>
+<td>Delete</td>
+</tr>
+
+<tr>
+<td><tt>domain:transfer</tt></td>
+<td>Domain Name</td>
+<td>Transfer Create, Transfer Approve, Transfer Reject, Transfer Cancel, Transfer Query (Legacy Mode only)</td>
+</tr>
+
+<tr>
+<td><tt>contact:create</tt></td>
+<td>Contact</td>
+<td>Create</td>
+</tr>
+
+<tr>
+<td><tt>contact:read</tt></td>
+<td>Contact</td>
+<td>Read</td>
+</tr>
+
+<tr>
+<td><tt>contact:update</tt></td>
+<td>Contact</td>
+<td>Update, Restore</td>
+</tr>
+
+<tr>
+<td><tt>contact:delete</tt></td>
+<td>Contact</td>
+<td>Delete</td>
+</tr>
+
+<tr>
+<td><tt>contact:transfer</tt></td>
+<td>Contact</td>
+<td>Transfer Create, Transfer Approve, Transfer Reject, Transfer Cancel, Transfer Query (Legacy Mode only)</td>
+</tr>
+
+<tr>
+<td><tt>host:create</tt></td>
+<td>Host</td>
+<td>Create</td>
+</tr>
+
+<tr>
+<td><tt>host:read</tt></td>
+<td>Host</td>
+<td>Read</td>
+</tr>
+
+<tr>
+<td><tt>host:update</tt></td>
+<td>Host</td>
+<td>Update, Restore</td>
+</tr>
+
+<tr>
+<td><tt>host:delete</tt></td>
+<td>Host</td>
+<td>Delete</td>
+</tr>
+</tbody>
+</table></section>
+
+<section anchor="rich-authorization-requests-rar"><name>Rich Authorization Requests (RAR)</name>
+<t>OAuth 2.0 Rich Authorization Requests <xref target="RFC9396"></xref> extends the standard OAuth 2.0 authorization request with an <tt>authorization_details</tt> parameter that carries a structured JSON object describing precisely what the client is requesting authorization for. Unlike scopes, which are coarse-grained string tokens, <tt>authorization_details</tt> allows the request to include typed, fine-grained authorization data, such as the specific object being transferred. The  authorization server can present to the user in a meaningful consent screen.</t>
+<t>In RPP, RAR is used for interactive federated object transfers to convey the specific domain name or contact handle being transferred. The gaining registrar includes an <tt>authorization_details</tt> object of type <tt>rpp_transfer</tt> in the authorization request to the losing registrar's authorization server. The registrant then sees exactly which object they are consenting to transfer. The authorization server MUST echo the <tt>authorization_details</tt> object back as a claim in the issued JWT, giving the registry verifiable, tamper-proof evidence of what was authorized and for which object.</t>
+<t>The <tt>type</tt> field MUST be set to <tt>rpp_transfer</tt>. Table <xref target="tbl-rar"></xref> lists the RAR fields defined for RPP.</t>
+<table anchor="tbl-rar"><name>RPP Transfer Authorization, RAR <tt>authorization_details</tt> object (Primary Method, <xref target="RFC9396"></xref>)</name>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Requirement</th>
+<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><tt>type</tt></td>
+<td>String</td>
+<td>REQUIRED</td>
+<td>MUST be <tt>rpp_transfer</tt>.</td>
+</tr>
+
+<tr>
+<td><tt>object_type</tt></td>
+<td>String</td>
+<td>REQUIRED</td>
+<td>The RPP object type being transferred. MUST be one of <tt>domain</tt> or <tt>contact</tt>.</td>
+</tr>
+
+<tr>
+<td><tt>object_identifier</tt></td>
+<td>String</td>
+<td>REQUIRED</td>
+<td>The fully qualified name or handle of the specific object to be transferred (e.g., <tt>foo.example</tt> or <tt>CID-12345</tt>).</td>
+</tr>
+</tbody>
+</table><t>Example RAR <tt>authorization_details</tt> value for a domain transfer:</t>
+
+<sourcecode type="json"><![CDATA[[{
+  "type": "rpp_transfer",
+  "object_type": "domain",
+  "object_identifier": "foo.example"
+}]
+]]>
+</sourcecode>
+<t>The losing registrar's authorization server MUST echo the <tt>authorization_details</tt> back as a claim in the issued JWT. The registry MUST validate the <tt>authorization_details</tt> claim in the token and MUST verify that <tt>object_type</tt> and <tt>object_identifier</tt> match the object being transferred.</t>
+<t>When the losing registrar's authorization server does not support RAR (<xref target="RFC9396"></xref>), the specific object being transferred MUST be conveyed via the <tt>rpp_object_id</tt> claim rather than encoded in the scope string:</t>
+
+<ul spacing="compact">
+<li>To authorize a domain transfer, the specific domain name MUST be present in the <tt>rpp_object_id</tt> claim (e.g., <tt>foo.example</tt>).</li>
+<li>To authorize a contact transfer, the specific contact identifier MUST be present in the <tt>rpp_object_id</tt> claim (e.g., <tt>REG-12345</tt>).</li>
+</ul>
+</section>
+</section>
+
+<section anchor="claims"><name>Claims</name>
+<t>RPP access tokens MUST conform to the JWT Profile for OAuth 2.0 Access Tokens defined in <xref target="RFC9068"></xref>. This profile establishes a standardized set of claims that RPP uses to make authorization decisions consistently across implementations and identity providers.</t>
+
+<section anchor="required-claims"><name>Required Claims</name>
+<t>Table <xref target="tbl-oauth-claims"></xref> lists the claims defined in <xref target="RFC9068"></xref>, these MUST be present in every RPP access token:</t>
+<table anchor="tbl-oauth-claims"><name>OAuth 2.0 Access Token Claims for RPP (<xref target="RFC9068"></xref>)</name>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><tt>iss</tt></td>
+<td>String (URI)</td>
+<td>Identifies the issuing authorization server. The RPP server MUST validate this against its set of trusted issuers.</td>
+</tr>
+
+<tr>
+<td><tt>sub</tt></td>
+<td>String</td>
+<td>The subject of the token. For machine-to-machine flows this MUST be the client identifier. For interactive flows this MUST be the end-user identifier of the authenticated end-user at the issuing authorization server. The end-user MAY be a registrar employee operating the registrar's management system, or a registrar customer (registrant) directly interacting with the registrar's client application, for example when initiating an object transfer.</td>
+</tr>
+
+<tr>
+<td><tt>aud</tt></td>
+<td>String or Array</td>
+<td>Identifies the intended audience. MUST include the RPP server's resource identifier. The RPP server MUST reject tokens where its own identifier is not present in this claim.</td>
+</tr>
+
+<tr>
+<td><tt>exp</tt></td>
+<td>Numeric date</td>
+<td>Expiry time. The RPP server MUST reject tokens that have expired.</td>
+</tr>
+
+<tr>
+<td><tt>iat</tt></td>
+<td>Numeric date</td>
+<td>Time at which the token was issued.</td>
+</tr>
+
+<tr>
+<td><tt>jti</tt></td>
+<td>String</td>
+<td>Unique identifier for the token, used to prevent token replay attacks.</td>
+</tr>
+
+<tr>
+<td><tt>client_id</tt></td>
+<td>String</td>
+<td>The OAuth 2.0 client identifier of the gaining registrar or RPP client application.</td>
+</tr>
+
+<tr>
+<td><tt>scope</tt></td>
+<td>String</td>
+<td>Space-separated list of granted scopes (see <xref target="scopes"></xref>). The RPP server MUST enforce access control based on the scopes present in this claim.</td>
+</tr>
+</tbody>
+</table></section>
+
+<section anchor="rpp-specific-claims"><name>RPP-Specific Claims</name>
+<t>In addition to the standard <xref target="RFC9068"></xref> claims, table <xref target="tbl-rpp-claims"></xref> lists the RPP-specific claims that are defined to enable fine-grained authorization decisions. Required claims MUST be present in every RPP access token. Optional claims SHOULD be included when applicable to the deployment or request context.</t>
+<table anchor="tbl-rpp-claims"><name>RPP Specific Access Token Claims</name>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Requirement</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><tt>rpp_registrar_id</tt></td>
+<td>REQUIRED</td>
+<td>String</td>
+<td>The identifier of the registrar on whose behalf the request is made. The RPP server MUST validate that this identifier matches a known and authorized registrar. This claim MUST be present in all access tokens used for RPP requests.</td>
+</tr>
+
+<tr>
+<td><tt>rpp_reseller_id</tt></td>
+<td>OPTIONAL</td>
+<td>String</td>
+<td>The identifier of the reseller acting through the registrar's client application. This claim SHOULD be included when the request originates from a reseller operating under the registrar's account. The RPP server MAY use this claim for access control, auditing, and attribution purposes. The value is interpreted within the namespace of the registrar identified by <tt>rpp_registrar_id</tt>.</td>
+</tr>
+
+<tr>
+<td><tt>rpp_transfer_authinfo</tt></td>
+<td>OPTIONAL</td>
+<td>String</td>
+<td>The transfer authorization information used in legacy mode object transfer. When present, the value MUST be equivalent to the value that would otherwise be sent in the <tt>RPP-Authorization</tt> header, using the same <tt>&lt;method&gt; &lt;authorization information&gt;</tt> format. The RPP server MUST treat this claim as equivalent to the <tt>RPP-Authorization</tt> header; if both are present in the same request, the claim value MUST take precedence. This claim MUST only be present in access tokens used for transfer operations.</td>
+</tr>
+
+<tr>
+<td><tt>rpp_object_id</tt></td>
+<td>OPTIONAL</td>
+<td>String</td>
+<td>The identifier of the specific object being transferred. MUST be present in access tokens for interactive federated transfers when the fallback dynamic scope method is used (<tt>transfer:domain</tt> or <tt>transfer:contact</tt>) and the <tt>authorization_details</tt> claim (<xref target="RFC9396"></xref>) is not present. The value MUST be the fully qualified name or handle of the object (e.g., <tt>foo.example</tt> or <tt>CID-12345</tt>). The RPP server MUST validate that this value matches the object being transferred. This claim MUST NOT be present when <tt>authorization_details</tt> is present.</td>
+</tr>
+
+<tr>
+<td><tt>authorization_details</tt></td>
+<td>OPTIONAL</td>
+<td>Array of Objects</td>
+<td>Rich authorization details as defined by <xref target="RFC9396"></xref>. MUST be present in access tokens for interactive federated transfers when the RAR method is used. Each object in the array MUST have a <tt>type</tt> field; for RPP transfer tokens the <tt>type</tt> MUST be <tt>rpp_transfer</tt> and the object MUST include <tt>object_type</tt> and <tt>object_identifier</tt> fields (see Table 3). The RPP server MUST validate that <tt>object_type</tt> and <tt>object_identifier</tt> match the object being transferred. When this claim is present, the <tt>rpp_object_id</tt> claim MUST NOT be present.</td>
+</tr>
+</tbody>
+</table><t>The combination of the <tt>sub</tt> claim and the <tt>rpp_registrar_id</tt> claim provides a complete, two-dimensional identity for every RPP request: <tt>sub</tt> identifies the individual principal (registrar employee, automated process, or registrar customer) that initiated the request, while <tt>rpp_registrar_id</tt> identifies the registrar organization as a whole within the registry's domain.</t>
+<t>The identity of the <tt>sub</tt> depends on both the flow type and the identity domain of the principal:</t>
+
+<ul spacing="compact">
+<li>In <strong>machine-to-machine</strong> flows, <tt>sub</tt> is the registrar's OAuth 2.0 client identifier, representing an automated system acting on behalf of the registrar. The token is issued by the <strong>registry's authorization server</strong>, which maintains the registrar's client credentials.</li>
+<li>In <strong>interactive flows initiated by registrar staff</strong>, <tt>sub</tt> is the identifier of the registrar employee. Registrar employees are managed as users in the <strong>registry's authorization server</strong>. The token is therefore also issued by the registry's authorization server, and the <tt>sub</tt> value is the employee's account identifier within that server. The <tt>iss</tt> claim will identify the registry's authorization server.</li>
+<li>In <strong>interactive flows initiated by a registrant customer</strong>, the situation is different. Registrant customers are not managed in the registry's authorization server, they are maintained in the <strong>registrar's own authorization server</strong> (the registrar acts as the authorization server for its customers). The token is therefore issued by the registrar's authorization server, and the <tt>iss</tt> claim will identify the registrar's authorization server as the issuer. The registry MUST have a pre-established trust relationship with the registrar's authorization server to accept and validate such tokens. In this case, the <tt>sub</tt> value MUST be the registrant's identifier as it exists in the registry database. The registrar MUST use this registry-assigned id, not any registrar-internal customer identifier, as the <tt>sub</tt> value. This ensures the registry can unambiguously correlate the token's subject to an existing provisioned contact object. This enables verification of ownership and consent for operations. The registry MUST reject tokens where the <tt>sub</tt> value does not match a known contact handle associated with the object being acted upon.</li>
+</ul>
+<t>Together, these claims allow the RPP server to:</t>
+
+<ul spacing="compact">
+<li><strong>Enforce access control</strong> at both the organizational level (is this registrar authorized to manage this object?) and the individual level (has this principal been granted the necessary permissions?).</li>
+<li><strong>Attribute actions to individuals</strong> for audit trail purposes, enabling the registry to record not just which registrar performed an operation, but which employee or customer initiated it.</li>
+<li><strong>Support delegation models</strong>, where a registrar may grant different employees different scopes (e.g., a junior employee may hold only <tt>domain:read</tt> scope while a senior employee holds <tt>domain:create</tt> and <tt>domain:update</tt>).</li>
+<li><strong>Verify registrant consent</strong> in interactive transfer flows, where a <tt>sub</tt> containing the registrant's handle provides the registry with verifiable evidence that the object owner explicitly authorized the transfer.</li>
+<li><strong>Facilitate incident response</strong>, allowing the registry to correlate suspicious activity back to a specific principal rather than only to a registrar organization.</li>
+</ul>
+<t>The RPP server SHOULD log both the <tt>sub</tt> and <tt>rpp_registrar_id</tt> claims for every request in its audit log. The <tt>sub</tt> value is only meaningful within the namespace of the issuing authorization server identified by the <tt>iss</tt> claim. The RPP server MUST NOT compare <tt>sub</tt> values across different issuers, except when the <tt>sub</tt> is a registry contact handle, in which case the registry MAY validate it against its own database regardless of issuer.</t>
+<t>Extensions and profiles MAY define additional claims. All additional claims MUST use a URI or a collision-resistant name as the claim name to prevent conflicts with registered claims.</t>
+</section>
+
+<section anchor="claim-validation"><name>Claim Validation</name>
+<t>The RPP server MUST validate all required claims in accordance with <xref target="RFC9068"></xref> and <xref target="RFC8725"></xref>. Specifically:</t>
+
+<ul spacing="compact">
+<li>The <tt>iss</tt> claim MUST identify a trusted authorization server whose public keys are known to the RPP server, either through static configuration or dynamic discovery (e.g., OAuth 2.0 Authorization Server Metadata <xref target="RFC8414"></xref>).</li>
+<li>The <tt>aud</tt> claim MUST be validated to confirm the token is intended for this RPP server.</li>
+<li>The <tt>exp</tt> claim MUST be checked and expired tokens MUST be rejected with HTTP 401 Unauthorized.</li>
+<li>The JWT signature MUST be verified using asymmetric cryptography (e.g., RS256 or ES256). Symmetric algorithms (e.g., HS256) MUST NOT be used for tokens issued by external authorization servers.</li>
+<li>If the <tt>scope</tt> claim is absent or does not contain the scope required for the requested operation, the RPP server MUST return HTTP 403 Forbidden.</li>
+</ul>
+</section>
+</section>
+
+<section anchor="flows"><name>Flows</name>
+<t>RPP defines two authorization flows: machine-to-machine flows and interactive flows. Machine-to-machine flows are designed for use in automated systems where no user interaction is required. Interactive flows are designed for use in scenarios where end-user interaction is required, such as when a registrant initiates a transfer request using a registrar's web interface.</t>
+
+<section anchor="machine-to-machine"><name>Machine to Machine</name>
+<t>The machine-to-machine (M2M) flow is used for automated, unattended RPP requests such as domain provisioning, renewal, or host management sent by a registrar's backend systems to the registry. No end-user interaction is involved. The OAuth 2.0 Client Credentials grant <xref target="RFC6749" sectionFormat="bare" section="Section 4.4"></xref> MUST be used for this flow.</t>
+<t>In this flow the registrar's system authenticates directly with the registry's authorization server using a pre-registered <tt>client_id</tt> and <tt>client_secret</tt> (or a private key JWT for higher assurance). The authorization server issues a short-lived access token scoped to the requested RPP operations. The registrar's system then includes this token in the <tt>Authorization</tt> header of each RPP request sent to the registry.</t>
+<t>The <tt>sub</tt> claim in the resulting token MUST be set to the <tt>client_id</tt> of the registrar's system. The <tt>rpp_registrar_id</tt> claim MUST also be present, identifying the registrar organization within the registry's namespace.</t>
+<figure><name>OAuth 2.0 Client Credentials Flow for Registrar-to-Registry Requests
+</name>
+<sourcecode type="ascii"><![CDATA[  Registrar                  Registry             Registry
+  Backend                    Auth Server          RPP Server
+     |                           |                    |
+     | 1. Token request          |                    |
+     |  (client_id +             |                    |
+     |   client_secret           |                    |
+     |   + scope)                |                    |
+     +-------------------------->|                    |
+     |                           |                    |
+     | 2. Access token (JWT)     |                    |
+     |<--------------------------|                    |
+     |                           |                    |
+     | 3. RPP request            |                    |
+     |  (Authorization:          |                    |
+     |   Bearer <token>)         |                    |
+     +----------------------------------------------->|
+     |                           |                    |
+     |                           |  4. Validate JWT   |
+     |                           |  (verify signature |
+     |                           |   using cached     |
+     |                           |   public key,      |
+     |                           |   check claims     |
+     |                           |   and scopes)      |
+     |                           |                    |
+     | 5. RPP response           |                    |
+     |<-----------------------------------------------|
+     |                           |                    |
+]]>
+</sourcecode>
+</figure>
+<t>The steps in the diagram are as follows:</t>
+
+<ol spacing="compact">
+<li>The registrar's backend system sends a token request to the registry's authorization server, providing its <tt>client_id</tt>, <tt>client_secret</tt> (or a signed client assertion), and the requested RPP scopes (e.g., <tt>domain:create</tt>).</li>
+<li>The authorization server validates the client credentials and issues a signed, short-lived JWT access token containing the granted scopes, <tt>sub</tt> (set to <tt>client_id</tt>), and <tt>rpp_registrar_id</tt>.</li>
+<li>The registrar's system sends the RPP request to the registry's RPP server, including the access token in the HTTP <tt>Authorization</tt> header as a Bearer token.</li>
+<li>The RPP server validates the JWT entirely locally, without contacting the authorization server. It verifies the token's signature using the authorization server's public key (previously fetched and cached via OAuth 2.0 Authorization Server Metadata <xref target="RFC8414"></xref> and the referenced JWKS endpoint), checks the standard claims (<tt>iss</tt>, <tt>aud</tt>, <tt>exp</tt>), and confirms that the <tt>scope</tt> claim includes the scope required for the requested operation.</li>
+<li>If validation succeeds, the RPP server processes the request and returns the RPP response.</li>
+</ol>
+<t>It is RECOMMENDED that access tokens be short-lived (e.g., minutes to hours) and that the registrar's system obtain a new token before the current token expires rather than waiting for a 401 response. Token caching and refresh strategies SHOULD follow the best practices in <xref target="RFC8725"></xref>.</t>
+</section>
+
+<section anchor="interactive"><name>Interactive</name>
+<t>The interactive flow is used for RPP requests that require end-user interaction. The OAuth 2.0 Authorization Code grant <xref target="RFC6749" sectionFormat="bare" section="Section 4.1"></xref> MUST be used for this flow. Two distinct types of end-users may initiate interactive RPP requests, and they are managed in different authorization servers:</t>
+
+<ul>
+<li><t><strong>Registrar employees</strong> are managed as users in the <strong>registry's authorization server</strong>. A registrar employee uses the registrar's client application to perform operations on behalf of the registrar, such as updating domain records or managing contacts. The registry's authorization server authenticates the employee and issues an access token. The <tt>sub</tt> claim will contain the employee's account identifier in the registry's authorization server, and the <tt>iss</tt> claim will identify the registry's authorization server.</t>
+</li>
+<li><t><strong>Registrant customers</strong> are managed in the <strong>registrar's own authorization server</strong>. A registrant customer interacts directly with the registrar's client application, for example to authorize a domain transfer. The registrar's authorization server authenticates the customer and issues an access token. The <tt>sub</tt> claim MUST be set to the registrant's contact handle as registered in the registry database. The <tt>iss</tt> claim will identify the registrar's authorization server. The registry MUST have a pre-established trust relationship with the registrar's authorization server to accept tokens it issues.</t>
+</li>
+</ul>
+
+<section anchor="registrar-employee-flow"><name>Registrar Employee Flow</name>
+<t>In this flow, the employee authenticates with the registry's authorization server. The registry acts as both the authorization server and the RPP resource server.</t>
+<figure><name>Interactive Flow - Registrar Employee (Registry Auth Server)
+</name>
+<sourcecode type="ascii"><![CDATA[  Registrar          Registry             Registry
+  Employee +         Auth Server          RPP Server
+  Client App             |                    |
+     |                   |                    |
+     | 1. Login /        |                    |
+     |  auth request     |                    |
+     +------------------>|                    |
+     |                   |                    |
+     | 2. Access token   |                    |
+     |  (sub=employee_id |                    |
+     |   iss=registry)   |                    |
+     |<------------------|                    |
+     |                   |                    |
+     | 3. RPP request    |                    |
+     |  (Bearer token)   |                    |
+     +--------------------------------------->|
+     |                   |                    |
+     |                   |  4. Validate JWT   |
+     |                   |  (local, cached    |
+     |                   |   registry public  |
+     |                   |   key)             |
+     |                   |                    |
+     | 5. RPP response   |                    |
+     |<---------------------------------------|
+     |                   |                    |
+]]>
+</sourcecode>
+</figure>
+</section>
+
+<section anchor="registrant-customer-flow"><name>Registrant Customer Flow</name>
+<t>In this flow, the registrant authenticates with the registrar's own authorization server. The registry must trust the registrar's authorization server and validate the <tt>sub</tt> against its contact database.</t>
+<figure><name>Interactive Flow - Registrant Customer (Registrar Auth Server)
+</name>
+<sourcecode type="ascii"><![CDATA[  Registrant         Registrar            Registry
+  Customer +         Auth Server          RPP Server
+  Client App             |                    |
+     |                   |                    |
+     | 1. Login /        |                    |
+     |  auth request     |                    |
+     +------------------>|                    |
+     |                   |                    |
+     | 2. Access token   |                    |
+     |  (sub=contact     |                    |
+     |   handle,         |                    |
+     |   iss=registrar)  |                    |
+     |<------------------|                    |
+     |                   |                    |
+     | 3. RPP request    |                    |
+     |  (Bearer token)   |                    |
+     +--------------------------------------->|
+     |                   |                    |
+     |                   |  4. Validate JWT   |
+     |                   |  (local, cached    |
+     |                   |   registrar public |
+     |                   |   key via          |
+     |                   |   federation)      |
+     |                   |                    |
+     |                   |  5. Verify sub     |
+     |                   |  matches contact   |
+     |                   |  handle in         |
+     |                   |  registry DB       |
+     |                   |                    |
+     | 6. RPP response   |                    |
+     |<---------------------------------------|
+     |                   |                    |
+]]>
+</sourcecode>
+</figure>
+<t>The steps for the registrant customer flow are as follows:</t>
+
+<ol spacing="compact">
+<li>The registrant authenticates with the registrar's authorization server through the registrar's client application, using the Authorization Code grant.</li>
+<li>The registrar's authorization server issues a signed JWT access token. The <tt>sub</tt> claim MUST be set to the registrant's contact handle as it exists in the registry database. The <tt>iss</tt> claim identifies the registrar's authorization server. The <tt>rpp_registrar_id</tt> claim MUST be present, identifying the sponsoring registrar.</li>
+<li>The registrar's client application sends the RPP request to the registry's RPP server, including the access token as a Bearer token.</li>
+<li>The RPP server validates the JWT locally using the registrar's authorization server public key, previously obtained via federation metadata. No live call to the registrar's authorization server is needed.</li>
+<li>The RPP server verifies that the <tt>sub</tt> value matches a known contact handle in the registry database and that the contact is associated with the object being acted upon.</li>
+<li>If all validation succeeds, the RPP server processes the request and returns the response.</li>
+</ol>
+</section>
+</section>
+
+<section anchor="enforcing-interactive-authentication-for-high-risk-operations"><name>Enforcing Interactive Authentication for High-Risk Operations</name>
+<t>The machine-to-machine (M2M) Client Credentials flow is appropriate for routine automated provisioning, but certain high-risk operations, such as object transfer or modification of authorisation information, MUST require a token demonstrating that a human principal explicitly authenticated and authorized the action. Without enforcement, a registrar could use M2M tokens for all operations, eliminating individual accountability.</t>
+<t>The following mechanisms MAY be used by the registry to enforce interactive authentication for designated operations:</t>
+<t><strong><tt>sub</tt> MUST identify a human principal</strong>: The registry MAY require that for high-risk operations, the <tt>sub</tt> claim MUST contain the identifier of an authenticated human principal, either a registrar employee or a registrant customer, and MUST NOT equal the <tt>client_id</tt>. In M2M tokens issued via the Client Credentials grant, <tt>sub</tt> is always set to <tt>client_id</tt>, representing an automated system rather than a human. By mandating <tt>sub</tt> ≠ <tt>client_id</tt> for designated operations, the registry ensures those operations can only be performed with a token issued on behalf of a real, identified individual. The RPP server MUST reject requests for these operations when <tt>sub</tt> equals <tt>client_id</tt>.</t>
+<t><strong>Scope restriction by grant type</strong>: The registry's authorization server SHOULD be configured to refuse issuing certain high-risk scopes (e.g., <tt>domain:transfer</tt>) to the Client Credentials grant type. Only the Authorization Code grant (interactive) MAY be permitted to obtain these scopes. This prevents a registrar from obtaining the necessary scope for a high-risk operation through unattended M2M authentication.</t>
+<t>The set of operations for which interactive authentication is required is a matter of registry policy and MUST be discoverable using the RPP discovery mechanism.</t>
+</section>
+</section>
+
+<section anchor="secure-object-transfer"><name>Secure Object Transfer</name>
+<t><strong>NOTE:</strong> this is very early draft of how a transfer could work in RPP, it is added here to provide a complete picture of the transfer flow and to be able to discuss the details of the transfer flow and the security mechanisms that can be used to secure the transfer flow. This section is expected to be significantly revised and updated as the transfer flow and the security mechanisms are further developed and refined.</t>
+<t>The server MAY support a secure object transfer mechanism based on OAuth 2.0 federation for secure object transfer between registrars, the gaining registrar can obtain an access token from the losing registrar's authorization server to authorize the transfer request. This provides a secure mechanism for transferring objects without exposing sensitive information in the transfer request or response messages. This also prevents the use of opaque transfer tokens and their inherent security risks, such as token leakage or replay attacks.
+If any of the parties in the transfer flow does not support the secure transfer mechanism based on OAuth 2.0 federation, then the transfer MUST fall back to the legacy transfer mechanism using opaque transfer tokens, using the <tt>RPP-Authorization</tt> header to include the transfer token in the transfer request messages.</t>
+<t>The server MAY support a secure object transfer mechanisms based on OAuth 2.0 federation, for this the server requires established trust relationship with the authorization server of the losing registrar. The server MUST support the necessary mechanisms for validating tokens issued by the losing registrar's authorization server.
+this requires the server to support the JWT profile for OAuth 2.0 Access Tokens <xref target="RFC9068"></xref> and to support the necessary mechanisms for validating tokens issued by external authorization servers. The client MUST include a valid access token in the Authorization header of the transfer request, and the server MUST validate the token and the associated permissions before allowing the transfer to proceed. The server MUST also implement appropriate error handling for cases where the token is invalid, expired, or does not have the necessary permissions for the requested transfer operation. Registrars implementing secure transfer mechanisms based on OAuth 2.0 federation MUST support the federated identity provider function.</t>
+
+<section anchor="federation-trust-model"><name>Federation Trust Model</name>
+<t>The RPP federation model uses the registry as the central trust anchor, operating as a hub-and-spoke topology. Registrars establish a trust relationship with the registry during accreditation; they do not need to establish direct trust relationships with each other. This allows any two registrars to participate in a federated transfer without any prior bilateral arrangement.</t>
+<t><strong>Registry as trust anchor.</strong> As part of registrar onboarding, each registrar that operates its own authorization server (i.e., maintains registrant accounts) MUST register its authorization server metadata with the registry. This includes at minimum:</t>
+
+<ul spacing="compact">
+<li>The authorization server's authorization endpoint URI, used by the gaining registrar to construct the redirect.</li>
+<li>The authorization server's JWKS endpoint URI or the public key material itself, used by the registry to validate tokens issued by that authorization server.</li>
+</ul>
+<t>The registry stores this metadata as part of the registrar's profile and makes it available via the discovery mechanism.</t>
+<t><strong>Token validation without bilateral trust.</strong> When the registry receives a transfer request carrying a JWT issued by the losing registrar's authorization server, it validates the token locally using the losing registrar's public key that was registered at onboarding. No runtime call to the losing registrar or its authorization server is required. The registry already trusts that public key because it was registered through the accreditation process.</t>
+<t><strong>Gaining registrar.</strong> The gaining registrar only needs to trust the registry. It obtains the losing registrar's authorization server URI from the registry's discovery endpoint, redirects the registrant's browser there, and exchanges the resulting authorization code for a token. It does not need to pre-configure or authenticate the losing registrar. The browser redirect and back-channel token exchange are both secured by standard HTTPS and do not require a federated identity relationship between the two registrars.</t>
+<t>The following diagram shows how authorization server URIs and public keys flow through the registry, and how the gaining registrar uses them at transfer time to redirect the registrant's browser:</t>
+<figure><name>RPP Federation Trust Model — Onboarding, Discovery and Browser Redirect
+</name>
+<sourcecode type="ascii"><![CDATA[  Gaining              Registry             Losing
+  Registrar          (Trust Anchor)        Registrar
+     |                    |                    |
+     |                    |                    |
+     : --- Onboarding --- : --- Onboarding --- :
+     |                    |                    |
+     | Register own AS    |                    |
+     | URI + JWKS pubkey  |                    |
+     +------------------->|                    |
+     |                    |                    |
+     |                    | Register own AS    |
+     |                    | URI + JWKS pubkey  |
+     |                    |<-------------------|
+     |                    |                    |
+     : --- Transfer time -------------------- :
+     |                    |                    |
+     | Discover Losing    |                    |
+     | Registrar AS URI   |                    |
+     +------------------->|                    |
+     |                    |                    |
+     | AS URI returned    |                    |
+     |<-------------------|                    |
+     |                    |                    |
+     | Redirect registrant's browser           |
+     | to Losing Registrar AS                  |
+     +---------------------------------------->|
+     |                    |                    |
+     | Auth code returned via browser redirect |
+     |<----------------------------------------|
+     |                    |                    |
+     | Exchange auth code |                    |
+     | for access token   |                    |
+     | (back-channel)     |                    |
+     +---------------------------------------->|
+     |                    |                    |
+     | JWT (signed by     |                    |
+     | Losing Reg AS)     |                    |
+     |<----------------------------------------|
+     |                    |                    |
+     | Transfer request   |                    |
+     | + Bearer JWT       |                    |
+     +------------------->|                    |
+     |                    |                    |
+     |                    | Validate JWT using |
+     |                    | cached Losing Reg  |
+     |                    | JWKS pubkey        |
+     |                    | (no runtime call)  |
+     |                    |------------------> |
+     |                    |                    |
+     | Transfer result    |                    |
+     |<-------------------|                    |
+     |                    |                    |
+]]>
+</sourcecode>
+</figure>
+<t><strong>Security properties.</strong> This model provides the following guarantees:</t>
+
+<ul spacing="compact">
+<li>A rogue registrar cannot forge a transfer token that the registry will accept, because only the legitimate losing registrar's public key (registered at onboarding) can produce a valid signature.</li>
+<li>The gaining registrar cannot forge registrant consent, because the token is issued by the losing registrar's authorization server, not the gaining registrar.</li>
+<li>The registry controls the set of trusted authorization servers by controlling which registrar IdP metadata it accepts at onboarding.</li>
+<li>Registrars need no knowledge of each other beyond what the registry exposes via the discovery endpoint.</li>
+</ul>
+</section>
+
+<section anchor="interactive-flow"><name>Interactive Flow</name>
+<t>The interactive flow uses the OAuth 2.0 Authorization Code grant <xref target="RFC6749" sectionFormat="bare" section="Section 4.1"></xref> to obtain explicit, object-specific registrant consent directly from the losing registrar's authorization server. Before redirecting the registrant, the gaining registrar MUST first query the registry's registrar discovery endpoint to resolve the losing registrar's authorization server's authorization URI. If no authorization server URI is available for the losing registrar, the gaining registrar MUST fall back to the Legacy Mode flow described in <xref target="fallback-flow"></xref>.</t>
+<t>The authorization request MUST convey the specific object being transferred so that the losing registrar's authorization server can present the registrant with an accurate consent screen. The <strong>primary method</strong> is Rich Authorization Requests (RAR) <xref target="RFC9396"></xref>: the gaining registrar MUST include an <tt>authorization_details</tt> parameter of type <tt>rpp_transfer</tt> (see Table 3). When the losing registrar's authorization server does not support RAR, the <strong>fallback method</strong> is to request a dynamic transfer scope of the form <tt>transfer:domain:&lt;domainname&gt;</tt> (e.g., <tt>transfer:domain:foo.example</tt>). In either case, the resulting token MUST be bound to the single identified object and MUST NOT be accepted by the registry for any other object.</t>
+<t>The following diagram illustrates the interactive OAuth 2.0 federated secure object transfer flow:</t>
+<figure><name>OAuth 2.0 Federated Secure Object Transfer - Interactive Flow
+</name>
+<sourcecode type="ascii"><![CDATA[  Client          Gaining         Registry        Losing
+(Registrant)    Registrar                        Registrar
+     |               |               |               |
+     | 1. Initiate   |               |               |
+     |  transfer of  |               |               |
+     |  foo.example  |               |               |
+     +-------------->|               |               |
+     |               |               |               |
+     |               | 2. Lookup     |               |
+     |               |  losing reg   |               |
+     |               |  AS URI      |               |
+     |               +-------------->|               |
+     |               |               |               |
+     |               | 3. Return     |               |
+     |               |  losing reg   |               |
+     |               |  AS URI      |               |
+     |               |<--------------|               |
+     |               |               |               |
+     | 4. Redirect   |               |               |
+     |  to Losing Reg|               |               |
+     |  AS (RAR:    |               |               |
+     |  authz_details|               |               |
+     |  type=rpp_    |               |               |
+     |  transfer,    |               |               |
+     |  id=example   |               |               |
+     |  .com)        |               |               |
+     |<--------------|               |               |
+     |               |               |               |
+     | 5. Auth &     |               |               |
+     |  approve      |               |               |
+     |  transfer at  |               |               |
+     |  Losing Reg   |               |               |
+     |  AS           |               |               |
+     +---------------------------------------------->|
+     |               |               |               |
+     | 6. Auth code  |               |               |
+     |  + redirect to|               |               |
+     |  Gaining Reg  |               |               |
+     |  callback URI |               |               |
+     |<----------------------------------------------|
+     |               |               |               |
+     | 7. Follow     |               |               |
+     |  redirect     |               |               |
+     |  (auth code   |               |               |
+     |  delivered)   |               |               |
+     +-------------->|               |               |
+     |               |               |               |
+     |               | 8. Exchange   |               |
+     |               |  auth code for|               |
+     |               |  access token |               |
+     |               +------------------------------>|
+     |               |               |               |
+     |               | 9. JWT token  |               |
+     |               |  (authz_      |               |
+     |               |  details=     |               |
+     |               |  {type:rpp_   |               |
+     |               |  transfer,    |               |
+     |               |  id:example   |               |
+     |               |  .com})       |               |
+     |               |<------------------------------|
+     |               |               |               |
+     |               | 10. Transfer  |               |
+     |               |  request +    |               |
+     |               |  Bearer token |               |
+     |               +-------------->|               |
+     |               |               |               |
+     |               |               | 11. Local JWT |
+     |               |               |  validation   |
+     |               |               |  (losing reg  |
+     |               |               |  AS pubkey,  |
+     |               |               |  verify scope)|
+     |               |               |               |
+     |               |               | 12. Execute   |
+     |               |               |  transfer &   |
+     |               |               |  notify Losing|
+     |               |               |  Registrar    |
+     |               |               +-------------->|
+     |               |               |               |
+     |               | 13. Transfer  |               |
+     |               |   successful  |               |
+     |               |<--------------|               |
+     |               |               |               |
+     |  14. Transfer |               |               |
+     |   confirmed   |               |               |
+     |<--------------|               |               |
+     |               |               |               |
+]]>
+</sourcecode>
+</figure>
+<t>The steps in the diagram are as follows:</t>
+
+<ol spacing="compact">
+<li>The client initiates a transfer request to the gaining registrar, specifying the object to transfer (e.g., <tt>foo.example</tt>).</li>
+<li>The gaining registrar queries the registry's registrar discovery endpoint to look up the losing registrar's authorization server authorization URI. The losing registrar is identified from the current sponsoring registrar data on the domain.</li>
+<li>The registry returns the losing registrar's authorization server authorization URI. If no URI is registered, the gaining registrar MUST fall back to the Legacy Mode flow.</li>
+<li>The gaining registrar redirects the client's browser to the losing registrar's authorization server. The authorization request MUST include an <tt>authorization_details</tt> parameter of type <tt>rpp_transfer</tt> with <tt>object_type: &quot;domain&quot;</tt> and <tt>object_identifier: &quot;foo.example&quot;</tt> (RAR, <xref target="RFC9396"></xref>). If the authorization server does not support RAR, the fallback dynamic scope <tt>transfer:domain:foo.example</tt> MUST be used instead. The gaining registrar's callback URI is included as the OAuth 2.0 <tt>redirect_uri</tt>.</li>
+<li>The client authenticates at the losing registrar's authorization server and explicitly approves the transfer scope, providing direct, verifiable consent to release the specific object.</li>
+<li>The losing registrar's authorization server issues an authorization code and redirects the client's browser back to the gaining registrar's registered callback URI.</li>
+<li>The client's browser follows the redirect, delivering the authorization code to the gaining registrar's callback endpoint.</li>
+<li>The gaining registrar exchanges the authorization code for an access token at the losing registrar's authorization server token endpoint (back-channel, Authorization Code grant <xref target="RFC6749" sectionFormat="bare" section="Section 4.1"></xref>).</li>
+<li>The losing registrar's authorization server validates the code and issues a signed JWT access token (<xref target="RFC9068"></xref>). When RAR was used, the token MUST contain an <tt>authorization_details</tt> claim echoing the <tt>rpp_transfer</tt> object. When the dynamic scope fallback was used, the token MUST contain the <tt>transfer:domain</tt> (or <tt>transfer:contact</tt>) scope in the <tt>scope</tt> claim and MUST include the <tt>rpp_object_id</tt> claim carrying the specific object identifier.</li>
+<li>The gaining registrar submits the transfer request to the registry, including the JWT as a Bearer token in the <tt>Authorization</tt> header.</li>
+<li>The registry validates the JWT locally using the losing registrar's authorization server public key (obtained via OAuth 2.0 Authorization Server Metadata <xref target="RFC8414"></xref>). No live call to the losing registrar is required. The registry MUST verify the transfer authorization using the appropriate method: if the token contains an <tt>authorization_details</tt> claim (RAR), the registry MUST verify that the <tt>type</tt> is <tt>rpp_transfer</tt> and that <tt>object_identifier</tt> matches the object being transferred; if the token uses the dynamic scope fallback, the registry MUST verify that the <tt>scope</tt> claim contains <tt>transfer:domain</tt> or <tt>transfer:contact</tt> and that the <tt>rpp_object_id</tt> claim value matches the object being transferred.</li>
+<li>The registry executes the transfer and notifies the losing registrar.</li>
+<li>The registry returns a successful transfer response to the gaining registrar.</li>
+<li>The gaining registrar confirms the completed transfer to the client.</li>
+</ol>
+</section>
+
+<section anchor="fallback-flow"><name>Fallback Flow</name>
+<t>The fallback Flow uses opaque transfer authorization tokens to authorize object transfers between registrars. The gaining registrar obtains the transfer authorization token out-of-band from the losing registrar (e.g., via the registrant or a prior registrar-to-registrar agreement) and includes it in the transfer request. No OAuth 2.0 federation or end-user interaction is required. The registry validates the opaque token against the losing registrar's records to authorize the transfer.</t>
+<t>The transfer authorization token MUST be conveyed using the <tt>rpp_transfer_authinfo</tt> claim embedded in a JWT access token.</t>
+<t>The following diagram illustrates the machine-to-machine fallback secure object transfer flow:</t>
+<figure><name>Legacy Secure Object Transfer - Machine to Machine Flow
+</name>
+<sourcecode type="ascii"><![CDATA[  Client          Gaining         Registry        Losing
+(Registrant)    Registrar                        Registrar
+     |               |               |               |
+     |   1. Initiate |               |               |
+     |    transfer   |               |               |
+     |   (authz token|               |               |
+     |    provided   |               |               |
+     |    out-of-band|               |               |
+     |    by losing  |               |               |
+     |    registrar) |               |               |
+     +-------------->|               |               |
+     |               |               |               |
+     |               | 2. Transfer   |               |
+     |               |  request      |               |
+     |               |  (RPP-Authori-|               |
+     |               |   zation:     |               |
+     |               |   <token>)    |               |
+     |               +-------------->|               |
+     |               |               |               |
+     |               |               | 3. Validate   |
+     |               |               |  authz token  |
+     |               |               |               |
+     |               |               | 4. Execute    |
+     |               |               |  transfer &   |
+     |               |               |  notify Losing|
+     |               |               |  Registrar    |
+     |               |               +-------------->|
+     |               |               |               |
+     |               | 5. Transfer   |               |
+     |               |   successful  |               |
+     |               |<--------------|               |
+     |               |               |               |
+     |  6. Transfer  |               |               |
+     |   confirmed   |               |               |
+     |<--------------|               |               |
+     |               |               |               |
+]]>
+</sourcecode>
+</figure>
+<t>The steps in the diagram are as follows:</t>
+
+<ol spacing="compact">
+<li>The client initiates a transfer request to the gaining registrar, providing the transfer authorization token that was obtained out-of-band from the losing registrar (e.g., via the registrant or a prior registrar-to-registrar agreement).</li>
+<li>The gaining registrar submits the transfer request to the registry, including the opaque authorization token in the <tt>RPP-Authorization</tt> header.</li>
+<li>The registry validates the authorization token against the losing registrar's records.</li>
+<li>The registry executes the transfer and notifies the losing registrar.</li>
+<li>The registry returns a successful transfer response to the gaining registrar.</li>
+<li>The gaining registrar confirms the completed transfer to the client.</li>
+</ol>
+</section>
+</section>
 </section>
 
 <section anchor="iana-considerations"><name>IANA Considerations</name>
@@ -1217,7 +2024,8 @@ TODO: add filled in template, if we decide to use URN for profile identification
 Specification: This Document
 Repository: ?
 Index value: ?
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="rpp-registry-group"><name>RPP registry group</name>
@@ -1226,7 +2034,8 @@ Index value: ?
 <sourcecode type="text"><![CDATA[Name of the registry: RESTful Provisioning Protocol (RPP)
 Reference: This Document
 IANA Registry Reference: TODO
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 
 <section anchor="rpp-discovery-registry"><name>RPP Discovery registry</name>
@@ -1235,7 +2044,8 @@ IANA Registry Reference: TODO
 <sourcecode type="text"><![CDATA[Name of the registry: RPP Discovery URLs
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Fields to be registered:</t>
 
 <ul spacing="compact">
@@ -1251,7 +2061,8 @@ Registration procedure: Expert Review
 <sourcecode type="text"><![CDATA[Name of the registry: RPP Extensions
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Fields to be registered:</t>
 
 <ul spacing="compact">
@@ -1268,7 +2079,8 @@ Registration procedure: Expert Review
 <sourcecode type="text"><![CDATA[Name of the registry: RPP Profiles
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Fields to be registered:</t>
 
 <ul spacing="compact">
@@ -1286,7 +2098,8 @@ Registration procedure: Expert Review
 <sourcecode type="text"><![CDATA[Name of the registry: RPP Result codes
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
-]]></sourcecode>
+]]>
+</sourcecode>
 <t>Fields to be registered:</t>
 
 <ul spacing="compact">
@@ -1315,7 +2128,8 @@ Restrictions on usage: "N/A"
 Author: Document authors
 Change controller: Document authors
 Provisional registration: No
-]]></sourcecode>
+]]>
+</sourcecode>
 </section>
 </section>
 
@@ -1329,6 +2143,13 @@ Provisional registration: No
 </section>
 
 <section anchor="change-history"><name>Change History</name>
+
+<section anchor="version-05-to-06"><name>Version 05 to 06</name>
+
+<ul spacing="compact">
+<li>Expanded the &quot;Authentication and Authorization&quot; section to include OAuth 2.0 description. (Issue #33)</li>
+</ul>
+</section>
 
 <section anchor="version-04-to-05"><name>Version 04 to 05</name>
 
@@ -1402,6 +2223,7 @@ Provisional registration: No
 <back>
 <references><name>References</name>
 <references><name>Normative References</name>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.kowalik-rpp-data-objects.xml"/>
 <reference anchor="REST" target="http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm">
   <front>
     <title>Architectural Styles and the Design of Network-based Software Architectures</title>
@@ -1426,6 +2248,7 @@ Provisional registration: No
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6838.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7519.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7617.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8414.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8446.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8725.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8941.xml"/>
@@ -1433,6 +2256,7 @@ Provisional registration: No
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9110.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9205.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9325.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9396.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9457.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9535.xml"/>
 <reference anchor="SemVer" target="https://semver.org/">

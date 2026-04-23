@@ -60,14 +60,14 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 Table of Contents
 
-   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
-   2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   3
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   4
+   2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   4
    3.  Conventions Used in This Document . . . . . . . . . . . . . .   4
-   4.  Request Headers . . . . . . . . . . . . . . . . . . . . . . .   4
-   5.  Response Headers  . . . . . . . . . . . . . . . . . . . . . .   5
+   4.  Request Headers . . . . . . . . . . . . . . . . . . . . . . .   5
+   5.  Response Headers  . . . . . . . . . . . . . . . . . . . . . .   6
    6.  Error handling and relation between HTTP status codes and RPP
-           codes . . . . . . . . . . . . . . . . . . . . . . . . . .   6
-   7.  Problem Detail responses for errors . . . . . . . . . . . . .   8
+           codes . . . . . . . . . . . . . . . . . . . . . . . . . .   7
+   7.  Problem Detail responses for errors . . . . . . . . . . . . .   9
    8.  Bootstrapping . . . . . . . . . . . . . . . . . . . . . . . .  10
    9.  Discoverability . . . . . . . . . . . . . . . . . . . . . . .  11
      9.1.  Workflow  . . . . . . . . . . . . . . . . . . . . . . . .  14
@@ -77,7 +77,7 @@ Table of Contents
      10.3.  Extensions . . . . . . . . . . . . . . . . . . . . . . .  15
      10.4.  Profiles . . . . . . . . . . . . . . . . . . . . . . . .  16
    11. Media types . . . . . . . . . . . . . . . . . . . . . . . . .  16
-   12. Profiles  . . . . . . . . . . . . . . . . . . . . . . . . . .  16
+   12. Profiles  . . . . . . . . . . . . . . . . . . . . . . . . . .  17
      12.1.  Definition . . . . . . . . . . . . . . . . . . . . . . .  17
      12.2.  Inheritance  . . . . . . . . . . . . . . . . . . . . . .  18
      12.3.  Signalling . . . . . . . . . . . . . . . . . . . . . . .  19
@@ -89,11 +89,11 @@ Table of Contents
      13.3.  Poll for Messages  . . . . . . . . . . . . . . . . . . .  23
      13.4.  Delete Message . . . . . . . . . . . . . . . . . . . . .  24
      13.5.  Create Resource  . . . . . . . . . . . . . . . . . . . .  25
-     13.6.  Delete Resource  . . . . . . . . . . . . . . . . . . . .  25
+     13.6.  Delete Resource  . . . . . . . . . . . . . . . . . . . .  26
      13.7.  Processes Path Segment . . . . . . . . . . . . . . . . .  26
        13.7.1.  Generic proces interface . . . . . . . . . . . . . .  27
          13.7.1.1.  Starting:  . . . . . . . . . . . . . . . . . . .  27
-         13.7.1.2.  Cancelling:  . . . . . . . . . . . . . . . . . .  27
+         13.7.1.2.  Cancelling:  . . . . . . . . . . . . . . . . . .  28
          13.7.1.3.  Status . . . . . . . . . . . . . . . . . . . . .  28
          13.7.1.4.  Other operations . . . . . . . . . . . . . . . .  28
          13.7.1.5.  Listing  . . . . . . . . . . . . . . . . . . . .  28
@@ -117,29 +117,58 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    14. Extension Framework . . . . . . . . . . . . . . . . . . . . .  37
    15. RPP Result Codes  . . . . . . . . . . . . . . . . . . . . . .  37
    16. Authentication and Authorization  . . . . . . . . . . . . . .  38
-   17. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  38
-     17.1.  URN Sub-namespace for RPP (urn:ietf:params:rpp)  . . . .  38
-     17.2.  RPP registry group . . . . . . . . . . . . . . . . . . .  38
-     17.3.  RPP Discovery registry . . . . . . . . . . . . . . . . .  39
-     17.4.  RPP Extension registry . . . . . . . . . . . . . . . . .  39
-     17.5.  RPP Profile registry . . . . . . . . . . . . . . . . . .  40
-     17.6.  RPP Result Codes Registry  . . . . . . . . . . . . . . .  40
-     17.7.  RPP Media Type (application/rpp+json)  . . . . . . . . .  40
-   18. Internationalization Considerations . . . . . . . . . . . . .  41
-   19. Security Considerations . . . . . . . . . . . . . . . . . . .  41
-   20. Change History  . . . . . . . . . . . . . . . . . . . . . . .  41
-     20.1.  Version 04 to 05 . . . . . . . . . . . . . . . . . . . .  41
-     20.2.  Version 03 to 04 . . . . . . . . . . . . . . . . . . . .  41
-     20.3.  Version 02 to 03 . . . . . . . . . . . . . . . . . . . .  42
-     20.4.  Version 01 to 02 . . . . . . . . . . . . . . . . . . . .  42
-     20.5.  Version 00 to 01 . . . . . . . . . . . . . . . . . . . .  42
+     16.1.  OAUTH 2.0  . . . . . . . . . . . . . . . . . . . . . . .  38
+     16.2.  Scopes . . . . . . . . . . . . . . . . . . . . . . . . .  39
+       16.2.1.  Scope Derivation Rules . . . . . . . . . . . . . . .  39
+       16.2.2.  Scope Registry . . . . . . . . . . . . . . . . . . .  40
+     16.3.  Claims . . . . . . . . . . . . . . . . . . . . . . . . .  41
+       16.3.1.  Required Claims  . . . . . . . . . . . . . . . . . .  41
+       16.3.2.  RPP-Specific Claims  . . . . . . . . . . . . . . . .  43
+       16.3.3.  Claim Validation . . . . . . . . . . . . . . . . . .  45
+     16.4.  Profiles . . . . . . . . . . . . . . . . . . . . . . . .  46
+       16.4.1.  Machine to Machine . . . . . . . . . . . . . . . . .  46
+       16.4.2.  Interactive  . . . . . . . . . . . . . . . . . . . .  48
+         16.4.2.1.  Registrar Employee Flow  . . . . . . . . . . . .  49
+         16.4.2.2.  Registrant Customer Flow . . . . . . . . . . . .  49
+       16.4.3.  Enforcing Interactive Authentication for High-Risk
+               Operations  . . . . . . . . . . . . . . . . . . . . .  51
+     16.5.  Secure Object Transfer . . . . . . . . . . . . . . . . .  52
+       16.5.1.  Machine to Machine . . . . . . . . . . . . . . . . .  53
+       16.5.2.  Interactive  . . . . . . . . . . . . . . . . . . . .  55
+   17. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  57
+     17.1.  URN Sub-namespace for RPP (urn:ietf:params:rpp)  . . . .  57
+     17.2.  RPP registry group . . . . . . . . . . . . . . . . . . .  58
+     17.3.  RPP Discovery registry . . . . . . . . . . . . . . . . .  58
+     17.4.  RPP Extension registry . . . . . . . . . . . . . . . . .  58
+     17.5.  RPP Profile registry . . . . . . . . . . . . . . . . . .  59
+     17.6.  RPP Result Codes Registry  . . . . . . . . . . . . . . .  59
+     17.7.  RPP Media Type (application/rpp+json)  . . . . . . . . .  60
+   18. Internationalization Considerations . . . . . . . . . . . . .  60
+   19. Security Considerations . . . . . . . . . . . . . . . . . . .  60
+   20. Change History  . . . . . . . . . . . . . . . . . . . . . . .  60
+     20.1.  Version 04 to 05 . . . . . . . . . . . . . . . . . . . .  60
+     20.2.  Version 03 to 04 . . . . . . . . . . . . . . . . . . . .  61
+     20.3.  Version 02 to 03 . . . . . . . . . . . . . . . . . . . .  61
+     20.4.  Version 01 to 02 . . . . . . . . . . . . . . . . . . . .  61
+     20.5.  Version 00 to 01 . . . . . . . . . . . . . . . . . . . .  61
      20.6.  Version 00 (draft-rpp-core) to 00
-            (draft-wullink-rpp-core) . . . . . . . . . . . . . . . .  42
-   21. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  42
-   22. References  . . . . . . . . . . . . . . . . . . . . . . . . .  43
-     22.1.  Normative References . . . . . . . . . . . . . . . . . .  43
-     22.2.  Informative References . . . . . . . . . . . . . . . . .  45
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  45
+            (draft-wullink-rpp-core) . . . . . . . . . . . . . . . .  61
+   21. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  62
+   22. References  . . . . . . . . . . . . . . . . . . . . . . . . .  62
+     22.1.  Normative References . . . . . . . . . . . . . . . . . .  62
+     22.2.  Informative References . . . . . . . . . . . . . . . . .  65
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  65
+
+
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026               [Page 3]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
 
 1.  Introduction
 
@@ -162,13 +191,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    RESTful - A RESTful web service is a web service or API implemented
    using HTTP and the principles of [REST].
-
-
-
-Wullink & Kowalik       Expires 16 September 2026               [Page 3]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    EPP RFCs - This is a reference to the EPP version 1.0 specifications
    [RFC5730], [RFC5731], [RFC5732] and [RFC5733].
@@ -194,6 +216,16 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    NOT","SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in
    this document are to be interpreted as described in [RFC2119].
 
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026               [Page 4]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    In examples, indentation and white space in examples are provided
    only to illustrate element relationships and are not REQUIRED
    features of the protocol.
@@ -217,15 +249,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       the clTRID element defined in [RFC5730] and MUST be used
       accordingly, when the HTTP message body does not contain an EPP
       request that includes a cltrid.
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026               [Page 4]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    -  RPP-Authorization: The client MAY use this header to send
       authorization information in the format <method> <authorization
       information>, similar to the HTTP Authorization header, defined in
@@ -249,6 +272,15 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    Use of the RPP-Authorization header:
 
    RPP-Authorization: authinfo value=TXkgU2VjcmFRva2Vu, roid=REG-X-123
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026               [Page 5]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
 
    The value of the RPP-Authorization header is case sensitive.  The
    server MUST reject requests where the case of the header value does
@@ -275,13 +307,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       body.  If an HTTP message body with the EPP XML equivalent
       "svTRID" exists, both values MUST be consistent.
 
-
-
-Wullink & Kowalik       Expires 16 September 2026               [Page 5]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    -  RPP-Cltrid: This header is the equivalent of the "clTRID" element
       defined in [RFC5730] and MUST be used accordingly when the RPP
       response does not contain an EPP response in the HTTP message
@@ -306,6 +331,13 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    confusion RPP MUST not define new codes with the same semantic
    meaning as already defined in EPP.
 
+
+
+Wullink & Kowalik       Expires 16 September 2026               [Page 6]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    For RPP codes the remaining 4 digits MUST keep the same semantics as
    [RFC5730] Result Codes.
 
@@ -325,18 +357,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    The mapping strategy is to use the most specific HTTP code that
    accurately reflects the operation's result.
-
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026               [Page 6]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    For common and well-defined outcomes, a specific HTTP status code is
    used.  For example, an attempt to access a non-existent resource (EPP
@@ -366,6 +386,14 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    |             | successful (e.g., for    | specified otherwise),    |
    |             | GET or UPDATE).          | 01300, 01301             |
    +-------------+--------------------------+--------------------------+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026               [Page 7]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    | 201 Created | The resource was created | 01000 for resource       |
    |             | successfully.            | creating requests        |
    |             |                          | (POST/PUT)               |
@@ -386,14 +414,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    |             | parameters, policy).     | 02300-02301,             |
    |             |                          | 02304-02308              |
    +-------------+--------------------------+--------------------------+
-
-
-
-Wullink & Kowalik       Expires 16 September 2026               [Page 7]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    | 403         | Authentication or        | 02200-02202              |
    | Forbidden   | authorization failed.    |                          |
    +-------------+--------------------------+--------------------------+
@@ -420,6 +440,16 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
                                   Table 1
 
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026               [Page 8]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    Some EPP result codes, like 01500, 02500, 02501 and 02502 are related
    to session management and therefore not applicable to a sessionless
    RPP protocol.
@@ -442,14 +472,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    title  (required, string) A short human-readable description of the
       Problem Detail type.
    errors  (optional, array of error objects) MUST contain objects
-
-
-
-Wullink & Kowalik       Expires 16 September 2026               [Page 8]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
       detailing information about the specific errors that occurred,
       including optional references to which values in the original
       request were not acceptable to the server.
@@ -473,6 +495,17 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    the error.  For example, to indicate the account balance on a billing
    failure, the following Problem Detail response could be used:
 
+
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026               [Page 9]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    {
      "type": "urn:ietf:params:rpp:error",
      "title": "RPP Error",
@@ -489,22 +522,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    create request using an invalid domain name (_$.example), JSONPaths
    are specified in the error objects to indicate which value in the
    request caused the error:
-
-
-
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026               [Page 9]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    {
      "type": "urn:ietf:params:rpp:error",
@@ -538,6 +555,13 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    in each DNS zone that is served by the RPP server.  The owner name of
    the SRV record MUST be _rpp._tcp.<zone>.
 
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 10]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    If multiple SRV records are returned, the client MUST select the RPP
    server according to the priority and weight rules in [RFC2782].  The
    client MUST ignore SRV records with a target of . (service not
@@ -552,15 +576,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    The client MUST use the constructed URL to discover the capabilities
    of the RPP server, as defined in the Discoverability section below.
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 10]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    Example SRV record for an RPP server for the TLD "example" running
    HTTPS on port 443 at rpp.example.:
@@ -594,6 +609,15 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    -  extensions: (optional, array of extension objects) A list of
       supported extensions, each extension object MUST contain the
       following fields:
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 11]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
       -  name: (required, string) A short name for the extension, for
          example "registry fee extension".
       -  id: (required, string) A unique URN identifier for the
@@ -610,14 +634,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       profiles, each profile object MUST contain the following fields:
       -  name: (required, string) A short name for the profile, for
          example "domain provisioning profile".
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 11]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
       -  id: (required, string) A unique URN identifier for the profile,
          for example "urn:ietf:params:rpp:profile:domain-provisioning-
          1.0".
@@ -650,6 +666,14 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       -  description: (optional, string) A human-readable description of
          the maintenance window.
 
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 12]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    The following template variables are defined for use in RPP endpoint
    URL templates:
 
@@ -662,17 +686,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    -  process_id: The unique identifier for a specific process instance
 
    Example discovery response document:
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 12]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    {
      "base_url": "https://rpp.example/rpp/v1",
@@ -709,6 +722,14 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
          "url_template": "/messages"
        },
        {
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 13]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
          "name": "create",
          "url_template": "/{collection}"
        },
@@ -721,14 +742,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
          "description": "Planned maintenance for server upgrades"
        }
      ]
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 13]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    }
 
@@ -765,6 +778,14 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    major version number is used to indicate breaking changes.  The minor
    and patch version numbers are not used in an URL path, but can be
    used in the media type or in the message body to indicate non-
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 14]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    breaking changes.
 
    The following RPP elements include versioning support:
@@ -778,14 +799,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       they are compatible with.
    -  Profiles: RPP profiles MUST include the version of the RPP API
       they are compatible with.
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 14]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    -  Media types: RPP media types MUST include the version of the RPP
       API they are compatible with.
    -  Result codes: RPP result codes may be added by extensions or
@@ -821,6 +834,14 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    how the version information for an extension can be included in the
    RPP Discovery response:
 
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 15]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    "extensions": [
        {
          "name": "RPP example extension",
@@ -829,18 +850,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
          "url": "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0"
        }
      ],
-
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 15]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
 10.4.  Profiles
 
@@ -880,6 +889,15 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    The definition of profile parameters in media types is described in
    section ....
 
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 16]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
 12.  Profiles
 
    A profile is a named set of protocol features and versions that are
@@ -889,14 +907,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    implementation and deployment of RPP by providing a clear and concise
    way for the client and server to communicate their capabilities and
    requirements.
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 16]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    A profile is identified by a unique name and may be published as a
    standard profile in the IANA registry for RPP profiles, to promote
@@ -936,16 +946,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       base profile MUST be published in the IANA registry for RPP
       profiles, or be made available to the client using other means.
 
-   Example JSON representation for a standard profile named "example-
-   profile" that supports RPP version 1.0 and includes two extensions,
-   "rppExample" version 1.0 and "rppOther" version 1.1.  The profile
-   also "extends" the "base-profile" profile, which is defined in the
-   IANA registry for RPP profiles and supports RPP version 1.0.
-
-
-
-
-
 
 
 
@@ -953,6 +953,12 @@ Wullink & Kowalik       Expires 16 September 2026              [Page 17]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
+
+   Example JSON representation for a standard profile named "example-
+   profile" that supports RPP version 1.0 and includes two extensions,
+   "rppExample" version 1.0 and "rppOther" version 1.1.  The profile
+   also "extends" the "base-profile" profile, which is defined in the
+   IANA registry for RPP profiles and supports RPP version 1.0.
 
    {
      "name": "urn:ietf:params:rpp:profile:example-profile",
@@ -996,12 +1002,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    can create dependencies between profiles and make it harder to
    understand the features and versions included in a profile.
    Therefore, it is recommended to use inheritance with caution and to
-   clearly document the relationships between profiles.  The depth of
-   inheritance MUST be limited to 1 to provent excessive complexity, and
-   profile designers MUST NOT create circular dependencies between
-   profiles, where a profile inherits from itself directly.
-
-
 
 
 
@@ -1009,6 +1009,11 @@ Wullink & Kowalik       Expires 16 September 2026              [Page 18]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
+
+   clearly document the relationships between profiles.  The depth of
+   inheritance MUST be limited to 1 to provent excessive complexity, and
+   profile designers MUST NOT create circular dependencies between
+   profiles, where a profile inherits from itself directly.
 
    This is an example of the parent base-profile used in the previous
    example, it contains a single extension "rppOther" version 1.0 and
@@ -1053,11 +1058,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    first parameter MUST uniquely identify a profile, for example
    urn:ietf:params:rpp:profile:example-profile, followed by the version
    parameter.  If the server does not support the indicated profile or
-   version, then the server MUST return an HTTP error response and
-   include a Problem Detail response in the message body.
-
-   The ABNF for Profile header value is as follows:
-
 
 
 
@@ -1065,6 +1065,11 @@ Wullink & Kowalik       Expires 16 September 2026              [Page 19]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
+
+   version, then the server MUST return an HTTP error response and
+   include a Problem Detail response in the message body.
+
+   The ABNF for Profile header value is as follows:
 
    profile-header = "profile" "=" profile-name ";" OWS "version" "=" version
    profile-name   = token
@@ -1108,12 +1113,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    The RPP endpoints are defined using the following URI Template
    syntax:
 
-   -  {c}: An abbreviation for {collection}: this MUST be substituted
-      with "domains", "hosts", "entities" or another collection of
-      objects.
-   -  {i}: An abbreviation for an object identifier, this MUST be
-      substituted with the value of a domain name, hostname, contact-id
-      or a message-id or any other defined object.
+
 
 
 
@@ -1121,6 +1121,13 @@ Wullink & Kowalik       Expires 16 September 2026              [Page 20]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
+
+   -  {c}: An abbreviation for {collection}: this MUST be substituted
+      with "domains", "hosts", "entities" or another collection of
+      objects.
+   -  {i}: An abbreviation for an object identifier, this MUST be
+      substituted with the value of a domain name, hostname, contact-id
+      or a message-id or any other defined object.
 
    A RPP client MAY use the HTTP GET method for executing informational
    request only when no request data has to be added to the HTTP message
@@ -1163,13 +1170,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    operation or the kind of response information that shall be returned.
    For example Registry Fee Extension [RFC8748] defines a possibility to
    request certain currency, only certain commands or periods.  Such
-   functionality would add query parameters, which could be used with
-   GET request to receive additional pricing information with the
-   response.  HEAD request would not be affected in this case.
-
-   The server MUST respond with the same HTTP status code if the same
-   URL is requested with HEAD and with GET.
-
 
 
 
@@ -1177,6 +1177,13 @@ Wullink & Kowalik       Expires 16 September 2026              [Page 21]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
+
+   functionality would add query parameters, which could be used with
+   GET request to receive additional pricing information with the
+   response.  HEAD request would not be affected in this case.
+
+   The server MUST respond with the same HTTP status code if the same
+   URL is requested with HEAD and with GET.
 
    - Request: HEAD|GET {collection}/{id}/availability
    - Request message: None
@@ -1218,13 +1225,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    Example request for an object not using authorization information.
 
-   GET domains/foo.example HTTP/2
-   Host: rpp.example
-   Authorization: Bearer <token>
-   Accept: application/rpp+json
-   Accept-Language: en
-   RPP-Cltrid: ABC-12345
-
 
 
 
@@ -1233,6 +1233,13 @@ Wullink & Kowalik       Expires 16 September 2026              [Page 22]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
+
+   GET domains/foo.example HTTP/2
+   Host: rpp.example
+   Authorization: Bearer <token>
+   Accept: application/rpp+json
+   Accept-Language: en
+   RPP-Cltrid: ABC-12345
 
    Example request using RPP-Authorization header for an object that has
    attached authorization information.
@@ -1271,14 +1278,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    Example request:
 
-   GET messages HTTP/2
-   Host: rpp.example
-   Authorization: Bearer <token>
-   Accept: application/rpp+json
-   Accept-Language: en
-   RPP-Cltrid: ABC-12345
 
-   Example response:
 
 
 
@@ -1289,6 +1289,15 @@ Wullink & Kowalik       Expires 16 September 2026              [Page 23]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
+
+   GET messages HTTP/2
+   Host: rpp.example
+   Authorization: Bearer <token>
+   Accept: application/rpp+json
+   Accept-Language: en
+   RPP-Cltrid: ABC-12345
+
+   Example response:
 
    HTTP/2 200 OK
    Date: Wed, 24 Jan 2024 12:00:00 UTC
@@ -1326,6 +1335,17 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    Example response:
 
+
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 24]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    HTTP/2 200 OK
    Date: Wed, 24 Jan 2024 12:00:00 UTC
    Server: Example RPP server v1.0
@@ -1337,14 +1357,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    Content-Length: 145
 
    TODO
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 24]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
 13.5.  Create Resource
 
@@ -1383,6 +1395,13 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    TODO
 
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 25]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
 13.6.  Delete Resource
 
    -  Request: DELETE {collection}/{id}
@@ -1394,13 +1413,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    (OK) if the resource was deleted successfully.
 
    Example Domain Delete request:
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 25]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    DELETE domains/foo.example HTTP/2
    Host: rpp.example
@@ -1438,6 +1450,14 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    /{collection}/{id}/processes/{process_name}/{process_id}, where
    process_id is the process identifier.
 
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 26]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    A process MAY also expose a resource at
    /{collection}/{id}/processes/{process_name}/latest to access and
    interact with the latest process instance.  In case server offers any
@@ -1450,13 +1470,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    also for completed or cancelled processes.  The period for which
    completed processes remain available for retrieval is defined by
    server policy.
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 26]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
 13.7.1.  Generic proces interface
 
@@ -1493,6 +1506,14 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
        "duration": "P2Y"
    }
 
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 27]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
 13.7.1.2.  Cancelling:
 
    A client MAY use the "latest" mnemonic to cancel the latest process
@@ -1504,15 +1525,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    request MUST be:
 
    DELETE /{collection}/{id}/processes/{process_name}/{process_id}
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 27]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    This request is intended to stop the running process.  The server
    MUST return a 204 response if the process has been stopped and the
@@ -1550,6 +1562,14 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    server and MUST be used by the client to retrieve process list
    filtered by process name:
 
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 28]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    GET /{collection}/{id}/processes/{process_name}/
 
    The following URL structure and HTTP method MAY be exposed by the
@@ -1562,13 +1582,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    running or completed, made available for the client.  A server MAY
    also choose not implement this end point at all returning either the
    HTPP status code 404 Not Found or a 501 Not Implemented status code.
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 28]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
 13.7.2.  Relation to object representation
 
@@ -1602,19 +1615,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    }
 
    Example: Domain Create request with 2-year registration:
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2078,10 +2078,28 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    Due to the stateless nature of RPP, the client MUST include the
    authentication credentials in each HTTP request.  This MAY be done by
-   using JSON Web Tokens (JWT) [RFC7519] or Basic authentication
-   [RFC7617].  The server MUST validate the authentication credentials
-   on each request and reject any request with invalid credentials with
-   an appropriate HTTP status code.
+   using OAuth 2.0 and access tokens (JWT) [RFC7519] or any other secure
+   authentication mechanism, Basic authentication [RFC7617] SHOULD NOT
+   be used.  The server MUST validate the authentication credentials on
+   each request and reject any request with invalid credentials with an
+   appropriate HTTP status code.
+
+16.1.  OAUTH 2.0
+
+   RPP acts as an OAuth2 Resource Server and MAY act as an OpenID
+   Connect (OIDC) Identity Provider.  RPP also supports external
+   Identity Providers (IdPs).  RPP enforces access control based on
+   verified OIDC access tokens containing identity and authorization
+   claims.
+
+   When using OAuth 2.0 for authentication, the client MUST obtain an
+   access token from the authorization server and include it in the
+   Authorization header of each HTTP request.  The server MUST validate
+   the access token on each request and reject any request with an
+   invalid or expired token with an appropriate HTTP status code.  The
+   server MUST also implement appropriate scopes and permissions to
+   control access to resources based on the client's authorization
+   level.
 
    When using JWTs for OAuth 2.0 [RFC6749] Access Tokens, the JWT
    profile described in [RFC9068] MUST be used.  It is RECOMMENDED to
@@ -2091,6 +2109,1063 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    unauthorized access when the token is persistent to a storage device.
    Furthermore, the best practices for JWT usage as outlined in
    [RFC8725] MUST be followed.
+
+   RPP operates as a Policy Enforcement Point (PEP).  Authorization
+   decisions are derived from claims contained in validated access
+   tokens.
+
+   RPP MAY support two identity modes:
+
+   -  Internal Identity Mode: RPP acts as the IdP and issues access
+      tokens directly:
+
+   User → RPP (IdP) → JWT → RPP API - External Identity Mode: RPP trusts
+   an external IdP and validates externally issued tokens:
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 38]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+   User → External IdP → JWT → RPP API
+
+   In both cases, RPP enforces authorization identically, the access
+   tokens MUST be JWTs signed using asymmetric cryptography and MUST
+   include the necessary claims for RPP to make authorization decisions.
+   The server MUST validate the signature of the JWT using the public
+   key of the issuing IdP and MUST also validate the token's claims,
+   such as the "aud" (audience) claim to ensure the token is intended
+   for use with RPP.
+
+16.2.  Scopes
+
+   Scopes are used to define the permissions and access rights of a
+   client when accessing RPP resources.  The server MUST define a set of
+   scopes that can be requested by clients when obtaining access tokens.
+   The scopes MUST be based on the principle of least privilege,
+   allowing clients to request only the permissions they need to perform
+   their intended operations.  The server MUST also define the mapping
+   between scopes and the specific resources and operations that they
+   grant access to.
+
+   When a client requests an access token from the authorization server,
+   it MUST include the desired scopes in the scope parameter of the
+   token request.  The authorization server MUST validate the requested
+   scopes against the client's registered permissions and issue an
+   access token with the appropriate scopes if the request is valid.
+   The server MUST enforce access control based on the scopes included
+   in the access token, allowing or denying access to resources based on
+   the client's authorized scopes.  The server MUST also implement
+   appropriate error handling for cases where a client attempts to
+   access a resource without the necessary scopes, returning an
+   appropriate HTTP status code and error message.
+
+   RPP scopes are based on the objects, processes and operations defined
+   in RESTful Provisioning Protocol (RPP) data objects in
+   [I-D.kowalik-rpp-data-objects].  Each scope corresponds to a specific
+   set of permissions for accessing and manipulating RPP resources.
+
+16.2.1.  Scope Derivation Rules
+
+   RPP scopes are derived systematically from the data object types and
+   operation categories defined in [I-D.kowalik-rpp-data-objects].  The
+   derivation rules are as follows:
+
+   -  The scope identifier MUST use the format <object>:<access-level>,
+      where <object> is the lowercase stable identifier of the data
+      object and <access-level> is one of the access levels defined
+      below.
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 39]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+   -  The read access level grants permission to perform the Read
+      operation on the corresponding data object.
+   -  The write access level grants permission to perform Create,
+      Update, Delete, Renew, and Restore operations on the corresponding
+      data object.
+   -  The transfer access level grants permission to perform all
+      Transfer operations on the corresponding data object.
+   -  A scope at a higher access level does NOT implicitly include lower
+      access levels.  Clients MUST request each required scope
+      explicitly.
+   -  Extensions and additional data objects registered in the IANA RPP
+      Data Object Registry [I-D.kowalik-rpp-data-objects] SHOULD define
+      their own scopes following the same derivation rules, using the
+      registered stable identifier of the extension object as the
+      <object> component.
+
+16.2.2.  Scope Registry
+
+   Table 2 defines the RPP scopes derived from the data objects
+   specified in [I-D.kowalik-rpp-data-objects].
+
+   Table 2: RPP OAuth 2.0 Scopes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 40]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+     +==================+=========+=================================+
+     | Scope            | Data    | Operations Granted              |
+     |                  | Object  |                                 |
+     +==================+=========+=================================+
+     | domain:read      | Domain  | Read                            |
+     |                  | Name    |                                 |
+     +------------------+---------+---------------------------------+
+     | domain:write     | Domain  | Create, Update, Delete, Renew,  |
+     |                  | Name    | Restore                         |
+     +------------------+---------+---------------------------------+
+     | domain:transfer  | Domain  | Transfer Create, Transfer       |
+     |                  | Name    | Approve, Transfer Reject,       |
+     |                  |         | Transfer Cancel, Transfer Query |
+     +------------------+---------+---------------------------------+
+     | contact:read     | Contact | Read                            |
+     +------------------+---------+---------------------------------+
+     | contact:write    | Contact | Create, Update, Delete, Restore |
+     +------------------+---------+---------------------------------+
+     | contact:transfer | Contact | Transfer Create, Transfer       |
+     |                  |         | Approve, Transfer Reject,       |
+     |                  |         | Transfer Cancel, Transfer Query |
+     +------------------+---------+---------------------------------+
+     | host:read        | Host    | Read                            |
+     +------------------+---------+---------------------------------+
+     | host:write       | Host    | Create, Update, Delete, Restore |
+     +------------------+---------+---------------------------------+
+
+                                 Table 3
+
+   The server MUST reject any request where the access token does not
+   contain the scope required for the requested operation, returning
+   HTTP 403 Forbidden with an appropriate RPP result code in the RPP-
+   Code header.
+
+16.3.  Claims
+
+   RPP access tokens MUST conform to the JWT Profile for OAuth 2.0
+   Access Tokens defined in [RFC9068].  This profile establishes a
+   standardized set of claims that RPP uses to make authorization
+   decisions consistently across implementations and identity providers.
+
+16.3.1.  Required Claims
+
+   The following claims defined in [RFC9068] MUST be present in every
+   RPP access token:
+
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 41]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+   +===========+=========+=============================================+
+   | Claim     | Type    | Description                                 |
+   +===========+=========+=============================================+
+   | iss       | String  | Identifies the issuing authorization        |
+   |           | (URI)   | server (IdP).  The RPP server MUST          |
+   |           |         | validate this against its set of trusted    |
+   |           |         | issuers.                                    |
+   +-----------+---------+---------------------------------------------+
+   | sub       | String  | The subject of the token.  For machine-     |
+   |           |         | to-machine flows this MUST be the client    |
+   |           |         | identifier.  For interactive flows this     |
+   |           |         | MUST be the end-user identifier of the      |
+   |           |         | authenticated end-user at the issuing       |
+   |           |         | IdP.  The end-user MAY be a registrar       |
+   |           |         | employee operating the registrar's          |
+   |           |         | management system, or a registrar           |
+   |           |         | customer (registrant) directly              |
+   |           |         | interacting with the registrar's client     |
+   |           |         | application, for example when initiating    |
+   |           |         | an object transfer.                         |
+   +-----------+---------+---------------------------------------------+
+   | aud       | String  | Identifies the intended audience.  MUST     |
+   |           | or      | include the RPP server's resource           |
+   |           | Array   | identifier.  The RPP server MUST reject     |
+   |           |         | tokens where its own identifier is not      |
+   |           |         | present in this claim.                      |
+   +-----------+---------+---------------------------------------------+
+   | exp       | Numeric | Expiry time.  The RPP server MUST reject    |
+   |           | date    | tokens that have expired.                   |
+   +-----------+---------+---------------------------------------------+
+   | iat       | Numeric | Time at which the token was issued.         |
+   |           | date    |                                             |
+   +-----------+---------+---------------------------------------------+
+   | jti       | String  | Unique identifier for the token, used to    |
+   |           |         | prevent token replay attacks.               |
+   +-----------+---------+---------------------------------------------+
+   | client_id | String  | The OAuth 2.0 client identifier of the      |
+   |           |         | gaining registrar or RPP client             |
+   |           |         | application.                                |
+   +-----------+---------+---------------------------------------------+
+   | scope     | String  | Space-separated list of granted scopes      |
+   |           |         | (see Section 16.2).  The RPP server MUST    |
+   |           |         | enforce access control based on the         |
+   |           |         | scopes present in this claim.               |
+   +-----------+---------+---------------------------------------------+
+
+                                  Table 4
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 42]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+16.3.2.  RPP-Specific Claims
+
+   In addition to the standard [RFC9068] claims, the following RPP-
+   specific claims are defined to enable fine-grained authorization
+   decisions.  Required claims MUST be present in every RPP access
+   token.  Optional claims SHOULD be included when applicable to the
+   deployment context.
+
+   +==================+=============+========+=========================+
+   | Claim            | Requirement | Type   | Description             |
+   +==================+=============+========+=========================+
+   | rpp_registrar_id | REQUIRED    | String | The identifier of the   |
+   |                  |             |        | registrar on whose      |
+   |                  |             |        | behalf the request is   |
+   |                  |             |        | made.  The RPP server   |
+   |                  |             |        | MUST validate that      |
+   |                  |             |        | this identifier         |
+   |                  |             |        | matches a known and     |
+   |                  |             |        | authorized registrar.   |
+   |                  |             |        | This claim MUST be      |
+   |                  |             |        | present in all access   |
+   |                  |             |        | tokens used for RPP     |
+   |                  |             |        | requests.               |
+   +------------------+-------------+--------+-------------------------+
+   | rpp_reseller_id  | OPTIONAL    | String | The identifier of the   |
+   |                  |             |        | reseller acting         |
+   |                  |             |        | through the             |
+   |                  |             |        | registrar's client      |
+   |                  |             |        | application.  This      |
+   |                  |             |        | claim SHOULD be         |
+   |                  |             |        | included when the       |
+   |                  |             |        | request originates      |
+   |                  |             |        | from a reseller         |
+   |                  |             |        | operating under the     |
+   |                  |             |        | registrar's account.    |
+   |                  |             |        | The RPP server MAY use  |
+   |                  |             |        | this claim for access   |
+   |                  |             |        | control, auditing, and  |
+   |                  |             |        | attribution purposes.   |
+   |                  |             |        | The value is            |
+   |                  |             |        | interpreted within the  |
+   |                  |             |        | namespace of the        |
+   |                  |             |        | registrar identified    |
+   |                  |             |        | by rpp_registrar_id.    |
+   +------------------+-------------+--------+-------------------------+
+
+                                  Table 5
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 43]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+   The combination of the sub claim and the rpp_registrar_id claim
+   provides a complete, two-dimensional identity for every RPP request:
+   sub identifies the individual principal (registrar employee,
+   automated process, or registrant customer) that initiated the
+   request, while rpp_registrar_id identifies the registrar organization
+   as a whole within the registry's domain.
+
+   The identity of the sub depends on both the flow type and the
+   identity domain of the principal:
+
+   -  In *machine-to-machine* flows, sub is the registrar's OAuth 2.0
+      client identifier, representing an automated system acting on
+      behalf of the registrar.  The token is issued by the *registry's
+      authorization server*, which maintains the registrar's client
+      credentials.
+   -  In *interactive flows initiated by registrar staff*, sub is the
+      identifier of the registrar employee.  Registrar employees are
+      managed as users in the *registry's authorization server*. The
+      token is therefore also issued by the registry's authorization
+      server, and the sub value is the employee's account identifier
+      within that server.  The iss claim will identify the registry's
+      authorization server.
+   -  In *interactive flows initiated by a registrant customer*, the
+      situation is different.  Registrant customers are not managed in
+      the registry's authorization server, they are maintained in the
+      *registrar's own authorization server* (the registrar acts as the
+      authorization server for its customers).  The token is therefore
+      issued by the registrar's authorization server, and the iss claim
+      will identify the registrar's authorization server as the issuer.
+      The registry MUST have a pre-established trust relationship with
+      the registrar's authorization server to accept and validate such
+      tokens.  In this case, the sub value MUST be the registrant's
+      identifier as it exists in the registry database.  The registrar
+      MUST use this registry-assigned id, not any registrar-internal
+      customer identifier, as the sub value.  This ensures the registry
+      can unambiguously correlate the token's subject to an existing
+      provisioned contact object.  This enables verification of
+      ownership and consent for operations.  The registry MUST reject
+      tokens where the sub value does not match a known contact handle
+      associated with the object being acted upon.
+
+   Together, these claims allow the RPP server to:
+
+   -  *Enforce access control* at both the organizational level (is this
+      registrar authorized to manage this object?) and the individual
+      level (has this principal been granted the necessary
+      permissions?).
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 44]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+   -  *Attribute actions to individuals* for audit trail purposes,
+      enabling the registry to record not just which registrar performed
+      an operation, but which employee or customer initiated it.
+   -  *Support delegation models*, where a registrar may grant different
+      employees different scopes (e.g., a junior employee may hold only
+      domain:read scope while a senior employee holds domain:write).
+   -  *Verify registrant consent* in interactive transfer flows, where a
+      sub containing the registrant's handle provides the registry with
+      verifiable evidence that the object owner explicitly authorized
+      the transfer.
+   -  *Facilitate incident response*, allowing the registry to correlate
+      suspicious activity back to a specific principal rather than only
+      to a registrar organization.
+
+   The RPP server SHOULD log both the sub and rpp_registrar_id claims
+   for every request in its audit log.  The sub value is only meaningful
+   within the namespace of the issuing IdP identified by the iss claim;
+   the RPP server MUST NOT compare sub values across different issuers,
+   except when the sub is a registry contact handle, in which case the
+   registry MAY validate it against its own database regardless of
+   issuer.
+
+   Extensions and profiles MAY define additional claims.  All additional
+   claims MUST use a URI or a collision-resistant name as the claim name
+   to prevent conflicts with registered claims.
+
+16.3.3.  Claim Validation
+
+   The RPP server MUST validate all required claims in accordance with
+   [RFC9068] and [RFC8725].  Specifically:
+
+   -  The iss claim MUST identify a trusted authorization server whose
+      public keys are known to the RPP server, either through static
+      configuration or dynamic discovery (e.g., OAuth 2.0 Authorization
+      Server Metadata [RFC8414]).
+   -  The aud claim MUST be validated to confirm the token is intended
+      for this RPP server.
+   -  The exp claim MUST be checked and expired tokens MUST be rejected
+      with HTTP 401 Unauthorized.
+   -  The JWT signature MUST be verified using asymmetric cryptography
+      (e.g., RS256 or ES256).  Symmetric algorithms (e.g., HS256) MUST
+      NOT be used for tokens issued by external IdPs.
+   -  If the scope claim is absent or does not contain the scope
+      required for the requested operation, the RPP server MUST return
+      HTTP 403 Forbidden.
+
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 45]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+16.4.  Profiles
+
+   There are 2 main types of profiles that can be defined for RPP,
+   machine-to-machine profiles and interactive profiles.  Machine-to-
+   machine profiles are designed for use in automated systems where no
+   user interaction is required.  Interactive profiles are designed for
+   use in scenarios where end-user interaction is required, such as when
+   a registrant initiates a transfer request using a registrar's web
+   interface.
+
+16.4.1.  Machine to Machine
+
+   The machine-to-machine (M2M) profile is used for automated,
+   unattended RPP requests such as domain provisioning, renewal, or host
+   management sent by a registrar's backend systems to the registry.  No
+   end-user interaction is involved.  The OAuth 2.0 Client Credentials
+   grant Section 4.4 MUST be used for this profile.
+
+   In this flow the registrar's system authenticates directly with the
+   registry's authorization server using a pre-registered client_id and
+   client_secret (or a private key JWT for higher assurance).  The
+   authorization server issues a short-lived access token scoped to the
+   requested RPP operations.  The registrar's system then includes this
+   token in the Authorization header of each RPP request sent to the
+   registry.
+
+   The sub claim in the resulting token MUST be set to the client_id of
+   the registrar's system.  The rpp_registrar_id claim MUST also be
+   present, identifying the registrar organization within the registry's
+   namespace.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 46]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+     Registrar                  Registry             Registry
+     Backend                    Auth Server          RPP Server
+        |                           |                    |
+        | 1. Token request          |                    |
+        |  (client_id +             |                    |
+        |   client_secret           |                    |
+        |   + scope)                |                    |
+        +-------------------------->|                    |
+        |                           |                    |
+        | 2. Access token (JWT)     |                    |
+        |<--------------------------|                    |
+        |                           |                    |
+        | 3. RPP request            |                    |
+        |  (Authorization:          |                    |
+        |   Bearer <token>)         |                    |
+        +---------------------------------------------->|
+        |                           |                    |
+        |                           |  4. Validate JWT   |
+        |                           |  (verify signature |
+        |                           |   using cached     |
+        |                           |   public key,      |
+        |                           |   check claims     |
+        |                           |   and scopes)      |
+        |                           |                    |
+        | 5. RPP response           |                    |
+        |<----------------------------------------------|
+        |                           |                    |
+
+       Figure 1: OAuth 2.0 Client Credentials Flow for Registrar-to-
+                             Registry Requests
+
+   The steps in the diagram are as follows:
+
+   1.  The registrar's backend system sends a token request to the
+       registry's authorization server, providing its client_id,
+       client_secret (or a signed client assertion), and the requested
+       RPP scopes (e.g., domain:write).
+   2.  The authorization server validates the client credentials and
+       issues a signed, short-lived JWT access token containing the
+       granted scopes, sub (set to client_id), and rpp_registrar_id.
+   3.  The registrar's system sends the RPP request to the registry's
+       RPP server, including the access token in the HTTP Authorization
+       header as a Bearer token.
+
+
+
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 47]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+   4.  The RPP server validates the JWT entirely locally, without
+       contacting the authorization server.  It verifies the token's
+       signature using the authorization server's public key (previously
+       fetched and cached via OAuth 2.0 Authorization Server Metadata
+       [RFC8414] and the referenced JWKS endpoint), checks the standard
+       claims (iss, aud, exp), and confirms that the scope claim
+       includes the scope required for the requested operation.
+   5.  If validation succeeds, the RPP server processes the request and
+       returns the RPP response.
+
+   It is RECOMMENDED that access tokens be short-lived (e.g., minutes to
+   hours) and that the registrar's system obtain a new token before the
+   current token expires rather than waiting for a 401 response.  Token
+   caching and refresh strategies SHOULD follow the best practices in
+   [RFC8725].
+
+16.4.2.  Interactive
+
+   The interactive profile is used for RPP requests that require end-
+   user interaction.  The OAuth 2.0 Authorization Code grant Section 4.1
+   MUST be used for this profile.  Two distinct types of end-users may
+   initiate interactive RPP requests, and they are managed in different
+   authorization servers:
+
+   -  *Registrar employees* are managed as users in the *registry's
+      authorization server*. A registrar employee uses the registrar's
+      client application to perform operations on behalf of the
+      registrar, such as updating domain records or managing contacts.
+      The registry's authorization server authenticates the employee and
+      issues an access token.  The sub claim will contain the employee's
+      account identifier in the registry's authorization server, and the
+      iss claim will identify the registry's authorization server.
+
+   -  *Registrant customers* are managed in the *registrar's own
+      authorization server*. A registrant customer interacts directly
+      with the registrar's client application, for example to authorize
+      a domain transfer.  The registrar's authorization server
+      authenticates the customer and issues an access token.  The sub
+      claim MUST be set to the registrant's contact handle as registered
+      in the registry database.  The iss claim will identify the
+      registrar's authorization server.  The registry MUST have a pre-
+      established trust relationship with the registrar's authorization
+      server to accept tokens it issues.
+
+
+
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 48]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+16.4.2.1.  Registrar Employee Flow
+
+   In this flow, the employee authenticates with the registry's
+   authorization server.  The registry acts as both the authorization
+   server and the RPP resource server.
+
+     Registrar          Registry             Registry
+     Employee +         Auth Server          RPP Server
+     Client App             |                    |
+        |                   |                    |
+        | 1. Login /        |                    |
+        |  auth request     |                    |
+        +------------------>|                    |
+        |                   |                    |
+        | 2. Access token   |                    |
+        |  (sub=employee_id |                    |
+        |   iss=registry)   |                    |
+        |<------------------|                    |
+        |                   |                    |
+        | 3. RPP request    |                    |
+        |  (Bearer token)   |                    |
+        +---------------------------------------------->|
+        |                   |                    |
+        |                   |  4. Validate JWT   |
+        |                   |  (local, cached    |
+        |                   |   registry public  |
+        |                   |   key)             |
+        |                   |                    |
+        | 5. RPP response   |                    |
+        |<----------------------------------------------|
+        |                   |                    |
+
+       Figure 2: Interactive Flow - Registrar Employee (Registry Auth
+                                  Server)
+
+16.4.2.2.  Registrant Customer Flow
+
+   In this flow, the registrant authenticates with the registrar's own
+   authorization server.  The registry must trust the registrar's
+   authorization server and validate the sub against its contact
+   database.
+
+
+
+
+
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 49]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+     Registrant         Registrar            Registry
+     Customer +         Auth Server          RPP Server
+     Client App             |                    |
+        |                   |                    |
+        | 1. Login /        |                    |
+        |  auth request     |                    |
+        +------------------>|                    |
+        |                   |                    |
+        | 2. Access token   |                    |
+        |  (sub=contact     |                    |
+        |   handle,         |                    |
+        |   iss=registrar)  |                    |
+        |<------------------|                    |
+        |                   |                    |
+        | 3. RPP request    |                    |
+        |  (Bearer token)   |                    |
+        +---------------------------------------------->|
+        |                   |                    |
+        |                   |  4. Validate JWT   |
+        |                   |  (local, cached    |
+        |                   |   registrar public |
+        |                   |   key via          |
+        |                   |   federation)      |
+        |                   |                    |
+        |                   |  5. Verify sub     |
+        |                   |  matches contact   |
+        |                   |  handle in         |
+        |                   |  registry DB       |
+        |                   |                    |
+        | 6. RPP response   |                    |
+        |<----------------------------------------------|
+        |                   |                    |
+
+      Figure 3: Interactive Flow - Registrant Customer (Registrar Auth
+                                  Server)
+
+   The steps for the registrant customer flow are as follows:
+
+   1.  The registrant authenticates with the registrar's authorization
+       server through the registrar's client application, using the
+       Authorization Code grant.
+   2.  The registrar's authorization server issues a signed JWT access
+       token.  The sub claim MUST be set to the registrant's contact
+       handle as it exists in the registry database.  The iss claim
+       identifies the registrar's authorization server.  The
+       rpp_registrar_id claim MUST be present, identifying the
+       sponsoring registrar.
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 50]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+   3.  The registrar's client application sends the RPP request to the
+       registry's RPP server, including the access token as a Bearer
+       token.
+   4.  The RPP server validates the JWT locally using the registrar's
+       authorization server public key, previously obtained via
+       federation metadata.  No live call to the registrar's
+       authorization server is needed.
+   5.  The RPP server verifies that the sub value matches a known
+       contact handle in the registry database and that the contact is
+       associated with the object being acted upon.
+   6.  If all validation succeeds, the RPP server processes the request
+       and returns the response.
+
+16.4.3.  Enforcing Interactive Authentication for High-Risk Operations
+
+   The machine-to-machine (M2M) Client Credentials flow is appropriate
+   for routine automated provisioning, but certain high-risk operations,
+   such as object transfer or modification of authorisation information,
+   MUST require a token demonstrating that a human principal explicitly
+   authenticated and authorized the action.  Without enforcement, a
+   registrar could use M2M tokens for all operations, eliminating
+   individual accountability.
+
+   The following mechanisms MAY be used by the registry to enforce
+   interactive authentication for designated operations:
+
+   *sub MUST identify a human principal*: The registry MAY require that
+   for high-risk operations, the sub claim MUST contain the identifier
+   of an authenticated human principal — either a registrar employee or
+   a registrant customer — and MUST NOT equal the client_id.  In M2M
+   tokens issued via the Client Credentials grant, sub is always set to
+   client_id, representing an automated system rather than a human.  By
+   mandating sub ≠ client_id for designated operations, the registry
+   ensures those operations can only be performed with a token issued on
+   behalf of a real, identified individual.  The RPP server MUST reject
+   requests for these operations when sub equals client_id.
+
+   *Scope restriction by grant type*: The registry's authorization
+   server SHOULD be configured to refuse issuing certain high-risk
+   scopes (e.g., domain:transfer) to the Client Credentials grant type.
+   Only the Authorization Code grant (interactive) MAY be permitted to
+   obtain these scopes.  This prevents a registrar from obtaining the
+   necessary scope for a high-risk operation through unattended M2M
+   authentication.
+
+   The set of operations for which interactive authentication is
+   required is a matter of registry policy and MUST be discoverable
+   using the RPP discovery mechanism.
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 51]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+16.5.  Secure Object Transfer
+
+   *NOTE:* this is very early draft of how a transfer could work in RPP,
+   it is added here to provide a complete picture of the transfer flow
+   and to be able to discuss the details of the transfer flow and the
+   security mechanisms that can be used to secure the transfer flow.
+   This section is expected to be significantly revised and updated as
+   the transfer flow and the security mechanisms are further developed
+   and refined.
+
+   The server MAY support a secure object transfer mechanism based on
+   OAuth 2.0 federation for secure object transfer between registrars,
+   the gaining registrar can obtain an access token from the losing
+   registrar's authorization server to authorize the transfer request.
+   This provides a secure mechanism for transferring objects without
+   exposing sensitive information in the transfer request or response
+   messages.  This also prevents the use of opaque transfer tokens and
+   their inherent security risks, such as token leakage or replay
+   attacks.  If any of the parties in the transfer flow does not support
+   the secure transfer mechanism based on OAuth 2.0 federation, then the
+   transfer MUST fall back to the legacy transfer mechanism using opaque
+   transfer tokens, using the RPP-Authorization header to include the
+   transfer token in the transfer request messages.
+
+   The server MAY support a secure object transfer mechanisms based on
+   OAuth 2.0 federation, for this the server requires established trust
+   relationship with the authorization server of the losing registrar.
+   The server MUST support the necessary mechanisms for validating
+   tokens issued by the losing registrar's IdP. this requires the server
+   to support the JWT profile for OAuth 2.0 Access Tokens [RFC9068] and
+   to support the necessary mechanisms for validating tokens issued by
+   external authorization servers.  The client MUST include a valid
+   access token in the Authorization header of the transfer request, and
+   the server MUST validate the token and the associated permissions
+   before allowing the transfer to proceed.  The server MUST also
+   implement appropriate error handling for cases where the token is
+   invalid, expired, or does not have the necessary permissions for the
+   requested transfer operation.  Registrars implementing secure
+   transfer mechanisms based on OAuth 2.0 federation MUST support the
+   federated identity provider function.
+
+
+
+
+
+
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 52]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+16.5.1.  Machine to Machine
+
+   In the machine-to-machine flow, the gaining registrar authenticates
+   directly with the losing registrar's IdP using its own client
+   credentials (OAuth 2.0 Client Credentials grant [RFC6749]).  No end-
+   user interaction is required.  This flow is suitable for automated
+   transfer pipelines where the gaining registrar has been pre-
+   authorized by the losing registrar to act on behalf of registrants.
+
+   The following diagram illustrates the machine-to-machine OAuth 2.0
+   federated secure object transfer flow:
+
+     Client          Gaining         Registry        Losing
+   (Registrant)    Registrar                        Registrar
+        |               |               |               |
+        |   1. Initiate |               |               |
+        |    transfer   |               |               |
+        +-------------->|               |               |
+        |               |               |               |
+        |               | 2. Transfer   |               |
+        |               |  request (no  |               |
+        |               |   token yet)  |               |
+        |               +-------------->|               |
+        |               |               |               |
+        |               | 3. 401 Unauth.|               |
+        |               |  + redirect   |               |
+        |               |  to Losing Reg|               |
+        |               |  IdP for authz|               |
+        |               |<--------------|               |
+        |               |               |               |
+        |               | 4. Request    |               |
+        |               |  authz token  |               |
+        |               | (OAuth2 Client|               |
+        |               |  Credentials) |               |
+        |               +------------------------------->|
+        |               |               |               |
+        |               |   5. Validate client &        |
+        |               |   issue access token          |
+        |               |   (JWT, RFC9068)              |
+        |               |<------------------------------|
+        |               |               |               |
+        |               | 6. Transfer   |               |
+        |               |  request with |               |
+        |               |  access token |               |
+        |               +-------------->|               |
+        |               |               |               |
+        |               |               | 7. Local JWT  |
+        |               |               |  validation   |
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 53]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+        |               |               | (trusted IdP  |
+        |               |               |  public key)  |
+        |               |               |               |
+        |               |               | 8. Execute    |
+        |               |               |  transfer &   |
+        |               |               |  notify Losing|
+        |               |               |  Registrar    |
+        |               |               +-------------->|
+        |               |               |               |
+        |               | 9. Transfer   |               |
+        |               |   successful  |               |
+        |               |<--------------|               |
+        |               |               |               |
+        |  10. Transfer |               |               |
+        |   confirmed   |               |               |
+        |<--------------|               |               |
+        |               |               |               |
+
+     Figure 4: OAuth 2.0 Federated Secure Object Transfer - Machine to
+                                Machine Flow
+
+   The steps in the diagram are as follows:
+
+   1.   The client initiates a transfer request to the gaining
+        registrar.
+   2.   The gaining registrar submits an initial transfer request to the
+        registry without an access token.
+   3.   The registry responds with HTTP 401 Unauthorized and redirects
+        the gaining registrar to the losing registrar's identity
+        provider (IdP) for authorization, indicating which IdP to use
+        (e.g., via a WWW-Authenticate header containing the
+        authorization server URI).
+   4.   The gaining registrar requests an OAuth 2.0 access token from
+        the losing registrar's IdP using its own client credentials
+        (Client Credentials grant [RFC6749]).
+   5.   The losing registrar's IdP validates the gaining registrar's
+        client credentials and issues a signed access token (JWT
+        [RFC9068]) scoped to the specific transfer operation.
+   6.   The gaining registrar resubmits the transfer request to the
+        registry, including the access token in the Authorization
+        header.
+   7.   The registry validates the JWT locally using the losing
+        registrar's IdP public key, which was obtained via a pre-
+        established trust relationship (e.g., federation metadata).  No
+        live introspection call to the losing registrar is required.
+   8.   The registry executes the transfer and notifies the losing
+        registrar.
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 54]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+   9.   The registry returns a successful transfer response to the
+        gaining registrar.
+   10.  The gaining registrar confirms the completed transfer to the
+        client.
+
+16.5.2.  Interactive
+
+   In the interactive flow, the gaining registrar redirects the client
+   (registrant) to the losing registrar's IdP for authentication and
+   explicit consent (OAuth 2.0 Authorization Code grant [RFC6749]).
+   This provides the losing registrar with direct proof that the
+   registrant authorized the transfer, making it suitable for scenarios
+   requiring explicit registrant approval.
+
+   The following diagram illustrates the interactive OAuth 2.0 federated
+   secure object transfer flow:
+
+     Client          Gaining         Registry        Losing
+   (Registrant)    Registrar                        Registrar
+        |               |               |               |
+        |   1. Initiate |               |               |
+        |    transfer   |               |               |
+        +-------------->|               |               |
+        |               |               |               |
+        |               | 2. Transfer   |               |
+        |               |  request (no  |               |
+        |               |   token yet)  |               |
+        |               +-------------->|               |
+        |               |               |               |
+        |               | 3. 401 Unauth.|               |
+        |               |  + Losing Reg |               |
+        |               |  IdP authz URI|               |
+        |               |<--------------|               |
+        |               |               |               |
+        |  4. Redirect  |               |               |
+        |  to Losing Reg|               |               |
+        |  IdP for login|               |               |
+        |  and consent  |               |               |
+        |<--------------|               |               |
+        |               |               |               |
+        | 5. Authenticate               |               |
+        |  & authorize  |               |               |
+        |  at Losing Reg|               |               |
+        |  IdP          |               |               |
+        +------------------------------->               |
+        |               |               |               |
+        | 6. Auth code  |               |               |
+        |  returned via |               |               |
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 55]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+        |  redirect to  |               |               |
+        |  Gaining Reg  |               |               |
+        +-------------->|               |               |
+        |               |               |               |
+        |               | 7. Exchange   |               |
+        |               |  auth code for|               |
+        |               |  access token |               |
+        |               +------------------------------->|
+        |               |               |               |
+        |               |   8. Validate code &          |
+        |               |   issue access token          |
+        |               |   (JWT, RFC9068)              |
+        |               |<------------------------------|
+        |               |               |               |
+        |               | 9. Transfer   |               |
+        |               |  request with |               |
+        |               |  access token |               |
+        |               +-------------->|               |
+        |               |               |               |
+        |               |               | 10. Local JWT |
+        |               |               |  validation   |
+        |               |               | (trusted IdP  |
+        |               |               |  public key)  |
+        |               |               |               |
+        |               |               | 11. Execute   |
+        |               |               |  transfer &   |
+        |               |               |  notify Losing|
+        |               |               |  Registrar    |
+        |               |               +-------------->|
+        |               |               |               |
+        |               | 12. Transfer  |               |
+        |               |   successful  |               |
+        |               |<--------------|               |
+        |               |               |               |
+        |  13. Transfer |               |               |
+        |   confirmed   |               |               |
+        |<--------------|               |               |
+        |               |               |               |
+
+           Figure 5: OAuth 2.0 Federated Secure Object Transfer -
+                              Interactive Flow
+
+   The steps in the diagram are as follows:
+
+   1.   The client initiates a transfer request to the gaining
+        registrar.
+   2.   The gaining registrar submits an initial transfer request to the
+        registry without an access token.
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 56]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+   3.   The registry responds with HTTP 401 Unauthorized and returns the
+        losing registrar's IdP authorization URI (e.g., via a WWW-
+        Authenticate header).
+   4.   The gaining registrar redirects the client (registrant) to the
+        losing registrar's IdP for login and explicit consent to the
+        transfer.
+   5.   The client authenticates with the losing registrar's IdP and
+        grants consent for the transfer.
+   6.   The losing registrar's IdP redirects the client back to the
+        gaining registrar with an authorization code.
+   7.   The gaining registrar exchanges the authorization code for an
+        access token at the losing registrar's IdP (Authorization Code
+        grant [RFC6749]).
+   8.   The losing registrar's IdP validates the code and issues a
+        signed access token (JWT [RFC9068]) bound to the registrant's
+        consent.
+   9.   The gaining registrar submits the transfer request to the
+        registry, including the access token in the Authorization
+        header.
+   10.  The registry validates the JWT locally using the losing
+        registrar's IdP public key, obtained via a pre-established trust
+        relationship (e.g., federation metadata).
+   11.  The registry executes the transfer and notifies the losing
+        registrar.
+   12.  The registry returns a successful transfer response to the
+        gaining registrar.
+   13.  The gaining registrar confirms the completed transfer to the
+        client.
 
 17.  IANA Considerations
 
@@ -2107,6 +3182,18 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    Repository: ?
    Index value: ?
 
+
+
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 57]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
 17.2.  RPP registry group
 
    The IANA is requested to create a new registry group for RPP, this
@@ -2116,19 +3203,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    Name of the registry: RESTful Provisioning Protocol (RPP)
    Reference: This Document
    IANA Registry Reference: TODO
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 38]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
 17.3.  RPP Discovery registry
 
@@ -2168,6 +3242,14 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    -  name: The name of the extension, for example "RPP example
       extension".
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 58]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    -  version: The version of the extension, for example "1.0".
    -  url: The URL for the extension specification, for example
       "https://www.iana.org/assignments/rpp-extensions/rpp-example-
@@ -2175,16 +3257,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       rpp-example-extension-1.0").
    -  description: A human-readable description of the extension and its
       intended use.
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 39]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
 17.5.  RPP Profile registry
 
@@ -2226,6 +3298,14 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    Fields to be registered:
 
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 59]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    -  code: The RPP result code, for example "12000".
    -  description: A human-readable description of the result code and
       its intended use.
@@ -2234,13 +3314,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    The IANA is requested to add the following RPP media type to the
    "Media Types" registry, following the template in [RFC6838]:
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 40]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    Type name: application
    Subtype name: rpp+json
@@ -2279,6 +3352,16 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 20.1.  Version 04 to 05
 
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 60]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    -  Added Boostrap and Discovery sections to the document, describing
       how a client can discover the location and capabilities of an RPP
       server
@@ -2289,15 +3372,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    -  Added a new section on versioning, describing how versioning is
       applied to different RPP elements.  (Issue #39)
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 41]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    -  Added IANA request for RPP Result codes registry, and added a
       table with example RPP result codes.  (Issue #39)
    -  Added IANA request for URN sub-namespace for RPP.  (Issue #39)
@@ -2334,6 +3408,16 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 20.6.  Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)
 
    -  Renamed the document name to "draft-wullink-rpp-core"
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 61]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    -  Removed sections: Design Considerations, Resource Naming
       Convention, Session Management, HTTP Layer, Content Negotiation,
       Object Filtering, Error Handling
@@ -2346,19 +3430,18 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    The authors would like to thank the following people for their
    helpful text contributions, comments and suggestions.
 
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 42]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    -  Q Misell, AS207960 Cyfyngedig
 
 22.  References
 
 22.1.  Normative References
+
+   [I-D.kowalik-rpp-data-objects]
+              Kowalik, P. and M. Wullink, "RESTful Provisioning Protocol
+              (RPP) Data Objects", Work in Progress, Internet-Draft,
+              draft-kowalik-rpp-data-objects-03, 2 March 2026,
+              <https://datatracker.ietf.org/doc/html/draft-kowalik-rpp-
+              data-objects-03>.
 
    [REST]     Fielding, R., "Architectural Styles and the Design of
               Network-based Software Architectures", 2000,
@@ -2381,6 +3464,16 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
               DOI 10.17487/RFC2782, February 2000,
               <https://www.rfc-editor.org/info/rfc2782>.
 
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 62]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    [RFC3553]  Mealling, M., Masinter, L., Hardie, T., and G. Klyne, "An
               IETF URN Sub-namespace for Registered Protocol
               Parameters", BCP 73, RFC 3553, DOI 10.17487/RFC3553, June
@@ -2399,16 +3492,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
               Domain Name Mapping", STD 69, RFC 5731,
               DOI 10.17487/RFC5731, August 2009,
               <https://www.rfc-editor.org/info/rfc5731>.
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 43]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    [RFC5732]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
               Host Mapping", STD 69, RFC 5732, DOI 10.17487/RFC5732,
@@ -2438,6 +3521,15 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
               RFC 6838, DOI 10.17487/RFC6838, January 2013,
               <https://www.rfc-editor.org/info/rfc6838>.
 
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 63]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    [RFC7519]  Jones, M., Bradley, J., and N. Sakimura, "JSON Web Token
               (JWT)", RFC 7519, DOI 10.17487/RFC7519, May 2015,
               <https://www.rfc-editor.org/info/rfc7519>.
@@ -2445,6 +3537,11 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    [RFC7617]  Reschke, J., "The 'Basic' HTTP Authentication Scheme",
               RFC 7617, DOI 10.17487/RFC7617, September 2015,
               <https://www.rfc-editor.org/info/rfc7617>.
+
+   [RFC8414]  Jones, M., Sakimura, N., and J. Bradley, "OAuth 2.0
+              Authorization Server Metadata", RFC 8414,
+              DOI 10.17487/RFC8414, June 2018,
+              <https://www.rfc-editor.org/info/rfc8414>.
 
    [RFC8446]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
               Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
@@ -2458,13 +3555,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    [RFC8941]  Nottingham, M. and P. Kamp, "Structured Field Values for
               HTTP", RFC 8941, DOI 10.17487/RFC8941, February 2021,
               <https://www.rfc-editor.org/info/rfc8941>.
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 44]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    [RFC9068]  Bertocci, V., "JSON Web Token (JWT) Profile for OAuth 2.0
               Access Tokens", RFC 9068, DOI 10.17487/RFC9068, October
@@ -2488,6 +3578,13 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    [RFC9457]  Nottingham, M., Wilde, E., and S. Dalal, "Problem Details
               for HTTP APIs", RFC 9457, DOI 10.17487/RFC9457, July 2023,
               <https://www.rfc-editor.org/info/rfc9457>.
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 64]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
 
    [RFC9535]  Gössner, S., Ed., Normington, G., Ed., and C. Bormann,
               Ed., "JSONPath: Query Expressions for JSON", RFC 9535,
@@ -2514,14 +3611,6 @@ Authors' Addresses
 
    Pawel Kowalik
    DENIC
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 45]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    Email: pawel.kowalik@denic.de
    URI:   https://denic.de/
 
@@ -2548,29 +3637,4 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 46]
+Wullink & Kowalik       Expires 16 September 2026              [Page 65]
