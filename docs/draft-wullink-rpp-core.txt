@@ -126,42 +126,42 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
        16.3.1.  Required Claims  . . . . . . . . . . . . . . . . . .  43
        16.3.2.  RPP-Specific Claims  . . . . . . . . . . . . . . . .  45
        16.3.3.  Claim Validation . . . . . . . . . . . . . . . . . .  49
-     16.4.  Flows  . . . . . . . . . . . . . . . . . . . . . . . . .  49
-       16.4.1.  Machine to Machine . . . . . . . . . . . . . . . . .  50
-       16.4.2.  Interactive  . . . . . . . . . . . . . . . . . . . .  51
-         16.4.2.1.  Registrar Employee Flow  . . . . . . . . . . . .  52
-         16.4.2.2.  Registrant Customer Flow . . . . . . . . . . . .  53
-       16.4.3.  Enforcing Interactive Authentication for High-Risk
-               Operations  . . . . . . . . . . . . . . . . . . . . .  54
-     16.5.  Secure Object Transfer . . . . . . . . . . . . . . . . .  55
-       16.5.1.  Federation Trust Model . . . . . . . . . . . . . . .  57
-       16.5.2.  Interactive Flow . . . . . . . . . . . . . . . . . .  59
-       16.5.3.  Fallback Flow  . . . . . . . . . . . . . . . . . . .  63
-   17. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  65
-     17.1.  URN Sub-namespace for RPP (urn:ietf:params:rpp)  . . . .  65
-     17.2.  RPP registry group . . . . . . . . . . . . . . . . . . .  65
-     17.3.  RPP Discovery registry . . . . . . . . . . . . . . . . .  65
-     17.4.  RPP Extension registry . . . . . . . . . . . . . . . . .  66
-     17.5.  RPP Profile registry . . . . . . . . . . . . . . . . . .  66
-     17.6.  RPP Result Codes Registry  . . . . . . . . . . . . . . .  67
-     17.7.  RPP Media Type (application/rpp+json)  . . . . . . . . .  67
-   18. Internationalization Considerations . . . . . . . . . . . . .  68
-   19. Security Considerations . . . . . . . . . . . . . . . . . . .  68
-   20. Change History  . . . . . . . . . . . . . . . . . . . . . . .  68
-     20.1.  Version 05 to 06 . . . . . . . . . . . . . . . . . . . .  68
-     20.2.  Version 04 to 05 . . . . . . . . . . . . . . . . . . . .  68
-     20.3.  Version 03 to 04 . . . . . . . . . . . . . . . . . . . .  69
-     20.4.  Version 02 to 03 . . . . . . . . . . . . . . . . . . . .  69
-     20.5.  Version 01 to 02 . . . . . . . . . . . . . . . . . . . .  69
-     20.6.  Version 00 to 01 . . . . . . . . . . . . . . . . . . . .  69
+     16.4.  Managing Trust and Keys  . . . . . . . . . . . . . . . .  49
+     16.5.  Flows  . . . . . . . . . . . . . . . . . . . . . . . . .  50
+       16.5.1.  Machine to Machine . . . . . . . . . . . . . . . . .  50
+       16.5.2.  Interactive  . . . . . . . . . . . . . . . . . . . .  52
+         16.5.2.1.  Registrar Employee Flow  . . . . . . . . . . . .  52
+         16.5.2.2.  Registrant Customer Flow . . . . . . . . . . . .  53
+       16.5.3.  Enforcing Interactive Authentication for High-Risk
+               Operations  . . . . . . . . . . . . . . . . . . . . .  55
+     16.6.  Secure Object Transfer . . . . . . . . . . . . . . . . .  56
+       16.6.1.  Federation Trust Model . . . . . . . . . . . . . . .  58
+       16.6.2.  Interactive Flow . . . . . . . . . . . . . . . . . .  60
+       16.6.3.  Fallback Flow  . . . . . . . . . . . . . . . . . . .  64
+   17. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  66
+     17.1.  URN Sub-namespace for RPP (urn:ietf:params:rpp)  . . . .  66
+     17.2.  RPP registry group . . . . . . . . . . . . . . . . . . .  66
+     17.3.  RPP Discovery registry . . . . . . . . . . . . . . . . .  66
+     17.4.  RPP Extension registry . . . . . . . . . . . . . . . . .  67
+     17.5.  RPP Profile registry . . . . . . . . . . . . . . . . . .  67
+     17.6.  RPP Result Codes Registry  . . . . . . . . . . . . . . .  68
+     17.7.  RPP Media Type (application/rpp+json)  . . . . . . . . .  68
+   18. Internationalization Considerations . . . . . . . . . . . . .  69
+   19. Security Considerations . . . . . . . . . . . . . . . . . . .  69
+   20. Change History  . . . . . . . . . . . . . . . . . . . . . . .  69
+     20.1.  Version 05 to 06 . . . . . . . . . . . . . . . . . . . .  69
+     20.2.  Version 04 to 05 . . . . . . . . . . . . . . . . . . . .  69
+     20.3.  Version 03 to 04 . . . . . . . . . . . . . . . . . . . .  70
+     20.4.  Version 02 to 03 . . . . . . . . . . . . . . . . . . . .  70
+     20.5.  Version 01 to 02 . . . . . . . . . . . . . . . . . . . .  70
+     20.6.  Version 00 to 01 . . . . . . . . . . . . . . . . . . . .  70
      20.7.  Version 00 (draft-rpp-core) to 00
-            (draft-wullink-rpp-core) . . . . . . . . . . . . . . . .  69
-   21. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  70
-   22. References  . . . . . . . . . . . . . . . . . . . . . . . . .  70
-     22.1.  Normative References . . . . . . . . . . . . . . . . . .  70
-     22.2.  Informative References . . . . . . . . . . . . . . . . .  73
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  73
-
+            (draft-wullink-rpp-core) . . . . . . . . . . . . . . . .  70
+   21. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  71
+   22. References  . . . . . . . . . . . . . . . . . . . . . . . . .  71
+     22.1.  Normative References . . . . . . . . . . . . . . . . . .  71
+     22.2.  Informative References . . . . . . . . . . . . . . . . .  74
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  74
 
 
 
@@ -2730,14 +2730,14 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       required for the requested operation, the RPP server MUST return
       HTTP 403 Forbidden.
 
-16.4.  Flows
+16.4.  Managing Trust and Keys
 
-   RPP defines two authorization flows: machine-to-machine flows and
-   interactive flows.  Machine-to-machine flows are designed for use in
-   automated systems where no user interaction is required.  Interactive
-   flows are designed for use in scenarios where end-user interaction is
-   required, such as when a registrant initiates a transfer request
-   using a registrar's web interface.
+   The RPP server MUST maintain a trust store of authorized issuers and
+   their associated public keys for validating JWT signatures.  RPP MUST
+   support registrars being able to register their authorization servers
+   and public keys with the registry operator to establish trust for
+   interactive federated transfers.
+
 
 
 
@@ -2746,7 +2746,20 @@ Wullink & Kowalik       Expires 16 September 2026              [Page 49]
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
-16.4.1.  Machine to Machine
+   *TODO* Create additional endpoints for managing trusted issuers and
+   their keys, or specify a manual process for registrars to submit this
+   information to the registry operator.
+
+16.5.  Flows
+
+   RPP defines two authorization flows: machine-to-machine flows and
+   interactive flows.  Machine-to-machine flows are designed for use in
+   automated systems where no user interaction is required.  Interactive
+   flows are designed for use in scenarios where end-user interaction is
+   required, such as when a registrant initiates a transfer request
+   using a registrar's web interface.
+
+16.5.1.  Machine to Machine
 
    The machine-to-machine (M2M) flow is used for automated, unattended
    RPP requests such as domain provisioning, renewal, or host management
@@ -2766,6 +2779,28 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    the registrar's system.  The rpp_registrar_id claim MUST also be
    present, identifying the registrar organization within the registry's
    namespace.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 50]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
 
      Registrar                  Registry             Registry
      Backend                    Auth Server          RPP Server
@@ -2795,13 +2830,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
         |<-----------------------------------------------|
         |                           |                    |
 
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 50]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
        Figure 1: OAuth 2.0 Client Credentials Flow for Registrar-to-
                              Registry Requests
 
@@ -2817,13 +2845,22 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    3.  The registrar's system sends the RPP request to the registry's
        RPP server, including the access token in the HTTP Authorization
        header as a Bearer token.
-   4.  The RPP server validates the JWT entirely locally, without
-       contacting the authorization server.  It verifies the token's
-       signature using the authorization server's public key (previously
-       fetched and cached via OAuth 2.0 Authorization Server Metadata
-       [RFC8414] and the referenced JWKS endpoint), checks the standard
-       claims (iss, aud, exp), and confirms that the scope claim
-       includes the scope required for the requested operation.
+   4.  The RPP server validates the JWT entirely locally, using the
+       without contacting the authorization server.  It verifies the
+       token's signature using the authorization server's public key
+       (previously fetched and cached via OAuth 2.0 Authorization Server
+       Metadata [RFC8414] and the referenced JWKS [RFC7517] endpoint),
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 51]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+       checks the standard claims (iss, aud, exp), and confirms that the
+       scope claim includes the scope required for the requested
+       operation.
    5.  If validation succeeds, the RPP server processes the request and
        returns the RPP response.
 
@@ -2833,7 +2870,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    caching and refresh strategies SHOULD follow the best practices in
    [RFC8725].
 
-16.4.2.  Interactive
+16.5.2.  Interactive
 
    The interactive flow is used for RPP requests that require end-user
    interaction.  The OAuth 2.0 Authorization Code grant Section 4.1 MUST
@@ -2850,14 +2887,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       account identifier in the registry's authorization server, and the
       iss claim will identify the registry's authorization server.
 
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 51]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    -  *Registrant customers* are managed in the *registrar's own
       authorization server*. A registrant customer interacts directly
       with the registrar's client application, for example to authorize
@@ -2869,11 +2898,21 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       established trust relationship with the registrar's authorization
       server to accept tokens it issues.
 
-16.4.2.1.  Registrar Employee Flow
+16.5.2.1.  Registrar Employee Flow
 
    In this flow, the employee authenticates with the registry's
    authorization server.  The registry acts as both the authorization
    server and the RPP resource server.
+
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 52]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
 
      Registrar          Registry             Registry
      Employee +         Auth Server          RPP Server
@@ -2904,22 +2943,32 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
        Figure 2: Interactive Flow - Registrar Employee (Registry Auth
                                   Server)
 
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 52]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
-16.4.2.2.  Registrant Customer Flow
+16.5.2.2.  Registrant Customer Flow
 
    In this flow, the registrant authenticates with the registrar's own
    authorization server.  The registry must trust the registrar's
    authorization server and validate the sub against its contact
    database.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 53]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
 
      Registrant         Registrar            Registry
      Customer +         Auth Server          RPP Server
@@ -2962,20 +3011,21 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    1.  The registrant authenticates with the registrar's authorization
        server through the registrar's client application, using the
        Authorization Code grant.
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 53]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    2.  The registrar's authorization server issues a signed JWT access
        token.  The sub claim MUST be set to the registrant's contact
        handle as it exists in the registry database.  The iss claim
        identifies the registrar's authorization server.  The
        rpp_registrar_id claim MUST be present, identifying the
        sponsoring registrar.
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 54]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    3.  The registrar's client application sends the RPP request to the
        registry's RPP server, including the access token as a Bearer
        token.
@@ -2989,7 +3039,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    6.  If all validation succeeds, the RPP server processes the request
        and returns the response.
 
-16.4.3.  Enforcing Interactive Authentication for High-Risk Operations
+16.5.3.  Enforcing Interactive Authentication for High-Risk Operations
 
    The machine-to-machine (M2M) Client Credentials flow is appropriate
    for routine automated provisioning, but certain high-risk operations,
@@ -3013,19 +3063,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    behalf of a real, identified individual.  The RPP server MUST reject
    requests for these operations when sub equals client_id.
 
-
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 54]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    *Scope restriction by grant type*: The registry's authorization
    server SHOULD be configured to refuse issuing certain high-risk
    scopes (e.g., domain:transfer) to the Client Credentials grant type.
@@ -3038,7 +3075,14 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    required is a matter of registry policy and MUST be discoverable
    using the RPP discovery mechanism.
 
-16.5.  Secure Object Transfer
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 55]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
+16.6.  Secure Object Transfer
 
    *NOTE:* this is very early draft of how a transfer could work in RPP,
    it is added here to provide a complete picture of the transfer flow
@@ -3074,14 +3118,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    -  *Fallback flow (authinfo):* The losing registrar has not
       registered an authorization server URI with the registry, or the
       domain has been sold and the new owner has no account at the
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 55]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
       losing registrar.  In this case interactive consent at the losing
       registrar is not possible.  The seller (the previous owner, who
       does have an account at the losing registrar) obtains a transfer
@@ -3092,6 +3128,15 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       registry validates the authinfo and executes the transfer without
       requiring the new owner to have any account at the losing
       registrar.
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 56]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
 
    *Flow selection is not at the discretion of the gaining registrar.*
    The gaining registrar MUST use whichever flow the losing registrar's
@@ -3120,9 +3165,35 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    the stronger OAuth 2.0 flow for operational convenience once they
    have declared support for it.
 
+   *Token single-use enforcement.* Access tokens issued by the losing
+   registrar's authorization server for use in the interactive federated
+   transfer flow MUST be single-use.  The registry MUST reject any
+   transfer request that presents a token that has already been used to
+   authorize a transfer, even if the token has not yet expired.  The
+   losing registrar's authorization server MUST issue tokens with the
+   intent of single use, and SHOULD include a unique jti (JWT ID) claim
+   in each token to facilitate replay detection.  The registry MUST
+   maintain a short-lived cache of observed jti values and MUST reject
+   any token whose jti has already been seen.
+
+   If the registry cannot enforce single-use semantics (e.g., due to
+   lack of shared state in a distributed deployment), the token lifetime
+   MUST be set as short as operationally feasible, on the order of a few
+   seconds, to minimize the window of opportunity for replay attacks.
+   Token lifetimes for interactive transfer tokens MUST NOT exceed 60
+   seconds.
+
    For the secure transfer mechanism based on OAuth 2.0 federation, the
    RPP server requires an established trust relationship with the
    authorization server of the losing registrar.  The server MUST
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 57]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    support the necessary mechanisms for validating tokens issued by the
    losing registrar's authorization server. this requires the server to
    support the JWT profile for OAuth 2.0 Access Tokens [RFC9068] and to
@@ -3130,14 +3201,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    external authorization servers.  The client MUST include a valid
    access token in the Authorization header of the transfer request, and
    the server MUST validate the token and the associated permissions
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 56]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
    before allowing the transfer to proceed.  The server MUST also
    implement appropriate error handling for cases where the token is
    invalid, expired, or does not have the necessary permissions for the
@@ -3145,7 +3208,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    transfer mechanisms based on OAuth 2.0 federation MUST support the
    federated identity provider function.
 
-16.5.1.  Federation Trust Model
+16.6.1.  Federation Trust Model
 
    The RPP federation model uses the registry as the central trust
    anchor, operating as a hub-and-spoke topology.  Registrars establish
@@ -3177,6 +3240,16 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    public key because it was registered through the accreditation
    process.
 
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 58]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    *Gaining registrar.* The gaining registrar only needs to trust the
    registry.  It obtains the losing registrar's authorization server URI
    from the registry's discovery endpoint, redirects the registrant's
@@ -3185,14 +3258,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    registrar.  The browser redirect and back-channel token exchange are
    both secured by standard HTTPS and do not require a federated
    identity relationship between the two registrars.
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 57]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
    The following diagram shows how authorization server URIs and public
    keys flow through the registry, and how the gaining registrar uses
@@ -3233,6 +3298,14 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
         | (back-channel)     |                    |
         +---------------------------------------->|
         |                    |                    |
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 59]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
         | JWT (signed by     |                    |
         | Losing Reg AS)     |                    |
         |<----------------------------------------|
@@ -3242,14 +3315,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
         +------------------->|                    |
         |                    |                    |
         |                    | Validate JWT using |
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 58]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
-
         |                    | cached Losing Reg  |
         |                    | JWKS pubkey        |
         |                    | (no runtime call)  |
@@ -3275,7 +3340,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    -  Registrars need no knowledge of each other beyond what the
       registry exposes via the discovery endpoint.
 
-16.5.2.  Interactive Flow
+16.6.2.  Interactive Flow
 
    The interactive flow uses the OAuth 2.0 Authorization Code grant
    Section 4.1 to obtain explicit, object-specific registrant consent
@@ -3285,23 +3350,14 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    registrar's authorization server's authorization URI.  If no
    authorization server URI is available for the losing registrar, the
    gaining registrar MUST fall back to the Fallback flow described in
-   Section 16.5.3.
+   Section 16.6.3.
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 59]
+Wullink & Kowalik       Expires 16 September 2026              [Page 60]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
@@ -3357,7 +3413,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 
-Wullink & Kowalik       Expires 16 September 2026              [Page 60]
+Wullink & Kowalik       Expires 16 September 2026              [Page 61]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
@@ -3413,7 +3469,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 
-Wullink & Kowalik       Expires 16 September 2026              [Page 61]
+Wullink & Kowalik       Expires 16 September 2026              [Page 62]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
@@ -3469,7 +3525,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 
-Wullink & Kowalik       Expires 16 September 2026              [Page 62]
+Wullink & Kowalik       Expires 16 September 2026              [Page 63]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
@@ -3503,7 +3559,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    14.  The gaining registrar confirms the completed transfer to the
         client.
 
-16.5.3.  Fallback Flow
+16.6.3.  Fallback Flow
 
    The fallback Flow uses opaque transfer authorization tokens to
    authorize object transfers between registrars.  The gaining registrar
@@ -3525,7 +3581,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 
-Wullink & Kowalik       Expires 16 September 2026              [Page 63]
+Wullink & Kowalik       Expires 16 September 2026              [Page 64]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
@@ -3581,7 +3637,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 
-Wullink & Kowalik       Expires 16 September 2026              [Page 64]
+Wullink & Kowalik       Expires 16 September 2026              [Page 65]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
@@ -3637,7 +3693,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 
-Wullink & Kowalik       Expires 16 September 2026              [Page 65]
+Wullink & Kowalik       Expires 16 September 2026              [Page 66]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
@@ -3693,7 +3749,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 
-Wullink & Kowalik       Expires 16 September 2026              [Page 66]
+Wullink & Kowalik       Expires 16 September 2026              [Page 67]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
@@ -3749,7 +3805,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 
-Wullink & Kowalik       Expires 16 September 2026              [Page 67]
+Wullink & Kowalik       Expires 16 September 2026              [Page 68]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
@@ -3805,7 +3861,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 
-Wullink & Kowalik       Expires 16 September 2026              [Page 68]
+Wullink & Kowalik       Expires 16 September 2026              [Page 69]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
@@ -3861,7 +3917,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 
-Wullink & Kowalik       Expires 16 September 2026              [Page 69]
+Wullink & Kowalik       Expires 16 September 2026              [Page 70]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
@@ -3917,7 +3973,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 
-Wullink & Kowalik       Expires 16 September 2026              [Page 70]
+Wullink & Kowalik       Expires 16 September 2026              [Page 71]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
@@ -3959,6 +4015,10 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
               RFC 6838, DOI 10.17487/RFC6838, January 2013,
               <https://www.rfc-editor.org/info/rfc6838>.
 
+   [RFC7517]  Jones, M., "JSON Web Key (JWK)", RFC 7517,
+              DOI 10.17487/RFC7517, May 2015,
+              <https://www.rfc-editor.org/info/rfc7517>.
+
    [RFC7519]  Jones, M., Bradley, J., and N. Sakimura, "JSON Web Token
               (JWT)", RFC 7519, DOI 10.17487/RFC7519, May 2015,
               <https://www.rfc-editor.org/info/rfc7519>.
@@ -3969,11 +4029,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 71]
+Wullink & Kowalik       Expires 16 September 2026              [Page 72]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
@@ -4029,7 +4085,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
 
-Wullink & Kowalik       Expires 16 September 2026              [Page 72]
+Wullink & Kowalik       Expires 16 September 2026              [Page 73]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
@@ -4085,4 +4141,4 @@ Authors' Addresses
 
 
 
-Wullink & Kowalik       Expires 16 September 2026              [Page 73]
+Wullink & Kowalik       Expires 16 September 2026              [Page 74]

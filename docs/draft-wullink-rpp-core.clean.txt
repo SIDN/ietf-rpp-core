@@ -109,17 +109,18 @@ Table of Contents
        16.3.1.  Required Claims
        16.3.2.  RPP-Specific Claims
        16.3.3.  Claim Validation
-     16.4.  Flows
-       16.4.1.  Machine to Machine
-       16.4.2.  Interactive
-         16.4.2.1.  Registrar Employee Flow
-         16.4.2.2.  Registrant Customer Flow
-       16.4.3.  Enforcing Interactive Authentication for High-Risk
+     16.4.  Managing Trust and Keys
+     16.5.  Flows
+       16.5.1.  Machine to Machine
+       16.5.2.  Interactive
+         16.5.2.1.  Registrar Employee Flow
+         16.5.2.2.  Registrant Customer Flow
+       16.5.3.  Enforcing Interactive Authentication for High-Risk
                Operations
-     16.5.  Secure Object Transfer
-       16.5.1.  Federation Trust Model
-       16.5.2.  Interactive Flow
-       16.5.3.  Fallback Flow
+     16.6.  Secure Object Transfer
+       16.6.1.  Federation Trust Model
+       16.6.2.  Interactive Flow
+       16.6.3.  Fallback Flow
    17. IANA Considerations
      17.1.  URN Sub-namespace for RPP (urn:ietf:params:rpp)
      17.2.  RPP registry group
@@ -2283,7 +2284,19 @@ Table of Contents
       required for the requested operation, the RPP server MUST return
       HTTP 403 Forbidden.
 
-16.4.  Flows
+16.4.  Managing Trust and Keys
+
+   The RPP server MUST maintain a trust store of authorized issuers and
+   their associated public keys for validating JWT signatures.  RPP MUST
+   support registrars being able to register their authorization servers
+   and public keys with the registry operator to establish trust for
+   interactive federated transfers.
+
+   *TODO* Create additional endpoints for managing trusted issuers and
+   their keys, or specify a manual process for registrars to submit this
+   information to the registry operator.
+
+16.5.  Flows
 
    RPP defines two authorization flows: machine-to-machine flows and
    interactive flows.  Machine-to-machine flows are designed for use in
@@ -2292,7 +2305,7 @@ Table of Contents
    required, such as when a registrant initiates a transfer request
    using a registrar's web interface.
 
-16.4.1.  Machine to Machine
+16.5.1.  Machine to Machine
 
    The machine-to-machine (M2M) flow is used for automated, unattended
    RPP requests such as domain provisioning, renewal, or host management
@@ -2356,13 +2369,14 @@ Table of Contents
    3.  The registrar's system sends the RPP request to the registry's
        RPP server, including the access token in the HTTP Authorization
        header as a Bearer token.
-   4.  The RPP server validates the JWT entirely locally, without
-       contacting the authorization server.  It verifies the token's
-       signature using the authorization server's public key (previously
-       fetched and cached via OAuth 2.0 Authorization Server Metadata
-       [RFC8414] and the referenced JWKS endpoint), checks the standard
-       claims (iss, aud, exp), and confirms that the scope claim
-       includes the scope required for the requested operation.
+   4.  The RPP server validates the JWT entirely locally, using the
+       without contacting the authorization server.  It verifies the
+       token's signature using the authorization server's public key
+       (previously fetched and cached via OAuth 2.0 Authorization Server
+       Metadata [RFC8414] and the referenced JWKS [RFC7517] endpoint),
+       checks the standard claims (iss, aud, exp), and confirms that the
+       scope claim includes the scope required for the requested
+       operation.
    5.  If validation succeeds, the RPP server processes the request and
        returns the RPP response.
 
@@ -2372,7 +2386,7 @@ Table of Contents
    caching and refresh strategies SHOULD follow the best practices in
    [RFC8725].
 
-16.4.2.  Interactive
+16.5.2.  Interactive
 
    The interactive flow is used for RPP requests that require end-user
    interaction.  The OAuth 2.0 Authorization Code grant Section 4.1 MUST
@@ -2400,7 +2414,7 @@ Table of Contents
       established trust relationship with the registrar's authorization
       server to accept tokens it issues.
 
-16.4.2.1.  Registrar Employee Flow
+16.5.2.1.  Registrar Employee Flow
 
    In this flow, the employee authenticates with the registry's
    authorization server.  The registry acts as both the authorization
@@ -2435,7 +2449,7 @@ Table of Contents
        Figure 2: Interactive Flow - Registrar Employee (Registry Auth
                                   Server)
 
-16.4.2.2.  Registrant Customer Flow
+16.5.2.2.  Registrant Customer Flow
 
    In this flow, the registrant authenticates with the registrar's own
    authorization server.  The registry must trust the registrar's
@@ -2502,7 +2516,7 @@ Table of Contents
    6.  If all validation succeeds, the RPP server processes the request
        and returns the response.
 
-16.4.3.  Enforcing Interactive Authentication for High-Risk Operations
+16.5.3.  Enforcing Interactive Authentication for High-Risk Operations
 
    The machine-to-machine (M2M) Client Credentials flow is appropriate
    for routine automated provisioning, but certain high-risk operations,
@@ -2538,7 +2552,7 @@ Table of Contents
    required is a matter of registry policy and MUST be discoverable
    using the RPP discovery mechanism.
 
-16.5.  Secure Object Transfer
+16.6.  Secure Object Transfer
 
    *NOTE:* this is very early draft of how a transfer could work in RPP,
    it is added here to provide a complete picture of the transfer flow
@@ -2612,6 +2626,24 @@ Table of Contents
    the stronger OAuth 2.0 flow for operational convenience once they
    have declared support for it.
 
+   *Token single-use enforcement.* Access tokens issued by the losing
+   registrar's authorization server for use in the interactive federated
+   transfer flow MUST be single-use.  The registry MUST reject any
+   transfer request that presents a token that has already been used to
+   authorize a transfer, even if the token has not yet expired.  The
+   losing registrar's authorization server MUST issue tokens with the
+   intent of single use, and SHOULD include a unique jti (JWT ID) claim
+   in each token to facilitate replay detection.  The registry MUST
+   maintain a short-lived cache of observed jti values and MUST reject
+   any token whose jti has already been seen.
+
+   If the registry cannot enforce single-use semantics (e.g., due to
+   lack of shared state in a distributed deployment), the token lifetime
+   MUST be set as short as operationally feasible, on the order of a few
+   seconds, to minimize the window of opportunity for replay attacks.
+   Token lifetimes for interactive transfer tokens MUST NOT exceed 60
+   seconds.
+
    For the secure transfer mechanism based on OAuth 2.0 federation, the
    RPP server requires an established trust relationship with the
    authorization server of the losing registrar.  The server MUST
@@ -2629,7 +2661,7 @@ Table of Contents
    transfer mechanisms based on OAuth 2.0 federation MUST support the
    federated identity provider function.
 
-16.5.1.  Federation Trust Model
+16.6.1.  Federation Trust Model
 
    The RPP federation model uses the registry as the central trust
    anchor, operating as a hub-and-spoke topology.  Registrars establish
@@ -2743,7 +2775,7 @@ Table of Contents
    -  Registrars need no knowledge of each other beyond what the
       registry exposes via the discovery endpoint.
 
-16.5.2.  Interactive Flow
+16.6.2.  Interactive Flow
 
    The interactive flow uses the OAuth 2.0 Authorization Code grant
    Section 4.1 to obtain explicit, object-specific registrant consent
@@ -2753,7 +2785,7 @@ Table of Contents
    registrar's authorization server's authorization URI.  If no
    authorization server URI is available for the losing registrar, the
    gaining registrar MUST fall back to the Fallback flow described in
-   Section 16.5.3.
+   Section 16.6.3.
 
    The authorization request MUST convey the specific object being
    transferred so that the losing registrar's authorization server can
@@ -2923,7 +2955,7 @@ Table of Contents
    14.  The gaining registrar confirms the completed transfer to the
         client.
 
-16.5.3.  Fallback Flow
+16.6.3.  Fallback Flow
 
    The fallback Flow uses opaque transfer authorization tokens to
    authorize object transfers between registrars.  The gaining registrar
@@ -3297,6 +3329,10 @@ Table of Contents
               Specifications and Registration Procedures", BCP 13,
               RFC 6838, DOI 10.17487/RFC6838, January 2013,
               <https://www.rfc-editor.org/info/rfc6838>.
+
+   [RFC7517]  Jones, M., "JSON Web Key (JWK)", RFC 7517,
+              DOI 10.17487/RFC7517, May 2015,
+              <https://www.rfc-editor.org/info/rfc7517>.
 
    [RFC7519]  Jones, M., Bradley, J., and N. Sakimura, "JSON Web Token
               (JWT)", RFC 7519, DOI 10.17487/RFC7519, May 2015,

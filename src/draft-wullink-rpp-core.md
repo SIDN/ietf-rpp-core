@@ -1428,6 +1428,12 @@ The RPP server MUST validate all required claims in accordance with [@!RFC9068] 
 - The JWT signature MUST be verified using asymmetric cryptography (e.g., RS256 or ES256). Symmetric algorithms (e.g., HS256) MUST NOT be used for tokens issued by external authorization servers.
 - If the `scope` claim is absent or does not contain the scope required for the requested operation, the RPP server MUST return HTTP 403 Forbidden.
 
+## Managing Trust and Keys
+
+The RPP server MUST maintain a trust store of authorized issuers and their associated public keys for validating JWT signatures. RPP MUST support registrars being able to register their authorization servers and public keys with the registry operator to establish trust for interactive federated transfers.
+
+**TODO** Create additional endpoints for managing trusted issuers and their keys, or specify a manual process for registrars to submit this information to the registry operator.
+
 ## Flows
 
 RPP defines two authorization flows: machine-to-machine flows and interactive flows. Machine-to-machine flows are designed for use in automated systems where no user interaction is required. Interactive flows are designed for use in scenarios where end-user interaction is required, such as when a registrant initiates a transfer request using a registrar's web interface.
@@ -1476,7 +1482,7 @@ The steps in the diagram are as follows:
 1. The registrar's backend system sends a token request to the registry's authorization server, providing its `client_id`, `client_secret` (or a signed client assertion), and the requested RPP scopes (e.g., `domain:create`).
 2. The authorization server validates the client credentials and issues a signed, short-lived JWT access token containing the granted scopes, `sub` (set to `client_id`), and `rpp_registrar_id`.
 3. The registrar's system sends the RPP request to the registry's RPP server, including the access token in the HTTP `Authorization` header as a Bearer token.
-4. The RPP server validates the JWT entirely locally, without contacting the authorization server. It verifies the token's signature using the authorization server's public key (previously fetched and cached via OAuth 2.0 Authorization Server Metadata [@!RFC8414] and the referenced JWKS endpoint), checks the standard claims (`iss`, `aud`, `exp`), and confirms that the `scope` claim includes the scope required for the requested operation.
+4. The RPP server validates the JWT entirely locally, using the without contacting the authorization server. It verifies the token's signature using the authorization server's public key (previously fetched and cached via OAuth 2.0 Authorization Server Metadata [@!RFC8414] and the referenced JWKS [@!RFC7517] endpoint), checks the standard claims (`iss`, `aud`, `exp`), and confirms that the `scope` claim includes the scope required for the requested operation.
 5. If validation succeeds, the RPP server processes the request and returns the RPP response.
 
 It is RECOMMENDED that access tokens be short-lived (e.g., minutes to hours) and that the registrar's system obtain a new token before the current token expires rather than waiting for a 401 response. Token caching and refresh strategies SHOULD follow the best practices in [@!RFC8725].
@@ -1604,6 +1610,10 @@ The two transfer mechanisms cover complementary scenarios:
 - If the registry's discovery endpoint returns no authorization server URI for the losing registrar, the gaining registrar MUST use Fallback flow.
 
 The registry MUST enforce this: if a Fallback flow transfer request (i.e., a request carrying an `RPP-Authorization` header or `rpp_transfer_authinfo` claim) is received for an object whose losing registrar has a registered authorization server URI, the registry MUST reject the request with an appropriate error response. This prevents downgrade attacks and ensures that registrars cannot bypass the stronger OAuth 2.0 flow for operational convenience once they have declared support for it.
+
+**Token single-use enforcement.** Access tokens issued by the losing registrar's authorization server for use in the interactive federated transfer flow MUST be single-use. The registry MUST reject any transfer request that presents a token that has already been used to authorize a transfer, even if the token has not yet expired. The losing registrar's authorization server MUST issue tokens with the intent of single use, and SHOULD include a unique `jti` (JWT ID) claim in each token to facilitate replay detection. The registry MUST maintain a short-lived cache of observed `jti` values and MUST reject any token whose `jti` has already been seen.
+
+If the registry cannot enforce single-use semantics (e.g., due to lack of shared state in a distributed deployment), the token lifetime MUST be set as short as operationally feasible, on the order of a few seconds, to minimize the window of opportunity for replay attacks. Token lifetimes for interactive transfer tokens MUST NOT exceed 60 seconds.
 
 For the secure transfer mechanism based on OAuth 2.0 federation, the RPP server requires an established trust relationship with the authorization server of the losing registrar. The server MUST support the necessary mechanisms for validating tokens issued by the losing registrar's authorization server.
 this requires the server to support the JWT profile for OAuth 2.0 Access Tokens [@!RFC9068] and to support the necessary mechanisms for validating tokens issued by external authorization servers. The client MUST include a valid access token in the Authorization header of the transfer request, and the server MUST validate the token and the associated permissions before allowing the transfer to proceed. The server MUST also implement appropriate error handling for cases where the token is invalid, expired, or does not have the necessary permissions for the requested transfer operation. Registrars implementing secure transfer mechanisms based on OAuth 2.0 federation MUST support the federated identity provider function.
