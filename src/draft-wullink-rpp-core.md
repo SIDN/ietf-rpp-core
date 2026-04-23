@@ -1317,12 +1317,12 @@ Table (#tbl-scopes) defines the RPP scopes derived from the data objects specifi
 | `domain:read` | Domain Name | Read |
 | `domain:update` | Domain Name | Update, Renew, Restore |
 | `domain:delete` | Domain Name | Delete |
-| `domain:transfer` | Domain Name | Transfer Create, Transfer Approve, Transfer Reject, Transfer Cancel, Transfer Query (Legacy Mode only) |
+| `domain:transfer` | Domain Name | Transfer Create, Transfer Approve, Transfer Reject, Transfer Cancel, Transfer Query (Fallback flow only) |
 | `contact:create` | Contact | Create |
 | `contact:read` | Contact | Read |
 | `contact:update` | Contact | Update, Restore |
 | `contact:delete` | Contact | Delete |
-| `contact:transfer` | Contact | Transfer Create, Transfer Approve, Transfer Reject, Transfer Cancel, Transfer Query (Legacy Mode only) |
+| `contact:transfer` | Contact | Transfer Create, Transfer Approve, Transfer Reject, Transfer Cancel, Transfer Query (Fallback flow only) |
 | `host:create` | Host | Create |
 | `host:read` | Host | Read |
 | `host:update` | Host | Update, Restore |
@@ -1392,9 +1392,9 @@ In addition to the standard [@!RFC9068] claims, table (#tbl-rpp-claims) lists th
 | ----- | ----------- | ---- | ----------- |
 | `rpp_registrar_id` | REQUIRED | String | The identifier of the registrar on whose behalf the request is made. The RPP server MUST validate that this identifier matches a known and authorized registrar. This claim MUST be present in all access tokens used for RPP requests. |
 | `rpp_reseller_id` | OPTIONAL | String | The identifier of the reseller acting through the registrar's client application. This claim SHOULD be included when the request originates from a reseller operating under the registrar's account. The RPP server MAY use this claim for access control, auditing, and attribution purposes. The value is interpreted within the namespace of the registrar identified by `rpp_registrar_id`. |
-| `rpp_transfer_authinfo` | OPTIONAL | String | The transfer authorization information used in legacy mode object transfer. When present, the value MUST be equivalent to the value that would otherwise be sent in the `RPP-Authorization` header, using the same `<method> <authorization information>` format. The RPP server MUST treat this claim as equivalent to the `RPP-Authorization` header; if both are present in the same request, the claim value MUST take precedence. This claim MUST only be present in access tokens used for transfer operations. |
+| `rpp_transfer_authinfo` | OPTIONAL | String | The transfer authorization information used in Fallback flow object transfer. When present, the value MUST be equivalent to the value that would otherwise be sent in the `RPP-Authorization` header, using the same `<method> <authorization information>` format. The RPP server MUST treat this claim as equivalent to the `RPP-Authorization` header; if both are present in the same request, the claim value MUST take precedence. This claim MUST only be present in access tokens used for transfer operations. |
 | `rpp_object_id` | OPTIONAL | String | The identifier of the specific object being transferred. MUST be present in access tokens for interactive federated transfers when the fallback dynamic scope method is used (`transfer:domain` or `transfer:contact`) and the `authorization_details` claim ([@!RFC9396]) is not present. The value MUST be the fully qualified name or handle of the object (e.g., `foo.example` or `CID-12345`). The RPP server MUST validate that this value matches the object being transferred. This claim MUST NOT be present when `authorization_details` is present. |
-| `authorization_details` | OPTIONAL | Array of Objects | Rich authorization details as defined by [@!RFC9396]. MUST be present in access tokens for interactive federated transfers when the RAR method is used. Each object in the array MUST have a `type` field; for RPP transfer tokens the `type` MUST be `rpp_transfer` and the object MUST include `object_type` and `object_identifier` fields (see Table 3). The RPP server MUST validate that `object_type` and `object_identifier` match the object being transferred. When this claim is present, the `rpp_object_id` claim MUST NOT be present. |
+| `authorization_details` | OPTIONAL | Array of Objects | Rich authorization details as defined by [@!RFC9396]. MUST be present in access tokens for interactive federated transfers when the RAR method is used. Each object in the array MUST have a `type` field; for RPP transfer tokens the `type` MUST be `rpp_transfer` and the object MUST include `object_type` and `object_identifier` fields (see (#tbl-rar)). The RPP server MUST validate that `object_type` and `object_identifier` match the object being transferred. When this claim is present, the `rpp_object_id` claim MUST NOT be present. |
 Table: RPP Specific Access Token Claims
 {#tbl-rpp-claims}
 
@@ -1590,23 +1590,22 @@ The set of operations for which interactive authentication is required is a matt
 **NOTE:** this is very early draft of how a transfer could work in RPP, it is added here to provide a complete picture of the transfer flow and to be able to discuss the details of the transfer flow and the security mechanisms that can be used to secure the transfer flow. This section is expected to be significantly revised and updated as the transfer flow and the security mechanisms are further developed and refined.
 
 The server MAY support a secure object transfer mechanism based on OAuth 2.0 federation for secure object transfer between registrars, the gaining registrar can obtain an access token from the losing registrar's authorization server to authorize the transfer request. This provides a secure mechanism for transferring objects without exposing sensitive information in the transfer request or response messages. This also prevents the use of opaque transfer tokens and their inherent security risks, such as token leakage or replay attacks.
-If any of the parties in the transfer flow does not support the secure transfer mechanism based on OAuth 2.0 federation, then the transfer MUST fall back to the legacy transfer mechanism using opaque transfer tokens, using the `RPP-Authorization` header to include the transfer token in the transfer request messages.
+If any of the parties in the transfer flow does not support the secure transfer mechanism based on OAuth 2.0 federation, then the transfer MUST fall back to the Fallback flow transfer mechanism using opaque transfer tokens, using the `RPP-Authorization` header to include the transfer token in the transfer request messages.
 
 The two transfer mechanisms cover complementary scenarios:
 
 - **Interactive flow (OAuth 2.0 federated):** The current registrant has an account at the losing registrar and actively initiates or approves the transfer themselves — for example, a registrant migrating their own domain to a new registrar. The registrant authenticates at the losing registrar's authorization server and grants explicit, object-scoped consent.
 
-- **Legacy Mode (authinfo):** The losing registrar has not registered an authorization server URI with the registry, or the domain has been sold and the new owner has no account at the losing registrar. In this case interactive consent at the losing registrar is not possible. The seller (the previous owner, who does have an account at the losing registrar) obtains a transfer authorization code (authinfo) out-of-band and passes it to the buyer. The buyer provides the authinfo to the gaining registrar, which includes it in the transfer request via the `RPP-Authorization` header or the `rpp_transfer_authinfo` JWT claim. The registry validates the authinfo and executes the transfer without requiring the new owner to have any account at the losing registrar.
+- **Fallback flow (authinfo):** The losing registrar has not registered an authorization server URI with the registry, or the domain has been sold and the new owner has no account at the losing registrar. In this case interactive consent at the losing registrar is not possible. The seller (the previous owner, who does have an account at the losing registrar) obtains a transfer authorization code (authinfo) out-of-band and passes it to the buyer. The buyer provides the authinfo to the gaining registrar, which includes it in the transfer request via the `RPP-Authorization` header or the `rpp_transfer_authinfo` JWT claim. The registry validates the authinfo and executes the transfer without requiring the new owner to have any account at the losing registrar.
 
 **Flow selection is not at the discretion of the gaining registrar.** The gaining registrar MUST use whichever flow the losing registrar's capabilities dictate, as determined by registry discovery. Specifically:
 
-- If the registry's discovery endpoint returns an authorization server URI for the losing registrar, the gaining registrar MUST use the interactive OAuth 2.0 federated flow. Legacy Mode MUST NOT be used as a substitute, even if it would be simpler to implement.
-- If the registry's discovery endpoint returns no authorization server URI for the losing registrar, the gaining registrar MUST use Legacy Mode.
-- If the new object owner is a different party than the previous owner (e.g., the domain was sold), the gaining registrar MUST use Legacy Mode, because the new owner cannot authenticate to the losing registrar's authorization server to give consent.
+- If the registry's discovery endpoint returns an authorization server URI for the losing registrar, the gaining registrar MUST use the interactive OAuth 2.0 federated flow. Fallback flow MUST NOT be used as a substitute, even if it would be simpler to implement. The only exception is if the new owner is a different party than the previous owner (e.g., the domain was sold), in which case the gaining registrar MUST use Fallback flow because the new owner cannot authenticate to the losing registrar's authorization server to give consent.
+- If the registry's discovery endpoint returns no authorization server URI for the losing registrar, the gaining registrar MUST use Fallback flow.
 
-The registry MUST enforce this: if a Legacy Mode transfer request (i.e., a request carrying an `RPP-Authorization` header or `rpp_transfer_authinfo` claim) is received for an object whose losing registrar has a registered authorization server URI, the registry MUST reject the request with an appropriate error response. This prevents downgrade attacks and ensures that registrars cannot bypass the stronger OAuth 2.0 flow for operational convenience once they have declared support for it.
+The registry MUST enforce this: if a Fallback flow transfer request (i.e., a request carrying an `RPP-Authorization` header or `rpp_transfer_authinfo` claim) is received for an object whose losing registrar has a registered authorization server URI, the registry MUST reject the request with an appropriate error response. This prevents downgrade attacks and ensures that registrars cannot bypass the stronger OAuth 2.0 flow for operational convenience once they have declared support for it.
 
-The server MAY support a secure object transfer mechanisms based on OAuth 2.0 federation, for this the server requires established trust relationship with the authorization server of the losing registrar. The server MUST support the necessary mechanisms for validating tokens issued by the losing registrar's authorization server.
+For the secure transfer mechanism based on OAuth 2.0 federation, the RPP server requires an established trust relationship with the authorization server of the losing registrar. The server MUST support the necessary mechanisms for validating tokens issued by the losing registrar's authorization server.
 this requires the server to support the JWT profile for OAuth 2.0 Access Tokens [@!RFC9068] and to support the necessary mechanisms for validating tokens issued by external authorization servers. The client MUST include a valid access token in the Authorization header of the transfer request, and the server MUST validate the token and the associated permissions before allowing the transfer to proceed. The server MUST also implement appropriate error handling for cases where the token is invalid, expired, or does not have the necessary permissions for the requested transfer operation. Registrars implementing secure transfer mechanisms based on OAuth 2.0 federation MUST support the federated identity provider function.
 
 ### Federation Trust Model
@@ -1691,9 +1690,9 @@ Figure: RPP Federation Trust Model — Onboarding, Discovery and Browser Redirec
 
 ### Interactive Flow
 
-The interactive flow uses the OAuth 2.0 Authorization Code grant [@!RFC6749, Section 4.1] to obtain explicit, object-specific registrant consent directly from the losing registrar's authorization server. Before redirecting the registrant, the gaining registrar MUST first query the registry's registrar discovery endpoint to resolve the losing registrar's authorization server's authorization URI. If no authorization server URI is available for the losing registrar, the gaining registrar MUST fall back to the Legacy Mode flow described in (#fallback-flow).
+The interactive flow uses the OAuth 2.0 Authorization Code grant [@!RFC6749, Section 4.1] to obtain explicit, object-specific registrant consent directly from the losing registrar's authorization server. Before redirecting the registrant, the gaining registrar MUST first query the registry's registrar discovery endpoint to resolve the losing registrar's authorization server's authorization URI. If no authorization server URI is available for the losing registrar, the gaining registrar MUST fall back to the Fallback flow described in (#fallback-flow).
 
-The authorization request MUST convey the specific object being transferred so that the losing registrar's authorization server can present the registrant with an accurate consent screen. The **primary method** is Rich Authorization Requests (RAR) [@!RFC9396]: the gaining registrar MUST include an `authorization_details` parameter of type `rpp_transfer` (see Table 3). When the losing registrar's authorization server does not support RAR, the **fallback method** is to request a dynamic transfer scope of the form `transfer:domain:<domainname>` (e.g., `transfer:domain:foo.example`). In either case, the resulting token MUST be bound to the single identified object and MUST NOT be accepted by the registry for any other object.
+The authorization request MUST convey the specific object being transferred so that the losing registrar's authorization server can present the registrant with an accurate consent screen. The **primary method** is Rich Authorization Requests (RAR) [@!RFC9396]: the gaining registrar MUST include an `authorization_details` parameter of type `rpp_transfer` (see (#tbl-rar)). When the losing registrar's authorization server does not support RAR, the **fallback method** is to request a dynamic transfer scope of the form `<object>:transfer` (e.g., `domain:transfer`) and the object identifier MUST be added to the `rpp_object_id` claim. In either case, the resulting token MUST be bound to the single identified object and MUST NOT be accepted by the registry for any other object.
 
 The following diagram illustrates the interactive OAuth 2.0 federated secure object transfer flow:
 
@@ -1791,7 +1790,7 @@ The steps in the diagram are as follows:
 
 1. The client initiates a transfer request to the gaining registrar, specifying the object to transfer (e.g., `foo.example`).
 2. The gaining registrar queries the registry's registrar discovery endpoint to look up the losing registrar's authorization server authorization URI. The losing registrar is identified from the current sponsoring registrar data on the domain.
-3. The registry returns the losing registrar's authorization server authorization URI. If no URI is registered, the gaining registrar MUST fall back to the Legacy Mode flow.
+3. The registry returns the losing registrar's authorization server authorization URI. If no URI is registered, the gaining registrar MUST fall back to the Fallback flow.
 4. The gaining registrar redirects the client's browser to the losing registrar's authorization server. The authorization request MUST include an `authorization_details` parameter of type `rpp_transfer` with `object_type: "domain"` and `object_identifier: "foo.example"` (RAR, [@!RFC9396]). If the authorization server does not support RAR, the fallback dynamic scope `transfer:domain:foo.example` MUST be used instead. The gaining registrar's callback URI is included as the OAuth 2.0 `redirect_uri`.
 5. The client authenticates at the losing registrar's authorization server and explicitly approves the transfer scope, providing direct, verifiable consent to release the specific object.
 6. The losing registrar's authorization server issues an authorization code and redirects the client's browser back to the gaining registrar's registered callback URI.
@@ -1810,7 +1809,7 @@ The fallback Flow uses opaque transfer authorization tokens to authorize object 
 
 The transfer authorization token MUST be conveyed using the `rpp_transfer_authinfo` claim embedded in a JWT access token.
 
-The following diagram illustrates the machine-to-machine fallback secure object transfer flow:
+The following diagram illustrates the machine-to-machine Fallback flow for a secure object transfer:
 
 ```ascii
   Client          Gaining         Registry        Losing
@@ -1850,7 +1849,7 @@ The following diagram illustrates the machine-to-machine fallback secure object 
      |<--------------|               |               |
      |               |               |               |
 ```
-Figure: Legacy Secure Object Transfer - Machine to Machine Flow
+Figure: Fallback Object Transfer - Machine to Machine flow
 
 The steps in the diagram are as follows:
 
