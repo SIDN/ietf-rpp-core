@@ -1330,6 +1330,8 @@ Table (#tbl-scopes) defines the RPP scopes derived from the data objects specifi
 Table: RPP OAuth 2.0 Scopes
 {#tbl-scopes}
 
+**TODO:** add more scopes such as for listing collections, process statussen, etc.
+
 ### Rich Authorization Requests (RAR)
 
 OAuth 2.0 Rich Authorization Requests [@!RFC9396] extends the standard OAuth 2.0 authorization request with an `authorization_details` parameter that carries a structured JSON object describing precisely what the client is requesting authorization for. Unlike scopes, which are coarse-grained string tokens, `authorization_details` allows the request to include typed, fine-grained authorization data, such as the specific object being transferred. The  authorization server can present to the user in a meaningful consent screen.
