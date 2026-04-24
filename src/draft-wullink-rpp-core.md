@@ -1299,12 +1299,15 @@ RPP scopes are derived systematically from the data object types and operation c
 - The scope identifier MUST use the format `<object>:<access-level>`, where `<object>` is the lowercase stable identifier of the data object and `<access-level>` is one of the access levels defined below.
 - The `create` access level grants permission to perform the Create operation on the corresponding data object.
 - The `read` access level grants permission to perform the Read operation on the corresponding data object.
-- The `update` access level grants permission to perform Update, Renew, and Restore operations on the corresponding data object.
+- The `update` access level grants permission to perform the Update operation on the corresponding data object.
+- The `renew` access level grants permission to perform the Renew operation on the corresponding data object.
+- The `restore` access level grants permission to perform the Restore operation on the corresponding data object.
 - The `delete` access level grants permission to perform the Delete operation on the corresponding data object.
 - The `transfer` access level grants permission to perform all Transfer operations on the corresponding data object.
+- The `list` access level grants permission to perform List operations on the corresponding data object collections.
 - For interactive OAuth 2.0 federated transfers, authorization MUST convey the specific object being transferred so the registrant can give informed, object-scoped consent. Two mechanisms are defined in order of preference:
   - **Primary - Rich Authorization Requests (RAR) [@!RFC9396]**: The gaining registrar MUST include an `authorization_details` parameter in the authorization request containing an object of type `rpp_transfer` with `object_type` and `object_identifier` fields (see Table 3). This is the RECOMMENDED approach when the losing registrar's authorization server supports RAR.
-  - **Fallback - Transfer Scope**: When the losing registrar's authorization server does not support RAR, a static transfer scope of the form `transfer:<object>` MUST be used (e.g., `transfer:domain`). The specific object identifier MUST be carried in the `rpp_object_id` claim in the issued JWT (see (#rpp-specific-claims)). This scope MUST be presented to the registrant for approval, and the authorization server MUST include the `rpp_object_id` claim in the token.
+  - **Fallback - Transfer Scope**: When the losing registrar's authorization server does not support RAR, a static transfer scope of the form `<object>:transfer` MUST be used (e.g., `domain:transfer`). The specific object identifier MUST be carried in the `rpp_object_id` claim in the issued JWT (see (#rpp-specific-claims)). This scope MUST be presented to the registrant for approval, and the authorization server MUST include the `rpp_object_id` claim in the token.
 - Extensions and additional data objects registered in the IANA RPP Data Object Registry [@!I-D.kowalik-rpp-data-objects] SHOULD define their own scopes following the same derivation rules, using the registered stable identifier of the extension object as the `<object>` component.
 
 ### Scope Registry
@@ -1315,22 +1318,27 @@ Table (#tbl-scopes) defines the RPP scopes derived from the data objects specifi
 | ----- | ----------- | ------------------ |
 | `domain:create` | Domain Name | Create |
 | `domain:read` | Domain Name | Read |
-| `domain:update` | Domain Name | Update, Renew, Restore |
+| `domain:update` | Domain Name | Update |
+| `domain:renew` | Domain Name | Renew |
+| `domain:restore` | Domain Name | Restore |
 | `domain:delete` | Domain Name | Delete |
-| `domain:transfer` | Domain Name | Transfer Create, Transfer Approve, Transfer Reject, Transfer Cancel, Transfer Query (Fallback flow only) |
+| `domain:transfer` | Domain Name | Create, Approve, Reject, Cancel, Query |
+| `domain:list` | Domain Name | List domain collection |
 | `contact:create` | Contact | Create |
 | `contact:read` | Contact | Read |
 | `contact:update` | Contact | Update, Restore |
 | `contact:delete` | Contact | Delete |
-| `contact:transfer` | Contact | Transfer Create, Transfer Approve, Transfer Reject, Transfer Cancel, Transfer Query (Fallback flow only) |
+| `contact:transfer` | Contact | Create, Approve, Reject, Cancel, Query |
+| `contact:list` | Contact | List contact collection |
 | `host:create` | Host | Create |
 | `host:read` | Host | Read |
 | `host:update` | Host | Update, Restore |
 | `host:delete` | Host | Delete |
+| `host:list` | Host | List host collection |
 Table: RPP OAuth 2.0 Scopes
 {#tbl-scopes}
 
-**TODO:** add more scopes such as for listing collections, process statussen, etc.
+**TODO:** add more scopes such as for listing collections, process statussen, power/admin scope? etc.
 
 ### Rich Authorization Requests (RAR)
 
