@@ -717,7 +717,7 @@ TODO
 - Request message: Object Create request
 - Response message: Object Create response
 
-The client MUST use the HTTP POST method to create a new object resource. If the RPP request results in a newly created object, then the server MUST return HTTP status code 200 (OK). The server MUST add the "Location" header to the response, the value of this header MUST be the URL for the newly created resource.
+The client MUST use the HTTP POST method to create a new object resource. If the RPP request results in a newly created object, then the server MUST return HTTP status code 201 (Created). The server MUST add the "Location" header to the response, the value of this header MUST be the URL for the newly created resource.
 
 Example Domain Create request:
 
@@ -736,7 +736,7 @@ TODO
 Example Domain Create response:
 
 ```http
-HTTP/2 200
+HTTP/2 201
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Language: en
@@ -794,7 +794,7 @@ A process MAY also expose a resource at `/{collection}/{id}/processes/{process_n
 
 The server operator MAY decide which processes such resources exist for, whether they only exist for the currently running processes or also for completed or cancelled processes. The period for which completed processes remain available for retrieval is defined by server policy.
 
-### Generic proces interface
+### Generic process interface
 
 A generic interface for interacting with the processes is defined as follows:
 
