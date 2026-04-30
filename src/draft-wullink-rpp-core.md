@@ -638,6 +638,44 @@ To retrieve all process instances across all process types for an object:
 
 A server MAY choose not to implement these endpoints, in which case it MUST return 404 Not Found or 501 Not Implemented.
 
+### Rule 7: Sub-Resource Collection Path Segment and Operations
+
+Each Sub-Resource Object has a stable `"Identifier"` (e.g. `"user"`). The URL path segment for a collection of such objects MUST be derived by applying the `plural()` function to the Sub-Resource Object's `"Identifier"`, and nested directly under its Owner Object instance path. There is no intermediate fixed keyword (unlike the `"processes"` keyword used for Process Objects).
+
+```
+{sub-resource-collection} = plural(subResourceObject.identifier)
+```
+
+| Sub-Resource Object `"Identifier"` | `"plural()"` result | URL sub-resource collection segment |
+|---|---|---|
+| `"user"` | `"users"` | `"/users"` |
+
+The four uniform interface operations on Sub-Resource Objects map to HTTP methods and URL paths as follows. `"{collection}"` is derived per Rule 1. `"{id}"` is the identifier of the Owner Object instance. `"{sub-resource-collection}"` is derived as above. `"{sub-id}"` is the unique identifier of the specific Sub-Resource Object instance.
+
+| Operation `"Identifier"` | HTTP Method | URL path |
+|---|---|---|
+| `"create"` | `"POST"` | `"/{collection}/{id}/{sub-resource-collection}"` |
+| `"read"` | `"GET"` | `"/{collection}/{id}/{sub-resource-collection}/{sub-id}"` |
+| `"update"` | `"PATCH"` | `"/{collection}/{id}/{sub-resource-collection}/{sub-id}"` |
+| `"delete"` | `"DELETE"` | `"/{collection}/{id}/{sub-resource-collection}/{sub-id}"` |
+
+Example URLs derived from the `"user"` Sub-Resource Object owned by a `"registrar"` Data Object:
+
+| Operation | HTTP Method | URL path |
+|---|---|---|
+| Create user | `"POST"` | `"/registrars/{registrar-id}/users"` |
+| Read user | `"GET"` | `"/registrars/{registrar-id}/users/{user-id}"` |
+| Update user | `"PATCH"` | `"/registrars/{registrar-id}/users/{user-id}"` |
+| Delete user | `"DELETE"` | `"/registrars/{registrar-id}/users/{user-id}"` |
+
+A listing of all Sub-Resource instances under an Owner Object instance MAY be implemented. If implemented, the following URL structure MUST be used:
+
+`"GET /{collection}/{id}/{sub-resource-collection}/"`
+
+A server MAY choose not to implement this endpoint, in which case it MUST return 404 Not Found or 501 Not Implemented.
+
+
+
 ## Derived Endpoint Reference
 
 The following table lists all current RPP endpoints, each derived by applying the rules above to the relevant data object and operation identifiers. The following table is non normative.
@@ -668,6 +706,15 @@ The following table lists all current RPP endpoints, each derived by applying th
 | Renew: read | `"GET"` | `"/{collection}/{id}/processes/renewalProcesses/latest"` |
 | Transfer: list | `"GET"` | `"/{collection}/{id}/processes/transferProcesses"` |
 | Processes: list | `"GET"` | `"/{collection}/{id}/processes"` |
+| Registrar: read | `"GET"` | `"/registrars/{id}"` |
+| Registrar: create | `"POST"` | `"/registrars"` |
+| Registrar: update | `"PATCH"` | `"/registrars/{id}"` |
+| Registrar: delete | `"DELETE"` | `"/registrars/{id}"` |
+| Registrar User: create | `"POST"` | `"/registrars/{id}/users"` |
+| Registrar User: read | `"GET"` | `"/registrars/{id}/users/{user-id}"` |
+| Registrar User: update | `"PATCH"` | `"/registrars/{id}/users/{user-id}"` |
+| Registrar User: delete | `"DELETE"` | `"/registrars/{id}/users/{user-id}"` |
+| Registrar User: list | `"GET"` | `"/registrars/{id}/users"` |
 
 A> TODO: add availability and message queue 
 
@@ -1419,6 +1466,7 @@ Data confidentiality and integrity MUST be enforced. Every client and server int
 
 ## Version 05 to 06
 
+- Added rule for mapping sub-resources to URL path segments, rule 7 in the URL Derivation Rules section. (Issue #61)
 
 ## Version 04 to 05
 
