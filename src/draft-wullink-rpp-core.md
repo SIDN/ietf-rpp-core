@@ -763,7 +763,7 @@ TODO: JSON message here
 
 ## Create Resource
 
-The client MUST use the HTTP POST method to create a new object resource (Rule 2, `create` operation). The server MUST add the `Location` header to the response, whose value MUST be the URL of the newly created resource.
+The client MUST use the HTTP POST method to create a new object resource. If the RPP request results in a newly created object, then the server MUST return HTTP status code 201 (Created). The server MUST add the "Location" header to the response, the value of this header MUST be the URL for the newly created resource.
 
 Example Domain Create request:
 
