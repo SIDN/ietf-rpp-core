@@ -10,26 +10,25 @@
 <meta content="
        This document describes the endpoints for the RESTful Provisioning Protocol, used for the provisioning and management of objects in a shared database. 
     " name="description">
-<meta content="xml2rfc 3.18.2" name="generator">
+<meta content="xml2rfc 3.34.0" name="generator">
 <meta content="draft-wullink-rpp-core-05" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.18.2
-    Python 3.11.12
-    ConfigArgParse 1.7
-    google-i18n-address 3.1.0
-    intervaltree 3.1.0
-    jinja2 3.1.6
-    lxml 5.3.1
-    platformdirs 4.0.0
-    pycountry 22.3.5
-    PyYAML 6.0.1
-    requests 2.31.0
-    setuptools 78.1.0
-    six 1.16.0
-    wcwidth 0.2.9
-    weasyprint 55.0
+  xml2rfc 3.34.0
+    Python 3.14.5
+    ConfigArgParse 1.7.5
+    google-i18n-address 3.1.1
+    intervaltree 3.2.1
+    Jinja2 3.1.6
+    lxml 6.1.1
+    natsort 8.4.0
+    platformdirs 4.10.0
+    pycountry 26.2.16
+    PyYAML 6.0.3
+    requests 2.34.2
+    wcwidth 0.8.1
+    weasyprint 69.0
 -->
-<link href="../docs/draft-wullink-rpp-core.xml" rel="alternate" type="application/rfc+xml">
+<link href="draft-wullink-rpp-core.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
 <style type="text/css">/*
 
@@ -45,9 +44,9 @@
 */
 
 /* fonts */
-@import url('https://fonts.googleapis.com/css?family=Noto+Sans'); /* Sans-serif */
-@import url('https://fonts.googleapis.com/css?family=Noto+Serif'); /* Serif (print) */
-@import url('https://fonts.googleapis.com/css?family=Roboto+Mono'); /* Monospace */
+@import url('https://static.ietf.org/fonts/noto-sans/import.css'); /* Sans-serif */
+@import url('https://static.ietf.org/fonts/noto-serif/import.css'); /* Serif (print) */
+@import url('https://static.ietf.org/fonts/roboto-mono/import.css'); /* Monospace */
 
 :root {
   --font-sans: 'Noto Sans', Arial, Helvetica, sans-serif;
@@ -161,6 +160,12 @@ div {
 svg {
   display: block;
 }
+@media print {
+  svg {
+    max-height: 850px;
+    max-width: 660px;
+  }
+}
 svg[font-family~="serif" i], svg [font-family~="serif" i] {
   font-family: var(--font-serif);
 }
@@ -253,8 +258,7 @@ a[href]:hover {
   background-color: #f2f2f2;
 }
 figcaption a[href],
-a[href].selfRef,
-.iref + a[href].internal {
+a[href].selfRef {
   color: #222;
 }
 /* XXX probably not this:
@@ -313,6 +317,9 @@ cite {
   display: block;
   text-align: right;
   font-style: italic;
+}
+.xref {
+  overflow-wrap: normal;
 }
 
 /* tables */
@@ -402,7 +409,7 @@ hr {
 /* Fix PDF info block run off issue */
 @media print {
   #identifiers dd {
-    float: none;
+    max-width: 100%;
   }
 }
 #identifiers .authors .author {
@@ -455,6 +462,10 @@ nav.toc li {
 }
 
 .refInstance {
+  margin-bottom: 1.25em;
+}
+
+.refSubseries {
   margin-bottom: 1.25em;
 }
 
@@ -1074,7 +1085,7 @@ table {
 ol.type-a { list-style-type: lower-alpha; }
 ol.type-A { list-style-type: upper-alpha; }
 ol.type-i { list-style-type: lower-roman; }
-ol.type-I { list-style-type: lower-roman; }
+ol.type-I { list-style-type: upper-roman; }
 /* Apply the print table and row borders in general, on request from the RPC,
 and increase the contrast between border and odd row background slightly */
 table {
@@ -1154,7 +1165,7 @@ section .olCompact {
 tt, code {
   background-color: transparent;
 }
-p tt, p code, li tt, li code {
+p tt, p code, li tt, li code, dt tt, dt code {
   background-color: #f8f8f8;
 }
 /* Tweak the pre margin -- 0px doesn't come out well */
@@ -1177,6 +1188,7 @@ dl > dd > dl {
 /* This should match the element list in writer.text.TextWriter.render_dl() */
 dd > div.artwork:first-child,
 dd > aside:first-child,
+dd > blockquote:first-child,
 dd > figure:first-child,
 dd > ol:first-child,
 dd > div.sourcecode:first-child,
@@ -1200,7 +1212,6 @@ li > p:last-of-type:only-child {
 <link href="rfc-local.css" rel="stylesheet" type="text/css">
 </head>
 <body class="xml2rfc">
-<script src="metadata.min.js"></script>
 <table class="ears">
 <thead><tr>
 <td class="left">Internet-Draft</td>
@@ -1812,33 +1823,35 @@ The document MUST contain an <code>errors</code> element, as a list of objects d
       <h2 id="name-bootstrapping">
 <a href="#section-8" class="section-number selfRef">8. </a><a href="#name-bootstrapping" class="section-name selfRef">Bootstrapping</a>
       </h2>
-<p id="section-8-1">The client MUST be able to bootstrap itself by discovering the location of an RPP server. Not having a fixed location for the RPP server is a fundamental design principle of RPP, as it allows for a more flexible and scalable architecture. The client MUST use either the IANA registry for RPP servers or a DNS lookup using an HTTPS resource record as defined in <span>[<a href="#RFC9460" class="cite xref">RFC9460</a>]</span>. The format and procedure for adding an RPP server to the IANA registry is defined in the IANA Considerations section below.<a href="#section-8-1" class="pilcrow">¶</a></p>
-<p id="section-8-2">For DNS-based bootstrapping, an RPP server MUST publish an HTTPS resource record for each DNS zone that is served by the RPP server. The owner name of the HTTPS resource record MUST be the provisionedzone name itself (e.g., <code>&lt;zone&gt;</code>).<a href="#section-8-2" class="pilcrow">¶</a></p>
-<p id="section-8-3">If multiple HTTPS resource records are returned, the client MUST process them according to the priority rules defined in <span>[<a href="#RFC9460" class="cite xref">RFC9460</a>]</span>. If multiple records have the same SvcPriority, the client SHOULD select one based on local policy. The client MUST ignore HTTPS SvcParams in AliasMode (SvcPriority = 0) and follow the alias to the target name. The client MUST ignore HTTPS resource records with a TargetName of <code>.</code> (service not available).<a href="#section-8-3" class="pilcrow">¶</a></p>
-<p id="section-8-4">The HTTPS resource record provides the target host and optional port of the RPP service. The client MUST construct the URL for the well-known endpoint (defined in the Discoverability section below) as:<a href="#section-8-4" class="pilcrow">¶</a></p>
+<p id="section-8-1">The server MUST provide a mechanism for clients to discover the location of the RPP server, two methods are defined for this purpose, using the IANA registry for RPP servers or using DNS-based bootstrapping. The server MUST provide at least one of these methods, and MAY provide both methods. The client MUST use either the IANA registry for RPP servers or a DNS lookup using an HTTPS resource record as defined in <span>[<a href="#RFC9460" class="cite xref">RFC9460</a>]</span>. The client MUST be able to handle the case where the choosen method does not return a valid RPP server location, and MUST be able to use the other method as a fallback to discover the RPP server location.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-2">The format and procedure for adding an RPP server to the IANA registry is defined in the IANA Considerations section below. If the server uses both the IANA registry and DNS-based bootstrapping, then both methods MUST return the same location for the RPP server.<a href="#section-8-2" class="pilcrow">¶</a></p>
+<p id="section-8-3">For DNS-based bootstrapping, an RPP server MUST publish an HTTPS resource record in a <code>_rpp</code> child zone for each DNS zone that is managed by the RPP server. The owner name of the HTTPS resource record MUST be the managed zone name itself, prepended with the <code>_rpp.</code> label (e.g., <code>_rpp.&lt;zone&gt;</code>).<a href="#section-8-3" class="pilcrow">¶</a></p>
+<p id="section-8-4">If multiple HTTPS resource records are returned, the client MUST process them according to the priority rules defined in <span>[<a href="#RFC9460" class="cite xref">RFC9460</a>]</span>. If multiple records have the same SvcPriority, the client SHOULD select one based on local policy.<a href="#section-8-4" class="pilcrow">¶</a></p>
+<p id="section-8-5">The client MUST construct the URL for the well-known endpoint of the RPP server as follows, using the <code>TargetName</code> and <code>port</code> SvcParams from the HTTPS resource record:<a href="#section-8-5" class="pilcrow">¶</a></p>
 <ul class="compact">
-<li class="compact" id="section-8-5.1">
-          <code>https://&lt;TargetName&gt;:&lt;port&gt;/.well-known/rpp</code> when the <code>port</code> SvcParam is present and not 443<a href="#section-8-5.1" class="pilcrow">¶</a>
+<li class="compact" id="section-8-6.1">
+          <code>https://&lt;TargetName&gt;:&lt;port&gt;/.well-known/rpp.json</code> when the <code>port</code> SvcParam is present and not 443<a href="#section-8-6.1" class="pilcrow">¶</a>
 </li>
-        <li class="compact" id="section-8-5.2">
-          <code>https://&lt;TargetName&gt;/.well-known/rpp</code> when the <code>port</code> SvcParam is absent or is 443<a href="#section-8-5.2" class="pilcrow">¶</a>
+        <li class="compact" id="section-8-6.2">
+          <code>https://&lt;TargetName&gt;/.well-known/rpp.json</code> when the <code>port</code> SvcParam is absent or is 443<a href="#section-8-6.2" class="pilcrow">¶</a>
 </li>
       </ul>
-<p id="section-8-6">The client MUST use the constructed URL to discover the capabilities of the RPP server, as defined in the Discoverability section below.<a href="#section-8-6" class="pilcrow">¶</a></p>
 <p id="section-8-7">Example HTTPS resource record for an RPP server for the TLD "example" running HTTPS on port 443 at <code>rpp.example.</code>:<a href="#section-8-7" class="pilcrow">¶</a></p>
 <div class="lang-dns sourcecode" id="section-8-8">
-<pre>example. 3600 IN HTTPS 1 rpp.example. alpn=h2,h3
+<pre>@ORIGIN example.
+_rpp IN HTTPS 1 . alpn=h2,h3
 
 </pre><a href="#section-8-8" class="pilcrow">¶</a>
 </div>
-<p id="section-8-9">In this example, the well-known endpoint URL is <code>https://rpp.example/.well-known/rpp</code>.<a href="#section-8-9" class="pilcrow">¶</a></p>
-<p id="section-8-10">Example HTTPS resource record for an RPP server running on a non-standard port 8443:<a href="#section-8-10" class="pilcrow">¶</a></p>
+<p id="section-8-9">In this example, the well-known endpoint URL is <code>https://rpp.example/.well-known/rpp.json</code>.<a href="#section-8-9" class="pilcrow">¶</a></p>
+<p id="section-8-10">Example HTTPS resource record for an RPP server using a different TargetName (rpp-svr2.registry.example) and a non-standard port (8443) for the TLD "example":<a href="#section-8-10" class="pilcrow">¶</a></p>
 <div class="lang-dns sourcecode" id="section-8-11">
-<pre>example. 3600 IN HTTPS 1 rpp.example. alpn=h2,h3 port=8443
+<pre>@ORIGIN example.
+_rpp IN HTTPS 1 rpp-svr2.registry.example. alpn=h2,h3 port=8443
 
 </pre><a href="#section-8-11" class="pilcrow">¶</a>
 </div>
-<p id="section-8-12">In this example, the well-known endpoint URL is <code>https://rpp.example:8443/.well-known/rpp</code>.<a href="#section-8-12" class="pilcrow">¶</a></p>
+<p id="section-8-12">In this example, the well-known endpoint URL is <code>https://rpp-svr2.registry.example:8443/.well-known/rpp.json</code>.<a href="#section-8-12" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="discoverability">
@@ -1846,7 +1859,7 @@ The document MUST contain an <code>errors</code> element, as a list of objects d
       <h2 id="name-discoverability">
 <a href="#section-9" class="section-number selfRef">9. </a><a href="#name-discoverability" class="section-name selfRef">Discoverability</a>
       </h2>
-<p id="section-9-1">RPP server capabilities MUST be discoverable by clients. The server MUST provide a well-known endpoint at <code>/.well-known/rpp</code> at the root of the RPP server, this endpoint MUST return a JSON document containing the capabilities of the RPP server. The well-known endpoint MUST be accessible without authentication, and the client MUST be able to access this endpoint before authenticating with the server. The well-known endpoint MUST be accessible using the HTTP GET method and MUST return an HTTP status code 200 (OK) if the request was successful. The response message body MUST contain a JSON document describing the capabilities of the RPP server using the following fields:<a href="#section-9-1" class="pilcrow">¶</a></p>
+<p id="section-9-1">RPP server capabilities MUST be discoverable by clients. The server MUST provide a well-known endpoint at <code>/.well-known/rpp.json</code> at the root of the RPP server, this endpoint MUST return a JSON document containing the capabilities of the RPP server. The well-known endpoint MUST be accessible without authentication, and the client MUST be able to access this endpoint before authenticating with the server. The well-known endpoint MUST be accessible using the HTTP GET method and MUST return an HTTP status code 200 (OK) if the request was successful. The response message body MUST contain a JSON document describing the capabilities of the RPP server using the following fields:<a href="#section-9-1" class="pilcrow">¶</a></p>
 <ul class="compact">
 <li class="compact" id="section-9-2.1">
           <code>base_url</code>: (required, string) The base URL for the RPP API, this is the URL that MUST be used as the base for all endpoint URL templates.<a href="#section-9-2.1" class="pilcrow">¶</a>
@@ -2001,7 +2014,7 @@ The document MUST contain an <code>errors</code> element, as a list of objects d
 <ol start="1" type="1" class="compact type-1" id="section-9.1-2">
 <li id="section-9.1-2.1">Bootstrap (optional): The client discovers the location of the RPP server by looking up the IANA registry for RPP servers or by performing a DNS SRV lookup as defined in <span>[<a href="#RFC2782" class="cite xref">RFC2782</a>]</span>.<a href="#section-9.1-2.1" class="pilcrow">¶</a>
 </li>
-          <li id="section-9.1-2.2">Discover capabilities (optional):  The client retrieves the capabilities of the RPP server by sending a GET request to the well-known endpoint at <code>/.well-known/rpp</code>.<a href="#section-9.1-2.2" class="pilcrow">¶</a>
+          <li id="section-9.1-2.2">Discover capabilities (optional):  The client retrieves the capabilities of the RPP server by sending a GET request to the well-known endpoint at <code>/.well-known/rpp.json</code>.<a href="#section-9.1-2.2" class="pilcrow">¶</a>
 </li>
           <li id="section-9.1-2.3">Extract RPP URLs (optional): The client extracts the base URL and endpoint URL templates from the discovery response, and uses this information to construct the URLs for the desired operations.<a href="#section-9.1-2.3" class="pilcrow">¶</a>
 </li>
@@ -3181,7 +3194,7 @@ Registration procedure: Expert Review
             <code>tld</code>: The top-level domain (TLD) for which the discovery URL is applicable, for example "example".<a href="#section-17.3-4.1" class="pilcrow">¶</a>
 </li>
           <li class="compact" id="section-17.3-4.2">
-            <code>url</code>: The URL for the discovery endpoint, for example "<a href='https://rpp.example/.well-known/rpp"'>https://rpp.example/.well-known/rpp"</a>.<a href="#section-17.3-4.2" class="pilcrow">¶</a>
+            <code>url</code>: The URL for the discovery endpoint, for example "<a href='https://rpp.example/.well-known/rpp.json"'>https://rpp.example/.well-known/rpp.json"</a>.<a href="#section-17.3-4.2" class="pilcrow">¶</a>
 </li>
           <li class="compact" id="section-17.3-4.3">
             <code>description</code>: A human-readable description of the discovery URL and its intended use.<a href="#section-17.3-4.3" class="pilcrow">¶</a>

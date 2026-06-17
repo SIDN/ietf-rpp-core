@@ -225,38 +225,40 @@ Problem Detail response containing multiple errors for a domain create request u
 
 # Bootstrapping
 
-The client MUST be able to bootstrap itself by discovering the location of an RPP server. Not having a fixed location for the RPP server is a fundamental design principle of RPP, as it allows for a more flexible and scalable architecture. The client MUST use either the IANA registry for RPP servers or a DNS lookup using an HTTPS resource record as defined in [@!RFC9460]. The format and procedure for adding an RPP server to the IANA registry is defined in the IANA Considerations section below.
+The server MUST provide a mechanism for clients to discover the location of the RPP server, two methods are defined for this purpose, using the IANA registry for RPP servers or using DNS-based bootstrapping. The server MUST provide at least one of these methods, and MAY provide both methods. The client MUST use either the IANA registry for RPP servers or a DNS lookup using an HTTPS resource record as defined in [@!RFC9460]. The client MUST be able to handle the case where the choosen method does not return a valid RPP server location, and MUST be able to use the other method as a fallback to discover the RPP server location.
 
-For DNS-based bootstrapping, an RPP server MUST publish an HTTPS resource record for each DNS zone that is served by the RPP server. The owner name of the HTTPS resource record MUST be the provisionedzone name itself (e.g., `<zone>`).
+The format and procedure for adding an RPP server to the IANA registry is defined in the IANA Considerations section below. If the server uses both the IANA registry and DNS-based bootstrapping, then both methods MUST return the same location for the RPP server.
 
-If multiple HTTPS resource records are returned, the client MUST process them according to the priority rules defined in [@!RFC9460]. If multiple records have the same SvcPriority, the client SHOULD select one based on local policy. The client MUST ignore HTTPS SvcParams in AliasMode (SvcPriority = 0) and follow the alias to the target name. The client MUST ignore HTTPS resource records with a TargetName of `.` (service not available).
+For DNS-based bootstrapping, an RPP server MUST publish an HTTPS resource record in a `_rpp` child zone for each DNS zone that is managed by the RPP server. The owner name of the HTTPS resource record MUST be the managed zone name itself, prepended with the `_rpp.` label (e.g., `_rpp.<zone>`).
 
-The HTTPS resource record provides the target host and optional port of the RPP service. The client MUST construct the URL for the well-known endpoint (defined in the Discoverability section below) as:
+If multiple HTTPS resource records are returned, the client MUST process them according to the priority rules defined in [@!RFC9460]. If multiple records have the same SvcPriority, the client SHOULD select one based on local policy.
 
-- `https://<TargetName>:<port>/.well-known/rpp` when the `port` SvcParam is present and not 443
-- `https://<TargetName>/.well-known/rpp` when the `port` SvcParam is absent or is 443
+The client MUST construct the URL for the well-known endpoint of the RPP server as follows, using the `TargetName` and `port` SvcParams from the HTTPS resource record:
 
-The client MUST use the constructed URL to discover the capabilities of the RPP server, as defined in the Discoverability section below.
+- `https://<TargetName>:<port>/.well-known/rpp.json` when the `port` SvcParam is present and not 443
+- `https://<TargetName>/.well-known/rpp.json` when the `port` SvcParam is absent or is 443
 
 Example HTTPS resource record for an RPP server for the TLD "example" running HTTPS on port 443 at `rpp.example.`:
 
 ```dns
-example. 3600 IN HTTPS 1 rpp.example. alpn=h2,h3
+@ORIGIN example.
+_rpp IN HTTPS 1 . alpn=h2,h3
 ```
 
-In this example, the well-known endpoint URL is `https://rpp.example/.well-known/rpp`.
+In this example, the well-known endpoint URL is `https://rpp.example/.well-known/rpp.json`.
 
-Example HTTPS resource record for an RPP server running on a non-standard port 8443:
+Example HTTPS resource record for an RPP server using a different TargetName (rpp-svr2.registry.example) and a non-standard port (8443) for the TLD "example":
 
 ```dns
-example. 3600 IN HTTPS 1 rpp.example. alpn=h2,h3 port=8443
+@ORIGIN example.
+_rpp IN HTTPS 1 rpp-svr2.registry.example. alpn=h2,h3 port=8443
 ```
 
-In this example, the well-known endpoint URL is `https://rpp.example:8443/.well-known/rpp`.
+In this example, the well-known endpoint URL is `https://rpp-svr2.registry.example:8443/.well-known/rpp.json`.
 
 # Discoverability
 
-RPP server capabilities MUST be discoverable by clients. The server MUST provide a well-known endpoint at `/.well-known/rpp` at the root of the RPP server, this endpoint MUST return a JSON document containing the capabilities of the RPP server. The well-known endpoint MUST be accessible without authentication, and the client MUST be able to access this endpoint before authenticating with the server. The well-known endpoint MUST be accessible using the HTTP GET method and MUST return an HTTP status code 200 (OK) if the request was successful. The response message body MUST contain a JSON document describing the capabilities of the RPP server using the following fields:
+RPP server capabilities MUST be discoverable by clients. The server MUST provide a well-known endpoint at `/.well-known/rpp.json` at the root of the RPP server, this endpoint MUST return a JSON document containing the capabilities of the RPP server. The well-known endpoint MUST be accessible without authentication, and the client MUST be able to access this endpoint before authenticating with the server. The well-known endpoint MUST be accessible using the HTTP GET method and MUST return an HTTP status code 200 (OK) if the request was successful. The response message body MUST contain a JSON document describing the capabilities of the RPP server using the following fields:
 
 - `base_url`: (required, string) The base URL for the RPP API, this is the URL that MUST be used as the base for all endpoint URL templates.
 - `version`: (required, string) The version of the RPP API supported by the server, for example "1.0".
@@ -349,7 +351,7 @@ Example discovery response document:
 The steps for a typical workflow of provisioning an object using RPP without knowing the location and capabilities of the server are as follows, the first three steps are optional, the client can choose to skip any of these steps if it already has the required information from a previous interaction or configuration.
 
 1. Bootstrap (optional): The client discovers the location of the RPP server by looking up the IANA registry for RPP servers or by performing a DNS SRV lookup as defined in [@!RFC2782].
-2. Discover capabilities (optional):  The client retrieves the capabilities of the RPP server by sending a GET request to the well-known endpoint at `/.well-known/rpp`.
+2. Discover capabilities (optional):  The client retrieves the capabilities of the RPP server by sending a GET request to the well-known endpoint at `/.well-known/rpp.json`.
 3. Extract RPP URLs (optional): The client extracts the base URL and endpoint URL templates from the discovery response, and uses this information to construct the URLs for the desired operations.
 4. Perform provisioning operations: The client performs provisioning operations by sending HTTP requests to the appropriate endpoint URLs, using the HTTP method and request message body as required by the specific operation.
 
@@ -1310,7 +1312,7 @@ Registration procedure: Expert Review
 Fields to be registered:
 
 - `tld`: The top-level domain (TLD) for which the discovery URL is applicable, for example "example".
-- `url`: The URL for the discovery endpoint, for example "https://rpp.example/.well-known/rpp".
+- `url`: The URL for the discovery endpoint, for example "https://rpp.example/.well-known/rpp.json".
 - `description`: A human-readable description of the discovery URL and its intended use.
 
 ## RPP Extension registry
