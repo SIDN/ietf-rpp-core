@@ -771,9 +771,15 @@ RPP-code: 01000
 TODO: JSON message here
 ```
 
-## Create Resource
+## Poll for Messages
 
-The client MUST use the HTTP POST method to create a new object resource (Rule 2, `create` operation). The server MUST add the `Location` header to the response, whose value MUST be the URL of the newly created resource.
+The messages endpoint is used for retrieving messages stored on the server for the client to process.
+
+- Request: GET /messages
+- Request message: None
+- Response message: Poll response
+
+The client MUST use the HTTP GET method on the messages resource collection to request the message at the head of the queue.
 
 Example Domain Create request:
 
@@ -1426,10 +1432,6 @@ Data confidentiality and integrity MUST be enforced. Every client and server int
 
 # Change History
 
-## Version 05 to 06
-
-- Updated Bootstrap section, now uses DNS HTTPS resource record. (Issue #56)
-  
 ## Version 04 to 05
 
 - Added Bootstrap and Discovery sections to the document, describing how a client can discover the location and capabilities of an RPP server
