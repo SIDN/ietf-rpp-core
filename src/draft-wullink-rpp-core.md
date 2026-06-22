@@ -570,6 +570,7 @@ Examples derived from current data object identifiers:
 | `"domainName"` | `"domainNames"` | `"/domainNames"` |
 | `"contact"` | `"contacts"` | `"/contacts"` |
 | `"host"` | `"hosts"` | `"/hosts"` |
+| `"organisation"` | `"organisations"` | `"/organisations"` |
 
 ### Rule 2: Uniform Interface Operations
 
@@ -666,6 +667,10 @@ The following table lists all current RPP endpoints, each derived by applying th
 | Host: create | `"POST"` | `"/hosts"` |
 | Host: update | `"PATCH"` | `"/hosts/{id}"` |
 | Host: delete | `"DELETE"` | `"/hosts/{id}"` |
+| Organisation: read | `"GET"` | `"/organisation/{id}"` |
+| Organisation: create | `"POST"` | `"/organisation"` |
+| Organisation: update | `"PATCH"` | `"/organisation/{id}"` |
+| Organisation: delete | `"DELETE"` | `"/organisation/{id}"` |
 | Transfer: create | `"POST"` | `"/{collection}/{id}/processes/transferProcesses"` |
 | Transfer: read | `"GET"` | `"/{collection}/{id}/processes/transferProcesses/latest"` |
 | Transfer: delete (cancel) | `"DELETE"` | `"/{collection}/{id}/processes/transferProcesses/latest"` |
@@ -1425,6 +1430,10 @@ RPP relies on the security of the underlying HTTP transport, hence the best comm
 Data confidentiality and integrity MUST be enforced. Every client and server interaction MUST be encrypted using TLS version 1.3 [@!RFC8446]. Future versions of TLS MAY be used as they become available and are deemed secure.
 
 # Change History
+
+## Version 05 to 06
+
+- Added organisation resource type, with create, read, update and delete operations. (Issue #67)
 
 ## Version 04 to 05
 
