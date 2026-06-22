@@ -771,17 +771,11 @@ RPP-code: 01000
 TODO: JSON message here
 ```
 
-## Poll for Messages
+## Create Resource
 
-The messages endpoint is used for retrieving messages stored on the server for the client to process.
+The client MUST use the HTTP POST method on a resource identifying a collection of object instances (Rule 2, `create` operation).
 
-- Request: GET /messages
-- Request message: None
-- Response message: Poll response
-
-The client MUST use the HTTP GET method on the messages resource collection to request the message at the head of the queue.
-
-Example Domain Create request:
+Example Domain Create request for a new domain name `foo.example`:
 
 ```http
 POST /rpp/v1/domainNames HTTP/2
@@ -795,7 +789,7 @@ Content-Length: 220
 TODO
 ```
 
-Example Domain Create response:
+Example Domain Create response for a new domain name `foo.example`:
 
 ```http
 HTTP/2 201 Created
