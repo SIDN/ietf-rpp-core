@@ -110,7 +110,7 @@ The `RPP-Authorization` header is specific to the user agent and MUST NOT be cac
 
 The server HTTP response contains a status code, headers, and MAY contain an RPP response message in the message body. HTTP headers are used to transmit additional data to the client and MAY be used to send RPP process related data to the client. HTTP headers used by RPP MUST use the "RPP-" prefix, the following response headers have been defined for RPP.
 
-- `RPP-Svtrid`:  A server-assigned transaction identifier. The server MUST include this header in every response. It provides a unique, server-side audit-trail reference for the processed request, independent of any EPP backend.
+- `RPP-Svtrid`:  A server-assigned transaction identifier. The server MUST include this header in every response. It provides a unique, server-side audit-trail reference for the processed request.
 
 - `RPP-Cltrid`: The server MUST echo the client transaction identifier from the request back to the client in this response header. This allows the client to correlate responses to their originating requests.
   
