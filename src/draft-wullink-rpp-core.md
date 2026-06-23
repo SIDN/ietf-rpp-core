@@ -575,7 +575,7 @@ Examples derived from current data object identifiers:
 
 The four uniform interface operations defined in the RPP data object specification map to HTTP methods and URL paths as follows. `"{collection}"` is derived per Rule 1. `"{id}"` is the unique identifier value of the specific object instance.
 
-A RPP client MAY use the HTTP GET method for informational requests only when no request data has to be added to the HTTP message body. Sending content using an HTTP GET request is discouraged in [@!RFC9110], there exist no generally defined semantics for content received in a GET request. When an RPP operation requires additional input data, the client MUST use the HTTP POST or PATCH method and add the content to the HTTP message body.
+A RPP client MAY use the HTTP GET method for informational requests only when no request data has to be added to the HTTP message body. Sending content using an HTTP GET request is discouraged in [@!RFC9110], there exist no generally defined semantics for content received in a GET request. When an RPP operation requires additional input data, the client MUST use the HTTP POST, PUT or PATCH method and include any required data in the HTTP message body and HTTP headers.
 
 A> TODO: the paragraph above looks like misplaced. Do we need it at all? The protocol defines if anything MAY be posted to the message body, so maybe this is a design consideration which does not belong to the final document?
 
@@ -583,7 +583,7 @@ A> TODO: the paragraph above looks like misplaced. Do we need it at all? The pro
 |---|---|---|
 | `"create"` | `"POST"` | `/"{collection}"` |
 | `"read"` | `"GET"` | `"/{collection}/{id}"` |
-| `"update"` | `"PATCH"` | `"/{collection}/{id}"` |
+| `"update"` | `"PUT or PATCH"` | `"/{collection}/{id}"` |
 | `"delete"` | `"DELETE"` | `"/{collection}/{id}"` |
 
 ### Rule 3: Process Object Collection Path Segment
@@ -656,15 +656,15 @@ The following table lists all current RPP endpoints, each derived by applying th
 |---|---|---|
 | Domain: read | `"GET"` | `"/domainNames/{id}"` |
 | Domain: create | `"POST"` | `"/domainNames"` |
-| Domain: update | `"PATCH"` | `"/domainNames/{id}"` |
+| Domain: update | `"PUT or PATCH"` | `"/domainNames/{id}"` |
 | Domain: delete | `"DELETE"` | `"/domainNames/{id}"` |
 | Contact: read | `"GET"` | `"/contacts/{id}"` |
 | Contact: create | `"POST"` | `"/contacts"` |
-| Contact: update | `"PATCH"` | `"/contacts/{id}"` |
+| Contact: update | `"PUT or PATCH"` | `"/contacts/{id}"` |
 | Contact: delete | `"DELETE"` | `"/contacts/{id}"` |
 | Host: read | `"GET"` | `"/hosts/{id}"` |
 | Host: create | `"POST"` | `"/hosts"` |
-| Host: update | `"PATCH"` | `"/hosts/{id}"` |
+| Host: update | `"PUT or PATCH"` | `"/hosts/{id}"` |
 | Host: delete | `"DELETE"` | `"/hosts/{id}"` |
 | Transfer: create | `"POST"` | `"/{collection}/{id}/processes/transferProcesses"` |
 | Transfer: read | `"GET"` | `"/{collection}/{id}/processes/transferProcesses/latest"` |
@@ -837,11 +837,48 @@ TODO
 
 ## Update Resource
 
-An object Update request MUST be performed using the HTTP PATCH method (Rule 2, `update` operation). The request message body MUST contain an Update message.
+RPP supports two complementary update operations for modifying an existing object instance, each with its own semantics and use cases:
 
-**TODO:** when using JSON, also allow for JSON patch so client can send partial update data only?
+- **Full update** (HTTP PUT): The client sends a complete replacement representation of the object. The server MUST replace the stored object with the provided representation. Any attributes not present in the request body MUST be treated as absent and cleared or reset to their default values, subject to server policy. The client MUST send all read-write attributes required by the data model, not just the changed ones. The client MUST not send any create-only attributes. 
 
-Example request:
+- **Partial update** (HTTP PATCH): The client sends only the attributes to be modified. The server MUST apply only the changes indicated in the request body and leave all other attributes unchanged. Data representation of the partial update payload determines how the changes are transmitted between client and server and applied to the data object.
+The client MAY send changes to any read-write attributes defined in the data model. The client MUST not send any create-only attributes. 
+
+Both operations MUST be performed on a URL identifying a unique object instance (Rule 2). The request body MUST contain a valid object representation in the negotiated media type.
+
+The server MUST respond with HTTP status code 200 (OK) and include the updated object representation in the response body.
+
+Example full update request (PUT):
+
+```http
+PUT /rpp/v1/domainNames/foo.example HTTP/2
+Host: rpp.example
+Authorization: Bearer <token>
+Accept: application/rpp+json
+Content-Type: application/rpp+json
+Accept-Language: en
+RPP-Cltrid: ABC-12345
+Content-Length: 252
+
+TODO
+```
+
+Example full update response:
+
+```http
+HTTP/2 200 OK
+Date: Wed, 24 Jan 2024 12:00:00 UTC
+Server: Example RPP server v1.0
+Content-Length: 80
+Content-Type: application/rpp+json
+RPP-Svtrid: XYZ-12345
+RPP-Cltrid: ABC-12345
+RPP-code: 01000
+
+TODO
+```
+
+Example partial update request (PATCH):
 
 ```http
 PATCH /rpp/v1/domainNames/foo.example HTTP/2
@@ -850,18 +887,20 @@ Authorization: Bearer <token>
 Accept: application/rpp+json
 Content-Type: application/rpp+json
 Accept-Language: en
+RPP-Cltrid: ABC-12345
 Content-Length: 252
 
 TODO
 ```
 
-Example response:
+Example partial update response:
 
 ```http
 HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Length: 80
+Content-Type: application/rpp+json
 RPP-Svtrid: XYZ-12345
 RPP-Cltrid: ABC-12345
 RPP-code: 01000
@@ -1425,6 +1464,10 @@ RPP relies on the security of the underlying HTTP transport, hence the best comm
 Data confidentiality and integrity MUST be enforced. Every client and server interaction MUST be encrypted using TLS version 1.3 [@!RFC8446]. Future versions of TLS MAY be used as they become available and are deemed secure.
 
 # Change History
+
+## Version 05 to 06
+
+- Described full and partial update operations, using HTTP PUT and PATCH methods respectively. (Issue #21)
 
 ## Version 04 to 05
 
