@@ -839,7 +839,7 @@ TODO
 
 RPP supports two complementary update operations for modifying an existing object instance, each with its own semantics and use cases:
 
-- **Full update** (HTTP PUT): The client sends a complete replacement representation of the object. The server MUST replace the stored object with the provided representation. Any attributes not present in the request body MUST be treated as absent and cleared or reset to their default values, subject to server policy. The client MUST send all attributes required by the data model, not just the changed ones.
+- **Full update** (HTTP PUT): The client sends a complete replacement representation of the object. The server MUST replace the stored object with the provided representation. Any attributes not present in the request body MUST be treated as absent and cleared or reset to their default values, subject to server policy. The client MUST send all read-write attributes required by the data model, not just the changed ones. The client MUST not send any create-only attributes. 
 
 - **Partial update** (HTTP PATCH): The client sends only the attributes to be modified. The server MUST apply only the changes indicated in the request body and leave all other attributes unchanged. A JSON attribute explicitly set to `null` in the request body signals that the attribute MUST be removed or reset to its default value. Attributes absent from the request body MUST NOT be modified.
 
