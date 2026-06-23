@@ -841,7 +841,8 @@ RPP supports two complementary update operations for modifying an existing objec
 
 - **Full update** (HTTP PUT): The client sends a complete replacement representation of the object. The server MUST replace the stored object with the provided representation. Any attributes not present in the request body MUST be treated as absent and cleared or reset to their default values, subject to server policy. The client MUST send all read-write attributes required by the data model, not just the changed ones. The client MUST not send any create-only attributes. 
 
-- **Partial update** (HTTP PATCH): The client sends only the attributes to be modified. The server MUST apply only the changes indicated in the request body and leave all other attributes unchanged. A JSON attribute explicitly set to `null` in the request body signals that the attribute MUST be removed or reset to its default value. Attributes absent from the request body MUST NOT be modified.
+- **Partial update** (HTTP PATCH): The client sends only the attributes to be modified. The server MUST apply only the changes indicated in the request body and leave all other attributes unchanged. Data representation of the partial update payload determines how the changes are transmitted between client and server and applied to the data object.
+The client MAY send changes to any read-write attributes defined in the data model. The client MUST not send any create-only attributes. 
 
 Both operations MUST be performed on a URL identifying a unique object instance (Rule 2). The request body MUST contain a valid object representation in the negotiated media type.
 
