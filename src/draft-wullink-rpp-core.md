@@ -671,6 +671,10 @@ The following table lists all current RPP endpoints, each derived by applying th
 | Organisation: create | `"POST"` | `"/organisation"` |
 | Organisation: update | `"PATCH"` | `"/organisation/{id}"` |
 | Organisation: delete | `"DELETE"` | `"/organisation/{id}"` |
+| User: read | `"GET"` | `"/organisation/{id}/users/{userId}"` |
+| User: create | `"POST"` | `"/organisation/{id}/users"` |
+| User: update | `"PATCH"` | `"/organisation/{id}/users/{userId}"` |
+| User: delete | `"DELETE"` | `"/organisation/{id}/users/{userId}"` |
 | Transfer: create | `"POST"` | `"/{collection}/{id}/processes/transferProcesses"` |
 | Transfer: read | `"GET"` | `"/{collection}/{id}/processes/transferProcesses/latest"` |
 | Transfer: delete (cancel) | `"DELETE"` | `"/{collection}/{id}/processes/transferProcesses/latest"` |
@@ -1433,7 +1437,7 @@ Data confidentiality and integrity MUST be enforced. Every client and server int
 
 ## Version 05 to 06
 
-- Added organisation resource type, with create, read, update and delete operations. (Issue #67)
+- Added Organisation and User resource type, with create, read, update and delete operations. (Issue #67)
 
 ## Version 04 to 05
 
