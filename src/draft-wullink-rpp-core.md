@@ -78,11 +78,17 @@ In examples, indentation and white space in examples are provided only to illust
 
 All example requests assume a RPP server using HTTP version 2 is listening on the standard HTTPS port on host rpp.example. An authorization token has been provided by an out of band process and MUST be used by the client to authenticate each request.
 
+# Mapping to EPP
+
+RPP is designed as an independent protocol and does not require an EPP server. RPP concepts such as transaction identifiers, result codes, and object attributes are defined in their own right and serve RPP purposes regardless of whether an EPP backend is present, however compatibility with EPP is to the great extent preserved. Implementers with no prior EPP experience are be able to implement RPP based solely on this specification.
+
+Some RPP concepts are functionally similar to EPP concepts, but they are not directly derived from EPP and MAY have different semantics. To avoid confusion, RPP elements SHOULD NOT use an "EPP" prefix or suffix. For implementers who operate an EPP backend and need to bridge RPP requests to EPP commands, a separate RPP-to-EPP mapping document [TODO REF] is provided. Any extensions to RPP are not covered by that mapping document; the mapping of extension elements MUST be defined in the respective extension specification.
+
 # Request Headers
 
 A RPP request does not always require a request message body. The information conveyed by the HTTP method, URL, and request headers may be sufficient for the server to be able to successfully processes a request. However, the client MUST include a request message body when the server requires additional attributes to be present in the request message. The RPP HTTP headers listed below use the "RPP-" prefix, following the recommendations in [@!RFC6648].
 
-- `RPP-Cltrid`:  The client transaction identifier is the equivalent of the `clTRID` element defined in [@!RFC5730] and MUST be used accordingly, when the HTTP message body does not contain an EPP request that includes a cltrid.
+- `RPP-Cltrid`:  A client-assigned transaction identifier. The client MUST include this header in every request. It serves two independent purposes: as an idempotency key, allowing the server to detect and safely handle duplicate requests, and as an audit-trail identifier, enabling end-to-end correlation of a request across client and server logs. The value MUST be unique per request.
 - `RPP-Authorization`: The client MAY use this header to send authorization information in the format `<method> <authorization information>`, similar to the HTTP `Authorization` header, defined in [RFC9110, Section 11.6.2]. The `<method>` indicates the type of authorization being used. For EPP object authorization information, for example the authorization information used for domain names described in [RFC5731, Section 2.3], a new `authinfo` method is defined and MUST be used. The `<authorization information>` defines the following comma separated fields:
  - value (REQUIRED): Base64 encoded EPP password-based authorization information. Base64 encoding is used to prevent problems when special characters are present that may conflict with the format rules for the Authorization header.
  - roid (OPTIONAL): A Roid as defined in [@!RFC5731], [@!RFC5733], and [@!RFC5730]. The roid is used to identify the object for which the authorization information is provided. If the roid is not provided, then the server MUST assume that the authorization information is linked to the object identified by the URL of the request.
@@ -104,9 +110,9 @@ The `RPP-Authorization` header is specific to the user agent and MUST NOT be cac
 
 The server HTTP response contains a status code, headers, and MAY contain an RPP response message in the message body. HTTP headers are used to transmit additional data to the client and MAY be used to send RPP process related data to the client. HTTP headers used by RPP MUST use the "RPP-" prefix, the following response headers have been defined for RPP.
 
-- `RPP-Svtrid`:  This header is the equivalent of the "svTRID" element defined in [@!RFC5730] and MUST be used accordingly when the RPP response does not contain an EPP response in the HTTP message body. If an HTTP message body with the EPP XML equivalent "svTRID" exists, both values MUST be consistent.
+- `RPP-Svtrid`:  A server-assigned transaction identifier. The server MUST include this header in every response. It provides a unique, server-side audit-trail reference for the processed request.
 
-- `RPP-Cltrid`: This header is the equivalent of the "clTRID" element defined in [@!RFC5730] and MUST be used accordingly when the RPP response does not contain an EPP response in the HTTP message body. If the contents of the HTTP message body contains a "clTRID" value, then both values MUST be consistent.
+- `RPP-Cltrid`: The server MUST echo the client transaction identifier from the request back to the client in this response header. This allows the client to correlate responses to their originating requests.
   
 - `RPP-Code`: This header is the equivalent of the EPP result code defined in [@!RFC5730] and MUST be used accordingly. This header MUST be added to all responses and MAY be used by the client for easy access to the result code, without having to parse the HTTP response message body.
 
@@ -576,7 +582,7 @@ Examples derived from current data object identifiers:
 
 The four uniform interface operations defined in the RPP data object specification map to HTTP methods and URL paths as follows. `"{collection}"` is derived per Rule 1. `"{id}"` is the unique identifier value of the specific object instance.
 
-A RPP client MAY use the HTTP GET method for informational requests only when no request data has to be added to the HTTP message body. Sending content using an HTTP GET request is discouraged in [@!RFC9110], there exist no generally defined semantics for content received in a GET request. When an RPP operation requires additional input data, the client MUST use the HTTP POST or PATCH method and add the content to the HTTP message body.
+A RPP client MAY use the HTTP GET method for informational requests only when no request data has to be added to the HTTP message body. Sending content using an HTTP GET request is discouraged in [@!RFC9110], there exist no generally defined semantics for content received in a GET request. When an RPP operation requires additional input data, the client MUST use the HTTP POST, PUT or PATCH method and include any required data in the HTTP message body and HTTP headers.
 
 A> TODO: the paragraph above looks like misplaced. Do we need it at all? The protocol defines if anything MAY be posted to the message body, so maybe this is a design consideration which does not belong to the final document?
 
@@ -584,7 +590,7 @@ A> TODO: the paragraph above looks like misplaced. Do we need it at all? The pro
 |---|---|---|
 | `"create"` | `"POST"` | `/"{collection}"` |
 | `"read"` | `"GET"` | `"/{collection}/{id}"` |
-| `"update"` | `"PATCH"` | `"/{collection}/{id}"` |
+| `"update"` | `"PUT or PATCH"` | `"/{collection}/{id}"` |
 | `"delete"` | `"DELETE"` | `"/{collection}/{id}"` |
 
 ### Rule 3: Process Object Collection Path Segment
@@ -657,15 +663,15 @@ The following table lists all current RPP endpoints, each derived by applying th
 |---|---|---|
 | Domain: read | `"GET"` | `"/domainNames/{id}"` |
 | Domain: create | `"POST"` | `"/domainNames"` |
-| Domain: update | `"PATCH"` | `"/domainNames/{id}"` |
+| Domain: update | `"PUT or PATCH"` | `"/domainNames/{id}"` |
 | Domain: delete | `"DELETE"` | `"/domainNames/{id}"` |
 | Contact: read | `"GET"` | `"/contacts/{id}"` |
 | Contact: create | `"POST"` | `"/contacts"` |
-| Contact: update | `"PATCH"` | `"/contacts/{id}"` |
+| Contact: update | `"PUT or PATCH"` | `"/contacts/{id}"` |
 | Contact: delete | `"DELETE"` | `"/contacts/{id}"` |
 | Host: read | `"GET"` | `"/hosts/{id}"` |
 | Host: create | `"POST"` | `"/hosts"` |
-| Host: update | `"PATCH"` | `"/hosts/{id}"` |
+| Host: update | `"PUT or PATCH"` | `"/hosts/{id}"` |
 | Host: delete | `"DELETE"` | `"/hosts/{id}"` |
 | Organisation: read | `"GET"` | `"/organisation/{id}"` |
 | Organisation: create | `"POST"` | `"/organisation"` |
@@ -846,11 +852,48 @@ TODO
 
 ## Update Resource
 
-An object Update request MUST be performed using the HTTP PATCH method (Rule 2, `update` operation). The request message body MUST contain an Update message.
+RPP supports two complementary update operations for modifying an existing object instance, each with its own semantics and use cases:
 
-**TODO:** when using JSON, also allow for JSON patch so client can send partial update data only?
+- **Full update** (HTTP PUT): The client sends a complete replacement representation of the object. The server MUST replace the stored object with the provided representation. Any attributes not present in the request body MUST be treated as absent and cleared or reset to their default values, subject to server policy. The client MUST send all read-write attributes required by the data model, not just the changed ones. The client MUST not send any create-only attributes. 
 
-Example request:
+- **Partial update** (HTTP PATCH): The client sends only the attributes to be modified. The server MUST apply only the changes indicated in the request body and leave all other attributes unchanged. Data representation of the partial update payload determines how the changes are transmitted between client and server and applied to the data object.
+The client MAY send changes to any read-write attributes defined in the data model. The client MUST not send any create-only attributes. 
+
+Both operations MUST be performed on a URL identifying a unique object instance (Rule 2). The request body MUST contain a valid object representation in the negotiated media type.
+
+The server MUST respond with HTTP status code 200 (OK) and include the updated object representation in the response body.
+
+Example full update request (PUT):
+
+```http
+PUT /rpp/v1/domainNames/foo.example HTTP/2
+Host: rpp.example
+Authorization: Bearer <token>
+Accept: application/rpp+json
+Content-Type: application/rpp+json
+Accept-Language: en
+RPP-Cltrid: ABC-12345
+Content-Length: 252
+
+TODO
+```
+
+Example full update response:
+
+```http
+HTTP/2 200 OK
+Date: Wed, 24 Jan 2024 12:00:00 UTC
+Server: Example RPP server v1.0
+Content-Length: 80
+Content-Type: application/rpp+json
+RPP-Svtrid: XYZ-12345
+RPP-Cltrid: ABC-12345
+RPP-code: 01000
+
+TODO
+```
+
+Example partial update request (PATCH):
 
 ```http
 PATCH /rpp/v1/domainNames/foo.example HTTP/2
@@ -859,18 +902,20 @@ Authorization: Bearer <token>
 Accept: application/rpp+json
 Content-Type: application/rpp+json
 Accept-Language: en
+RPP-Cltrid: ABC-12345
 Content-Length: 252
 
 TODO
 ```
 
-Example response:
+Example partial update response:
 
 ```http
 HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Length: 80
+Content-Type: application/rpp+json
 RPP-Svtrid: XYZ-12345
 RPP-Cltrid: ABC-12345
 RPP-code: 01000
@@ -1438,6 +1483,8 @@ Data confidentiality and integrity MUST be enforced. Every client and server int
 ## Version 05 to 06
 
 - Added Organisation and User resource type, with create, read, update and delete operations. (Issue #67)
+- Added section about Mapping to EPP. (Issue #55)
+- Described full and partial update operations, using HTTP PUT and PATCH methods respectively. (Issue #21)
 
 ## Version 04 to 05
 
