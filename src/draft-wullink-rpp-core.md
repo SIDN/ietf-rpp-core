@@ -576,6 +576,7 @@ Examples derived from current data object identifiers:
 | `"domainName"` | `"domainNames"` | `"/domainNames"` |
 | `"contact"` | `"contacts"` | `"/contacts"` |
 | `"host"` | `"hosts"` | `"/hosts"` |
+| `"organisation"` | `"organisations"` | `"/organisations"` |
 
 ### Rule 2: Uniform Interface Operations
 
@@ -672,6 +673,14 @@ The following table lists all current RPP endpoints, each derived by applying th
 | Host: create | `"POST"` | `"/hosts"` |
 | Host: update | `"PUT or PATCH"` | `"/hosts/{id}"` |
 | Host: delete | `"DELETE"` | `"/hosts/{id}"` |
+| Organisation: read | `"GET"` | `"/organisation/{id}"` |
+| Organisation: create | `"POST"` | `"/organisation"` |
+| Organisation: update | `"PATCH"` | `"/organisation/{id}"` |
+| Organisation: delete | `"DELETE"` | `"/organisation/{id}"` |
+| User: read | `"GET"` | `"/organisation/{id}/users/{userId}"` |
+| User: create | `"POST"` | `"/organisation/{id}/users"` |
+| User: update | `"PATCH"` | `"/organisation/{id}/users/{userId}"` |
+| User: delete | `"DELETE"` | `"/organisation/{id}/users/{userId}"` |
 | Transfer: create | `"POST"` | `"/{collection}/{id}/processes/transferProcesses"` |
 | Transfer: read | `"GET"` | `"/{collection}/{id}/processes/transferProcesses/latest"` |
 | Transfer: delete (cancel) | `"DELETE"` | `"/{collection}/{id}/processes/transferProcesses/latest"` |
@@ -1473,6 +1482,7 @@ Data confidentiality and integrity MUST be enforced. Every client and server int
 
 ## Version 05 to 06
 
+- Added Organisation and User resource type, with create, read, update and delete operations. (Issue #67)
 - Added section about Mapping to EPP. (Issue #55)
 - Described full and partial update operations, using HTTP PUT and PATCH methods respectively. (Issue #21)
 
