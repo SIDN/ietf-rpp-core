@@ -673,14 +673,14 @@ The following table lists all current RPP endpoints, each derived by applying th
 | Host: create | `"POST"` | `"/hosts"` |
 | Host: update | `"PUT or PATCH"` | `"/hosts/{id}"` |
 | Host: delete | `"DELETE"` | `"/hosts/{id}"` |
-| Organisation: read | `"GET"` | `"/organisation/{id}"` |
-| Organisation: create | `"POST"` | `"/organisation"` |
-| Organisation: update | `"PATCH"` | `"/organisation/{id}"` |
-| Organisation: delete | `"DELETE"` | `"/organisation/{id}"` |
-| User: read | `"GET"` | `"/organisation/{id}/users/{userId}"` |
-| User: create | `"POST"` | `"/organisation/{id}/users"` |
-| User: update | `"PATCH"` | `"/organisation/{id}/users/{userId}"` |
-| User: delete | `"DELETE"` | `"/organisation/{id}/users/{userId}"` |
+| Organisation: read | `"GET"` | `"/organisations/{id}"` |
+| Organisation: create | `"POST"` | `"/organisations"` |
+| Organisation: update | `"PATCH"` | `"/organisations/{id}"` |
+| Organisation: delete | `"DELETE"` | `"/organisations/{id}"` |
+| User: read | `"GET"` | `"/organisations/{id}/users/{userId}"` |
+| User: create | `"POST"` | `"/organisations/{id}/users"` |
+| User: update | `"PATCH"` | `"/organisations/{id}/users/{userId}"` |
+| User: delete | `"DELETE"` | `"/organisations/{id}/users/{userId}"` |
 | Transfer: create | `"POST"` | `"/{collection}/{id}/processes/transferProcesses"` |
 | Transfer: read | `"GET"` | `"/{collection}/{id}/processes/transferProcesses/latest"` |
 | Transfer: delete (cancel) | `"DELETE"` | `"/{collection}/{id}/processes/transferProcesses/latest"` |
@@ -973,8 +973,11 @@ Content-Length: 220
     }
 }
 ```
+### Restore Resource
 
-## Renew Resource
+A> TODO: this needs update once restoreProcess is defined in Data Objects
+
+### Renew Resource
 
 A> TODO: this needs update one renewalProcess is defined in Data Objects
 
@@ -1016,7 +1019,7 @@ RPP-code: 01000
 TODO add renew response data here
 ```
 
-### Transfer
+### Transfer Resource
 
 The Transfer operation manages the change of sponsoring client for a provisioned object. Transfer is modelled as a Process Object with its own lifecycle. The `transferProcess` object identifier yields the `transferProcesses` collection segment per Rule 3.
 
@@ -1237,7 +1240,9 @@ RPP-code: 01000
 }
 ```
 
-## Poll for Messages
+# Messages
+
+## Retrieve
 
 A> TODO: update when covered in data objects
 
@@ -1275,7 +1280,7 @@ RPP-code: 01301
 TODO
 ```
 
-## Delete Message
+## Delete
 
 A> TODO: update when covered in data objects
 
