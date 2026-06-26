@@ -127,6 +127,14 @@ For RPP codes the remaining 4 digits MUST keep the same semantics as [@!RFC5730]
 
 - `RPP-Queue-Size`: Return the number of unacknowledged messages in the client message queue. The server MAY include this header in all RPP responses.
 
+When a uniform interface operation implicitly creates a process object as a side effect (e.g., a domain create that starts a `createProcess`), the server MUST communicate the URL of the created process resource using the `Link` response header [@!RFC8288] with the `rpp-process` relation type. If multiple process objects are created, the server MUST include one `Link` header field per created process resource, each with `rel="rpp-process"`.
+
+Example:
+
+```
+Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process"
+```
+
 # Error handling and relation between HTTP status codes and RPP codes
 
 RPP leverages standard HTTP status codes to reflect the outcome of RPP operations. The RPP result codes are based on the EPP result codes defined in [@!RFC5730]. This allows clients to handle responses generically using common HTTP patterns. While the HTTP status code provides the primary, high-level outcome, the specific RPP result code MUST still be provided in the `RPP-Code` HTTP header for detailed diagnostics.
@@ -931,7 +939,7 @@ All process resources MUST exist under the `/{collection}/{id}/processes/{proces
 
 ### Relation to object representation
 
-In certain situations a resource creation may require additional process data or implicitly start an asynchronous process with its own inputs, lifecycle and state. In these cases, the representation sent to the server MAY contain a combination of object data and process-related data. For example, a domain create request contains domain representation data which will be stored with the domain object, and domain creation process data such as registration duration or price, which is part of the creation process data but not directly stored with the domain object.
+A uniform interface operation MAY require additional process data or implicitly start an asynchronous process with its own inputs, lifecycle and state. In these cases, the representation sent to the server MAY contain a combination of object data and process-related data. For example, a domain create request contains domain representation data which will be stored with the domain object, and domain creation process data such as registration duration or price, which is part of the creation process data but not directly stored with the domain object. How the embedding of process data into the object representation is done exactly MUST be defined in the corresponding representation specification.
 
 For the process data in the message body to be distinct and consistent with the URL path structure, it MUST be enclosed in the `@processes/{process-collection}` JSON path when transmitted with the object's representation.
 
@@ -951,7 +959,9 @@ POST /{collection}
 }
 ```
 
-Example: Domain Create request with 2-year registration, where `createProcess` is derived from the `createProcess` object identifier per Rule 3:
+When the server creates a process object as a result of the operation, it MUST return the URL of the created process resource using the `Link` response header with `rel="rpp-process"` (see (#response-headers)).
+
+Example: Domain Create request with 2-year registration, where `createProcesses` is derived from the `createProcess` object identifier per Rule 3:
 
 A> TODO: createProcess needs to be added to Data Objects
 
@@ -966,12 +976,27 @@ Content-Length: 220
 
 {
     "name": "foo.example",
-    "processes": {
-        "createProcess": {
+    "@processes": {
+        "createProcesses": {
             "period": { "value": 2, "unit": "y" }
         }
     }
 }
+```
+
+Example: Domain Create response where a `createProcess` object was implicitly created:
+
+```http
+HTTP/2 201 Created
+Date: Wed, 24 Jan 2024 12:00:00 UTC
+Server: Example RPP server v1.0
+Content-Language: en
+Content-Type: application/rpp+json
+Location: https://rpp.example/rpp/v1/domainNames/foo.example
+Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process"
+RPP-code: 01000
+
+TODO
 ```
 ### Restore Resource
 
@@ -1102,9 +1127,6 @@ RPP-Cltrid: ABC-12345
 
 ```
 
-
-
-```
 
 Example Transfer Query response:
 
@@ -1445,6 +1467,20 @@ Fields to be registered:
 - `code`: The RPP result code, for example "12000".
 - `description`: A human-readable description of the result code and its intended use.
 
+## Link Relation Type: rpp-process
+
+The IANA is requested to register the following link relation type in the "Link Relation Types" registry, following the template in [@!RFC8288]:
+
+```text
+Relation Name: rpp-process
+Description:   Identifies a process resource that was implicitly created as a
+               side effect of a uniform interface operation on the target
+               resource.  The context resource is the provisioning object on
+               which the operation was performed; the target resource is the
+               created process instance.
+Reference:     This document
+```
+
 ## RPP Media Type (application/rpp+json)
 
 The IANA is requested to add the following RPP media type to the "Media Types" registry, following the template in [@!RFC6838]:
@@ -1490,6 +1526,7 @@ Data confidentiality and integrity MUST be enforced. Every client and server int
 - Added Organisation and User resource type, with create, read, update and delete operations. (Issue #67)
 - Added section about Mapping to EPP. (Issue #55)
 - Described full and partial update operations, using HTTP PUT and PATCH methods respectively. (Issue #21)
+- Added support for embedding process data in uniform interface operations: the `@processes/{process-collection}` JSON structure carries process input alongside the object representation, and the server returns the created process resource URL via the `Link` response header with `rel="rpp-process"`. Registered the `rpp-process` link relation type with IANA.
 
 ## Version 04 to 05
 

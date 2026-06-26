@@ -46,11 +46,16 @@
 <t>All example requests assume a RPP server using HTTP version 2 is listening on the standard HTTPS port on host rpp.example. An authorization token has been provided by an out of band process and MUST be used by the client to authenticate each request.</t>
 </section>
 
+<section anchor="mapping-to-epp"><name>Mapping to EPP</name>
+<t>RPP is designed as an independent protocol and does not require an EPP server. RPP concepts such as transaction identifiers, result codes, and object attributes are defined in their own right and serve RPP purposes regardless of whether an EPP backend is present, however compatibility with EPP is to the great extent preserved. Implementers with no prior EPP experience are be able to implement RPP based solely on this specification.</t>
+<t>Some RPP concepts are functionally similar to EPP concepts, but they are not directly derived from EPP and MAY have different semantics. To avoid confusion, RPP elements SHOULD NOT use an &quot;EPP&quot; prefix or suffix. For implementers who operate an EPP backend and need to bridge RPP requests to EPP commands, a separate RPP-to-EPP mapping document [TODO REF] is provided. Any extensions to RPP are not covered by that mapping document; the mapping of extension elements MUST be defined in the respective extension specification.</t>
+</section>
+
 <section anchor="request-headers"><name>Request Headers</name>
 <t>A RPP request does not always require a request message body. The information conveyed by the HTTP method, URL, and request headers may be sufficient for the server to be able to successfully processes a request. However, the client MUST include a request message body when the server requires additional attributes to be present in the request message. The RPP HTTP headers listed below use the &quot;RPP-&quot; prefix, following the recommendations in <xref target="RFC6648"></xref>.</t>
 
 <ul spacing="compact">
-<li><tt>RPP-Cltrid</tt>:  The client transaction identifier is the equivalent of the <tt>clTRID</tt> element defined in <xref target="RFC5730"></xref> and MUST be used accordingly, when the HTTP message body does not contain an EPP request that includes a cltrid.</li>
+<li><tt>RPP-Cltrid</tt>:  A client-assigned transaction identifier. The client MUST include this header in every request. It serves two independent purposes: as an idempotency key, allowing the server to detect and safely handle duplicate requests, and as an audit-trail identifier, enabling end-to-end correlation of a request across client and server logs. The value MUST be unique per request.</li>
 <li><t><tt>RPP-Authorization</tt>: The client MAY use this header to send authorization information in the format <tt>&lt;method&gt; &lt;authorization information&gt;</tt>, similar to the HTTP <tt>Authorization</tt> header, defined in [RFC9110, Section 11.6.2]. The <tt>&lt;method&gt;</tt> indicates the type of authorization being used. For EPP object authorization information, for example the authorization information used for domain names described in [RFC5731, Section 2.3], a new <tt>authinfo</tt> method is defined and MUST be used. The <tt>&lt;authorization information&gt;</tt> defines the following comma separated fields:</t>
 
 <ul spacing="compact">
@@ -61,8 +66,7 @@
 <t>Use of the RPP-Authorization header:</t>
 
 <sourcecode type="http"><![CDATA[RPP-Authorization: authinfo value=TXkgU2VjcmFRva2Vu, roid=REG-X-123
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>The value of the <tt>RPP-Authorization</tt> header is case sensitive. The server MUST reject requests where the case of the header value does not match the expected case.
 The <tt>RPP-Authorization</tt> header is specific to the user agent and MUST NOT be cached, as recommended by <xref target="RFC9110" sectionFormat="bare" section="Section 16.4.2"></xref>, the server MUST use the correct HTTP cache directives to prevent caching of the <tt>RPP-Authorization</tt> header.</t>
 
@@ -75,9 +79,9 @@ The <tt>RPP-Authorization</tt> header is specific to the user agent and MUST NOT
 <t>The server HTTP response contains a status code, headers, and MAY contain an RPP response message in the message body. HTTP headers are used to transmit additional data to the client and MAY be used to send RPP process related data to the client. HTTP headers used by RPP MUST use the &quot;RPP-&quot; prefix, the following response headers have been defined for RPP.</t>
 
 <ul>
-<li><t><tt>RPP-Svtrid</tt>:  This header is the equivalent of the &quot;svTRID&quot; element defined in <xref target="RFC5730"></xref> and MUST be used accordingly when the RPP response does not contain an EPP response in the HTTP message body. If an HTTP message body with the EPP XML equivalent &quot;svTRID&quot; exists, both values MUST be consistent.</t>
+<li><t><tt>RPP-Svtrid</tt>:  A server-assigned transaction identifier. The server MUST include this header in every response. It provides a unique, server-side audit-trail reference for the processed request.</t>
 </li>
-<li><t><tt>RPP-Cltrid</tt>: This header is the equivalent of the &quot;clTRID&quot; element defined in <xref target="RFC5730"></xref> and MUST be used accordingly when the RPP response does not contain an EPP response in the HTTP message body. If the contents of the HTTP message body contains a &quot;clTRID&quot; value, then both values MUST be consistent.</t>
+<li><t><tt>RPP-Cltrid</tt>: The server MUST echo the client transaction identifier from the request back to the client in this response header. This allows the client to correlate responses to their originating requests.</t>
 </li>
 <li><t><tt>RPP-Code</tt>: This header is the equivalent of the EPP result code defined in <xref target="RFC5730"></xref> and MUST be used accordingly. This header MUST be added to all responses and MAY be used by the client for easy access to the result code, without having to parse the HTTP response message body.</t>
 </li>
@@ -91,6 +95,11 @@ For RPP result codes the leading digit MUST be &quot;1&quot;. For avoidance of c
 <ul spacing="compact">
 <li><tt>RPP-Queue-Size</tt>: Return the number of unacknowledged messages in the client message queue. The server MAY include this header in all RPP responses.</li>
 </ul>
+<t>When a uniform interface operation implicitly creates a process object as a side effect (e.g., a domain create that starts a <tt>createProcess</tt>), the server MUST communicate the URL of the created process resource using the <tt>Link</tt> response header <xref target="RFC8288"></xref> with the <tt>rpp-process</tt> relation type. If multiple process objects are created, the server MUST include one <tt>Link</tt> header field per created process resource, each with <tt>rel=&quot;rpp-process&quot;</tt>.</t>
+<t>Example:</t>
+
+<artwork><![CDATA[Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process"
+]]></artwork>
 </section>
 
 <section anchor="error-handling-and-relation-between-http-status-codes-and-rpp-codes"><name>Error handling and relation between HTTP status codes and RPP codes</name>
@@ -232,8 +241,7 @@ The document MUST contain an <tt>errors</tt> element, as a list of objects detai
     "action_cost": 25.0
   }]
 }
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Problem Detail response containing multiple errors for a domain create request using an invalid domain name (_$.example), JSONPaths are specified in the error objects to indicate which value in the request caused the error:</t>
 
 <sourcecode type="json"><![CDATA[{
@@ -252,8 +260,7 @@ The document MUST contain an <tt>errors</tt> element, as a list of objects detai
     "reason": "Domain name length must be between 3 and 63 characters",
   }]
 }
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="bootstrapping"><name>Bootstrapping</name>
@@ -271,15 +278,13 @@ The document MUST contain an <tt>errors</tt> element, as a list of objects detai
 
 <sourcecode type="dns"><![CDATA[@ORIGIN example.
 _rpp IN HTTPS 1 . alpn=h2,h3
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>In this example, the well-known endpoint URL is <tt>https://rpp.example/.well-known/rpp.json</tt>.</t>
 <t>Example HTTPS resource record for an RPP server using a different TargetName (rpp-svr2.registry.example) and a non-standard port (8443) for the TLD &quot;example&quot;:</t>
 
 <sourcecode type="dns"><![CDATA[@ORIGIN example.
 _rpp IN HTTPS 1 rpp-svr2.registry.example. alpn=h2,h3 port=8443
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>In this example, the well-known endpoint URL is <tt>https://rpp-svr2.registry.example:8443/.well-known/rpp.json</tt>.</t>
 </section>
 
@@ -382,8 +387,7 @@ _rpp IN HTTPS 1 rpp-svr2.registry.example. alpn=h2,h3 port=8443
   ]
 
 }
-]]>
-</sourcecode>
+]]></sourcecode>
 
 <section anchor="workflow"><name>Workflow</name>
 <t>The steps for a typical workflow of provisioning an object using RPP without knowing the location and capabilities of the server are as follows, the first three steps are optional, the client can choose to skip any of these steps if it already has the required information from a previous interaction or configuration.</t>
@@ -430,8 +434,7 @@ A request using an extension MUST include the version of the extension. The serv
       "url": "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0"
     }
   ],
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="profiles"><name>Profiles</name>
@@ -445,8 +448,7 @@ A request using an extension MUST include the version of the extension. The serv
       "url": "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0"
     }
   ]
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 </section>
 
@@ -495,8 +497,7 @@ A request using an extension MUST include the version of the extension. The serv
     "version": "1.0"
   }
 }
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="inheritance"><name>Inheritance</name>
@@ -518,8 +519,7 @@ A request using an extension MUST include the version of the extension. The serv
   ],
   "profile":
 }
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>The example profile definition shown in <xref target="profile-example"></xref> uses the &quot;base-profile&quot; as its base and inherits its features and also overrides the version of the &quot;rppOther&quot; extension defined in the base profile.</t>
 </section>
 
@@ -533,13 +533,11 @@ A request using an extension MUST include the version of the extension. The serv
 <sourcecode type="abnf"><![CDATA[profile-header = "profile" "=" profile-name ";" OWS "version" "=" version
 profile-name   = token
 version        = 1*DIGIT "." 1*DIGIT
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example:</t>
 
 <sourcecode type="http"><![CDATA[RPP-Profile: profile=urn:ietf:params:rpp:profile:example-profile;version=1.0
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="media-type-parameter-signalling"><name>Media type parameter signalling</name>
@@ -554,14 +552,12 @@ version        = 1*DIGIT "." 1*DIGIT
 <sourcecode type="abnf"><![CDATA[profile-parameter = "profile" "=" profile-name ";" OWS "version" "=" version
 profile-name      = token
 version           = 1*DIGIT "." 1*DIGIT
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example for the media type <tt>application/rpp+json</tt> with profile parameters indicating the use of the &quot;example-profile&quot; profile version 1.0.:</t>
 
 <sourcecode type="http"><![CDATA[Accept: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
 Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 </section>
 </section>
@@ -576,8 +572,7 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 <t>Each Data Object has a stable, <tt>&quot;Identifier&quot;</tt> (e.g. <tt>&quot;domainName&quot;</tt>, <tt>&quot;contact&quot;</tt>, <tt>&quot;host&quot;</tt>). The URL path segment for a collection of such objects MUST be derived by applying the <tt>plural()</tt> function to the object's <tt>&quot;Identifier&quot;</tt>. The <tt>&quot;plural()&quot;</tt> function appends an &quot;s&quot; or &quot;es&quot; to the identifier as per English language rules. Any irregular plural version MUST be defined in the data object specification.</t>
 
 <artwork><![CDATA[{collection} = plural(dataObject.identifier)
-]]>
-</artwork>
+]]></artwork>
 <t>Examples derived from current data object identifiers:</t>
 <table>
 <thead>
@@ -606,12 +601,18 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 <td><tt>&quot;hosts&quot;</tt></td>
 <td><tt>&quot;/hosts&quot;</tt></td>
 </tr>
+
+<tr>
+<td><tt>&quot;organisation&quot;</tt></td>
+<td><tt>&quot;organisations&quot;</tt></td>
+<td><tt>&quot;/organisations&quot;</tt></td>
+</tr>
 </tbody>
 </table></section>
 
 <section anchor="rule-2-uniform-interface-operations"><name>Rule 2: Uniform Interface Operations</name>
 <t>The four uniform interface operations defined in the RPP data object specification map to HTTP methods and URL paths as follows. <tt>&quot;{collection}&quot;</tt> is derived per Rule 1. <tt>&quot;{id}&quot;</tt> is the unique identifier value of the specific object instance.</t>
-<t>A RPP client MAY use the HTTP GET method for informational requests only when no request data has to be added to the HTTP message body. Sending content using an HTTP GET request is discouraged in <xref target="RFC9110"></xref>, there exist no generally defined semantics for content received in a GET request. When an RPP operation requires additional input data, the client MUST use the HTTP POST or PATCH method and add the content to the HTTP message body.</t>
+<t>A RPP client MAY use the HTTP GET method for informational requests only when no request data has to be added to the HTTP message body. Sending content using an HTTP GET request is discouraged in <xref target="RFC9110"></xref>, there exist no generally defined semantics for content received in a GET request. When an RPP operation requires additional input data, the client MUST use the HTTP POST, PUT or PATCH method and include any required data in the HTTP message body and HTTP headers.</t>
 
 <aside><t>TODO: the paragraph above looks like misplaced. Do we need it at all? The protocol defines if anything MAY be posted to the message body, so maybe this is a design consideration which does not belong to the final document?</t>
 </aside>
@@ -639,7 +640,7 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 
 <tr>
 <td><tt>&quot;update&quot;</tt></td>
-<td><tt>&quot;PATCH&quot;</tt></td>
+<td><tt>&quot;PUT or PATCH&quot;</tt></td>
 <td><tt>&quot;/{collection}/{id}&quot;</tt></td>
 </tr>
 
@@ -655,8 +656,7 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 <t>Each Process Object has a stable, <tt>&quot;Identifier&quot;</tt> (e.g. <tt>&quot;transferProcess&quot;</tt>, <tt>&quot;restoreProcess&quot;</tt>). The URL path segment for a process collection MUST be derived by applying the <tt>plural()</tt> function to the Process Object's <tt>&quot;Identifier&quot;</tt>. The path MUST be nested under its owner Data Object instance using the fixed <tt>&quot;processes&quot;</tt> keyword as an intermediate path segment.</t>
 
 <artwork><![CDATA[{process-collection} = plural(processObject.identifier)
-]]>
-</artwork>
+]]></artwork>
 <table>
 <thead>
 <tr>
@@ -815,7 +815,7 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 
 <tr>
 <td>Domain: update</td>
-<td><tt>&quot;PATCH&quot;</tt></td>
+<td><tt>&quot;PUT or PATCH&quot;</tt></td>
 <td><tt>&quot;/domainNames/{id}&quot;</tt></td>
 </tr>
 
@@ -839,7 +839,7 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 
 <tr>
 <td>Contact: update</td>
-<td><tt>&quot;PATCH&quot;</tt></td>
+<td><tt>&quot;PUT or PATCH&quot;</tt></td>
 <td><tt>&quot;/contacts/{id}&quot;</tt></td>
 </tr>
 
@@ -863,7 +863,7 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 
 <tr>
 <td>Host: update</td>
-<td><tt>&quot;PATCH&quot;</tt></td>
+<td><tt>&quot;PUT or PATCH&quot;</tt></td>
 <td><tt>&quot;/hosts/{id}&quot;</tt></td>
 </tr>
 
@@ -871,6 +871,54 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 <td>Host: delete</td>
 <td><tt>&quot;DELETE&quot;</tt></td>
 <td><tt>&quot;/hosts/{id}&quot;</tt></td>
+</tr>
+
+<tr>
+<td>Organisation: read</td>
+<td><tt>&quot;GET&quot;</tt></td>
+<td><tt>&quot;/organisations/{id}&quot;</tt></td>
+</tr>
+
+<tr>
+<td>Organisation: create</td>
+<td><tt>&quot;POST&quot;</tt></td>
+<td><tt>&quot;/organisations&quot;</tt></td>
+</tr>
+
+<tr>
+<td>Organisation: update</td>
+<td><tt>&quot;PATCH&quot;</tt></td>
+<td><tt>&quot;/organisations/{id}&quot;</tt></td>
+</tr>
+
+<tr>
+<td>Organisation: delete</td>
+<td><tt>&quot;DELETE&quot;</tt></td>
+<td><tt>&quot;/organisations/{id}&quot;</tt></td>
+</tr>
+
+<tr>
+<td>User: read</td>
+<td><tt>&quot;GET&quot;</tt></td>
+<td><tt>&quot;/organisations/{id}/users/{userId}&quot;</tt></td>
+</tr>
+
+<tr>
+<td>User: create</td>
+<td><tt>&quot;POST&quot;</tt></td>
+<td><tt>&quot;/organisations/{id}/users&quot;</tt></td>
+</tr>
+
+<tr>
+<td>User: update</td>
+<td><tt>&quot;PATCH&quot;</tt></td>
+<td><tt>&quot;/organisations/{id}/users/{userId}&quot;</tt></td>
+</tr>
+
+<tr>
+<td>User: delete</td>
+<td><tt>&quot;DELETE&quot;</tt></td>
+<td><tt>&quot;/organisations/{id}/users/{userId}&quot;</tt></td>
 </tr>
 
 <tr>
@@ -964,8 +1012,7 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 <artwork><![CDATA[- Request: HEAD|GET {collection}/{id}/availability
 - Request message: None
 - Response message: Optional availability response
-]]>
-</artwork>
+]]></artwork>
 <t>Example request for a domain name that is not available for provisioning:</t>
 
 <sourcecode type="http"><![CDATA[HEAD domains/foo.example/availability HTTP/2
@@ -974,8 +1021,7 @@ Authorization: Bearer <token>
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 404 Not Found
@@ -986,8 +1032,7 @@ RPP-Svtrid: XYZ-12345
 RPP-code: 01000
 Content-Length: 0
 
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="resource-information"><name>Resource Information</name>
@@ -1001,8 +1046,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example request using RPP-Authorization header for an object that has attached authorization information:</t>
 
 <sourcecode type="http"><![CDATA[GET /rpp/v1/domainNames/foo.example HTTP/2
@@ -1013,8 +1057,7 @@ Accept-Language: en
 RPP-Cltrid: ABC-12345
 RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example Info response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1026,20 +1069,12 @@ Content-Language: en
 RPP-code: 01000
 
 TODO: JSON message here
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
-<section anchor="poll-for-messages"><name>Poll for Messages</name>
-<t>The messages endpoint is used for retrieving messages stored on the server for the client to process.</t>
-
-<ul spacing="compact">
-<li>Request: GET /messages</li>
-<li>Request message: None</li>
-<li>Response message: Poll response</li>
-</ul>
-<t>The client MUST use the HTTP GET method on the messages resource collection to request the message at the head of the queue.</t>
-<t>Example Domain Create request:</t>
+<section anchor="create-resource"><name>Create Resource</name>
+<t>The client MUST use the HTTP POST method on a resource identifying a collection of object instances (Rule 2, <tt>create</tt> operation).</t>
+<t>Example Domain Create request for a new domain name <tt>foo.example</tt>:</t>
 
 <sourcecode type="http"><![CDATA[POST /rpp/v1/domainNames HTTP/2
 Host: rpp.example
@@ -1050,9 +1085,8 @@ Accept-Language: en
 Content-Length: 220
 
 TODO
-]]>
-</sourcecode>
-<t>Example Domain Create response:</t>
+]]></sourcecode>
+<t>Example Domain Create response for a new domain name <tt>foo.example</tt>:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 201 Created
 Date: Wed, 24 Jan 2024 12:00:00 UTC
@@ -1064,8 +1098,7 @@ Location: https://rpp.example/rpp/v1/domainNames/foo.example
 RPP-code: 01000
 
 TODO
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="delete-resource"><name>Delete Resource</name>
@@ -1079,8 +1112,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example Domain Delete response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1092,14 +1124,48 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="update-resource"><name>Update Resource</name>
-<t>An object Update request MUST be performed using the HTTP PATCH method (Rule 2, <tt>update</tt> operation). The request message body MUST contain an Update message.</t>
-<t><strong>TODO:</strong> when using JSON, also allow for JSON patch so client can send partial update data only?</t>
-<t>Example request:</t>
+<t>RPP supports two complementary update operations for modifying an existing object instance, each with its own semantics and use cases:</t>
+
+<ul>
+<li><t><strong>Full update</strong> (HTTP PUT): The client sends a complete replacement representation of the object. The server MUST replace the stored object with the provided representation. Any attributes not present in the request body MUST be treated as absent and cleared or reset to their default values, subject to server policy. The client MUST send all read-write attributes required by the data model, not just the changed ones. The client MUST not send any create-only attributes.</t>
+</li>
+<li><t><strong>Partial update</strong> (HTTP PATCH): The client sends only the attributes to be modified. The server MUST apply only the changes indicated in the request body and leave all other attributes unchanged. Data representation of the partial update payload determines how the changes are transmitted between client and server and applied to the data object.
+The client MAY send changes to any read-write attributes defined in the data model. The client MUST not send any create-only attributes.</t>
+</li>
+</ul>
+<t>Both operations MUST be performed on a URL identifying a unique object instance (Rule 2). The request body MUST contain a valid object representation in the negotiated media type.</t>
+<t>The server MUST respond with HTTP status code 200 (OK) and include the updated object representation in the response body.</t>
+<t>Example full update request (PUT):</t>
+
+<sourcecode type="http"><![CDATA[PUT /rpp/v1/domainNames/foo.example HTTP/2
+Host: rpp.example
+Authorization: Bearer <token>
+Accept: application/rpp+json
+Content-Type: application/rpp+json
+Accept-Language: en
+RPP-Cltrid: ABC-12345
+Content-Length: 252
+
+TODO
+]]></sourcecode>
+<t>Example full update response:</t>
+
+<sourcecode type="http"><![CDATA[HTTP/2 200 OK
+Date: Wed, 24 Jan 2024 12:00:00 UTC
+Server: Example RPP server v1.0
+Content-Length: 80
+Content-Type: application/rpp+json
+RPP-Svtrid: XYZ-12345
+RPP-Cltrid: ABC-12345
+RPP-code: 01000
+
+TODO
+]]></sourcecode>
+<t>Example partial update request (PATCH):</t>
 
 <sourcecode type="http"><![CDATA[PATCH /rpp/v1/domainNames/foo.example HTTP/2
 Host: rpp.example
@@ -1107,24 +1173,24 @@ Authorization: Bearer <token>
 Accept: application/rpp+json
 Content-Type: application/rpp+json
 Accept-Language: en
+RPP-Cltrid: ABC-12345
 Content-Length: 252
 
 TODO
-]]>
-</sourcecode>
-<t>Example response:</t>
+]]></sourcecode>
+<t>Example partial update response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Length: 80
+Content-Type: application/rpp+json
 RPP-Svtrid: XYZ-12345
 RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="processes"><name>Processes</name>
@@ -1132,7 +1198,7 @@ TODO
 <t>All process resources MUST exist under the <tt>/{collection}/{id}/processes/{process-collection}</tt> path, where <tt>{process-collection}</tt> is derived per Rule 3.</t>
 
 <section anchor="relation-to-object-representation"><name>Relation to object representation</name>
-<t>In certain situations a resource creation may require additional process data or implicitly start an asynchronous process with its own inputs, lifecycle and state. In these cases, the representation sent to the server MAY contain a combination of object data and process-related data. For example, a domain create request contains domain representation data which will be stored with the domain object, and domain creation process data such as registration duration or price, which is part of the creation process data but not directly stored with the domain object.</t>
+<t>A uniform interface operation MAY require additional process data or implicitly start an asynchronous process with its own inputs, lifecycle and state. In these cases, the representation sent to the server MAY contain a combination of object data and process-related data. For example, a domain create request contains domain representation data which will be stored with the domain object, and domain creation process data such as registration duration or price, which is part of the creation process data but not directly stored with the domain object. How the embedding of process data into the object representation is done exactly MUST be defined in the corresponding representation specification.</t>
 <t>For the process data in the message body to be distinct and consistent with the URL path structure, it MUST be enclosed in the <tt>@processes/{process-collection}</tt> JSON path when transmitted with the object's representation.</t>
 <t>Structure:</t>
 
@@ -1147,9 +1213,9 @@ TODO
     }
     ...
 }
-]]>
-</artwork>
-<t>Example: Domain Create request with 2-year registration, where <tt>createProcess</tt> is derived from the <tt>createProcess</tt> object identifier per Rule 3:</t>
+]]></artwork>
+<t>When the server creates a process object as a result of the operation, it MUST return the URL of the created process resource using the <tt>Link</tt> response header with <tt>rel=&quot;rpp-process&quot;</tt> (see <xref target="response-headers"></xref>).</t>
+<t>Example: Domain Create request with 2-year registration, where <tt>createProcesses</tt> is derived from the <tt>createProcess</tt> object identifier per Rule 3:</t>
 
 <aside><t>TODO: createProcess needs to be added to Data Objects</t>
 </aside>
@@ -1164,15 +1230,32 @@ Content-Length: 220
 
 {
     "name": "foo.example",
-    "processes": {
-        "createProcess": {
+    "@processes": {
+        "createProcesses": {
             "period": { "value": 2, "unit": "y" }
         }
     }
 }
-]]>
-</sourcecode>
+]]></sourcecode>
+<t>Example: Domain Create response where a <tt>createProcess</tt> object was implicitly created:</t>
+
+<sourcecode type="http"><![CDATA[HTTP/2 201 Created
+Date: Wed, 24 Jan 2024 12:00:00 UTC
+Server: Example RPP server v1.0
+Content-Language: en
+Content-Type: application/rpp+json
+Location: https://rpp.example/rpp/v1/domainNames/foo.example
+Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process"
+RPP-code: 01000
+
+TODO
+]]></sourcecode>
 </section>
+
+<section anchor="restore-resource"><name>Restore Resource</name>
+
+<aside><t>TODO: this needs update once restoreProcess is defined in Data Objects</t>
+</aside>
 </section>
 
 <section anchor="renew-resource"><name>Renew Resource</name>
@@ -1198,8 +1281,7 @@ Accept-Language: en
 Content-Length: 210
 
 TODO: add renew request data here
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example Renew response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 201 Created
@@ -1214,10 +1296,10 @@ Content-Type: application/rpp+json
 RPP-code: 01000
 
 TODO add renew response data here
-]]>
-</sourcecode>
+]]></sourcecode>
+</section>
 
-<section anchor="transfer"><name>Transfer</name>
+<section anchor="transfer-resource"><name>Transfer Resource</name>
 <t>The Transfer operation manages the change of sponsoring client for a provisioned object. Transfer is modelled as a Process Object with its own lifecycle. The <tt>transferProcess</tt> object identifier yields the <tt>transferProcesses</tt> collection segment per Rule 3.</t>
 
 <section anchor="start"><name>Start</name>
@@ -1237,8 +1319,7 @@ Content-Length: 320
   "gainingClientId": "ClientX"
 }
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example request using object authorization:</t>
 
 <sourcecode type="http"><![CDATA[POST /rpp/v1/domainNames/foo.example/processes/transferProcesses HTTP/2
@@ -1254,8 +1335,7 @@ Content-Length: 320
     "transferDir": "pull"
 }
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example Transfer response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 201 Created
@@ -1275,8 +1355,7 @@ RPP-code: 01001
   "actionDate": "2000-06-11T22:00:00.0Z",
   "exDate": "2002-09-08T22:00:00.0Z"
 }
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="status"><name>Status</name>
@@ -1290,14 +1369,10 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]>
-</sourcecode>
+]]></sourcecode>
+<t>Example Transfer Query response:</t>
 
-<artwork><![CDATA[
-Example Transfer Query response:
-
-```http
-HTTP/2 200 OK
+<sourcecode type="http"><![CDATA[HTTP/2 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Length: 230
@@ -1313,8 +1388,7 @@ RPP-code: 01000
   "actionDate": "2000-06-11T22:00:00.0Z",
   "exDate": "2002-09-08T22:00:00.0Z"
 }
-]]>
-</artwork>
+]]></sourcecode>
 </section>
 
 <section anchor="cancel"><name>Cancel</name>
@@ -1328,8 +1402,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1347,8 +1420,7 @@ RPP-code: 01000
   "requestDate": "2000-06-06T22:00:00.0Z",
   "actionDate": "2000-06-11T22:00:00.0Z"
 }
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="reject"><name>Reject</name>
@@ -1362,8 +1434,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1382,8 +1453,7 @@ RPP-code: 01000
   "actionDate": "2000-06-11T22:00:00.0Z"
 }
 
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="approve"><name>Approve</name>
@@ -1398,8 +1468,7 @@ Accept-Language: en
 RPP-Cltrid: ABC-12345
 Content-Length: 0
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1417,13 +1486,15 @@ RPP-code: 01000
   "requestDate": "2000-06-06T22:00:00.0Z",
   "actionDate": "2000-06-11T22:00:00.0Z"
 }
-]]>
-</sourcecode>
+]]></sourcecode>
+</section>
 </section>
 </section>
 </section>
 
-<section anchor="poll-for-messages-1"><name>Poll for Messages</name>
+<section anchor="messages-1"><name>Messages</name>
+
+<section anchor="retrieve"><name>Retrieve</name>
 
 <aside><t>TODO: update when covered in data objects</t>
 </aside>
@@ -1444,8 +1515,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1457,11 +1527,10 @@ Content-Language: en
 RPP-code: 01301
 
 TODO
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
-<section anchor="delete-message"><name>Delete Message</name>
+<section anchor="delete"><name>Delete</name>
 
 <aside><t>TODO: update when covered in data objects</t>
 </aside>
@@ -1481,8 +1550,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1496,8 +1564,7 @@ RPP-Cltrid: ABC-12345
 Content-Length: 145
 
 TODO
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 </section>
 
@@ -1555,8 +1622,7 @@ TODO: add filled in template, if we decide to use URN for profile identification
 Specification: This Document
 Repository: ?
 Index value: ?
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="rpp-registry-group"><name>RPP registry group</name>
@@ -1565,8 +1631,7 @@ Index value: ?
 <sourcecode type="text"><![CDATA[Name of the registry: RESTful Provisioning Protocol (RPP)
 Reference: This Document
 IANA Registry Reference: TODO
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="rpp-discovery-registry"><name>RPP Discovery registry</name>
@@ -1575,8 +1640,7 @@ IANA Registry Reference: TODO
 <sourcecode type="text"><![CDATA[Name of the registry: RPP Discovery URLs
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Fields to be registered:</t>
 
 <ul spacing="compact">
@@ -1592,8 +1656,7 @@ Registration procedure: Expert Review
 <sourcecode type="text"><![CDATA[Name of the registry: RPP Extensions
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Fields to be registered:</t>
 
 <ul spacing="compact">
@@ -1610,8 +1673,7 @@ Registration procedure: Expert Review
 <sourcecode type="text"><![CDATA[Name of the registry: RPP Profiles
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Fields to be registered:</t>
 
 <ul spacing="compact">
@@ -1629,14 +1691,26 @@ Registration procedure: Expert Review
 <sourcecode type="text"><![CDATA[Name of the registry: RPP Result codes
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Fields to be registered:</t>
 
 <ul spacing="compact">
 <li><tt>code</tt>: The RPP result code, for example &quot;12000&quot;.</li>
 <li><tt>description</tt>: A human-readable description of the result code and its intended use.</li>
 </ul>
+</section>
+
+<section anchor="link-relation-type-rpp-process"><name>Link Relation Type: rpp-process</name>
+<t>The IANA is requested to register the following link relation type in the &quot;Link Relation Types&quot; registry, following the template in <xref target="RFC8288"></xref>:</t>
+
+<sourcecode type="text"><![CDATA[Relation Name: rpp-process
+Description:   Identifies a process resource that was implicitly created as a
+               side effect of a uniform interface operation on the target
+               resource.  The context resource is the provisioning object on
+               which the operation was performed; the target resource is the
+               created process instance.
+Reference:     This document
+]]></sourcecode>
 </section>
 
 <section anchor="rpp-media-type-application-rpp-json"><name>RPP Media Type (application/rpp+json)</name>
@@ -1659,8 +1733,7 @@ Restrictions on usage: "N/A"
 Author: Document authors
 Change controller: Document authors
 Provisional registration: No
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 </section>
 
@@ -1674,6 +1747,16 @@ Provisional registration: No
 </section>
 
 <section anchor="change-history"><name>Change History</name>
+
+<section anchor="version-05-to-06"><name>Version 05 to 06</name>
+
+<ul spacing="compact">
+<li>Added Organisation and User resource type, with create, read, update and delete operations. (Issue #67)</li>
+<li>Added section about Mapping to EPP. (Issue #55)</li>
+<li>Described full and partial update operations, using HTTP PUT and PATCH methods respectively. (Issue #21)</li>
+<li>Added support for embedding process data in uniform interface operations: the <tt>@processes/{process-collection}</tt> JSON structure carries process input alongside the object representation, and the server returns the created process resource URL via the <tt>Link</tt> response header with <tt>rel=&quot;rpp-process&quot;</tt>. Registered the <tt>rpp-process</tt> link relation type with IANA.</li>
+</ul>
+</section>
 
 <section anchor="version-04-to-05"><name>Version 04 to 05</name>
 
@@ -1772,6 +1855,7 @@ Provisional registration: No
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6838.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7519.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7617.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8288.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8446.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8725.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8941.xml"/>
