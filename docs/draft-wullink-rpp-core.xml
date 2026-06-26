@@ -1099,6 +1099,19 @@ RPP-code: 01000
 
 TODO
 ]]></sourcecode>
+<t>Example Domain Create response where a <tt>createProcess</tt> object was implicitly created:</t>
+
+<sourcecode type="http"><![CDATA[HTTP/2 201 Created
+Date: Wed, 24 Jan 2024 12:00:00 UTC
+Server: Example RPP server v1.0
+Content-Language: en
+Content-Type: application/rpp+json
+Location: https://rpp.example/rpp/v1/domainNames/foo.example
+Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process"
+RPP-code: 01000
+
+TODO
+]]></sourcecode>
 </section>
 
 <section anchor="delete-resource"><name>Delete Resource</name>
@@ -1198,58 +1211,11 @@ TODO
 <t>All process resources MUST exist under the <tt>/{collection}/{id}/processes/{process-collection}</tt> path, where <tt>{process-collection}</tt> is derived per Rule 3.</t>
 
 <section anchor="relation-to-object-representation"><name>Relation to object representation</name>
-<t>A uniform interface operation MAY require additional process data or implicitly start an asynchronous process with its own inputs, lifecycle and state. In these cases, the representation sent to the server MAY contain a combination of object data and process-related data. For example, a domain create request contains domain representation data which will be stored with the domain object, and domain creation process data such as registration duration or price, which is part of the creation process data but not directly stored with the domain object. How the embedding of process data into the object representation is done exactly MUST be defined in the corresponding representation specification.</t>
-<t>For the process data in the message body to be distinct and consistent with the URL path structure, it MUST be enclosed in the <tt>@processes/{process-collection}</tt> JSON path when transmitted with the object's representation.</t>
-<t>Structure:</t>
+<t>A uniform interface operation MAY require process data in addition to the object representation data. How the process data is embedded in the request body MUST be defined in the corresponding representation specification.</t>
+</section>
 
-<artwork><![CDATA[POST /{collection}
-...
-{
-    ... object data ...
-    "@processes": {
-        "{process-collection}": {
-            ... process data ...
-        }
-    }
-    ...
-}
-]]></artwork>
-<t>When the server creates a process object as a result of the operation, it MUST return the URL of the created process resource using the <tt>Link</tt> response header with <tt>rel=&quot;rpp-process&quot;</tt> (see <xref target="response-headers"></xref>).</t>
-<t>Example: Domain Create request with 2-year registration, where <tt>createProcesses</tt> is derived from the <tt>createProcess</tt> object identifier per Rule 3:</t>
-
-<aside><t>TODO: createProcess needs to be added to Data Objects</t>
-</aside>
-
-<sourcecode type="http"><![CDATA[POST /rpp/v1/domainNames HTTP/2
-Host: rpp.example
-Authorization: Bearer <token>
-Accept: application/rpp+json
-Content-Type: application/rpp+json
-Accept-Language: en
-Content-Length: 220
-
-{
-    "name": "foo.example",
-    "@processes": {
-        "createProcesses": {
-            "period": { "value": 2, "unit": "y" }
-        }
-    }
-}
-]]></sourcecode>
-<t>Example: Domain Create response where a <tt>createProcess</tt> object was implicitly created:</t>
-
-<sourcecode type="http"><![CDATA[HTTP/2 201 Created
-Date: Wed, 24 Jan 2024 12:00:00 UTC
-Server: Example RPP server v1.0
-Content-Language: en
-Content-Type: application/rpp+json
-Location: https://rpp.example/rpp/v1/domainNames/foo.example
-Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process"
-RPP-code: 01000
-
-TODO
-]]></sourcecode>
+<section anchor="response-with-information-about-created-process"><name>Response with information about created process</name>
+<t>When the server creates a process object as a side effect of the operation, it MUST return the URL of the created process resource in the <tt>Link</tt> response header <xref target="RFC8288"></xref> with <tt>rel=&quot;rpp-process&quot;</tt>. If multiple process objects are created, the server MUST include one <tt>Link</tt> header field per created process resource.</t>
 </section>
 
 <section anchor="restore-resource"><name>Restore Resource</name>
