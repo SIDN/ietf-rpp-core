@@ -1377,6 +1377,9 @@ li > p:last-of-type:only-child {
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.3.2.2">
                     <p id="section-toc.1-1.13.2.3.2.2.1"><a href="#section-13.3.2" class="auto internal xref">13.3.2</a>.  <a href="#name-media-type-parameter-signal" class="internal xref">Media type parameter signalling</a></p>
 </li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.3.2.3">
+                    <p id="section-toc.1-1.13.2.3.2.3.1"><a href="#section-13.3.3" class="auto internal xref">13.3.3</a>.  <a href="#name-process-signalling" class="internal xref">Process signalling</a></p>
+</li>
                 </ul>
 </li>
             </ul>
@@ -1672,7 +1675,7 @@ For RPP result codes the leading digit MUST be "1". For avoidance of confusion R
           <code>RPP-Queue-Size</code>: Return the number of unacknowledged messages in the client message queue. The server MAY include this header in all RPP responses.<a href="#section-6-7.1" class="pilcrow">¶</a>
 </li>
       </ul>
-<p id="section-6-8">When a uniform interface operation implicitly creates a process object as a side effect (e.g., a domain create that starts a <code>createProcess</code>), the server MUST communicate the URL of the created process resource using the <code>Link</code> response header <span>[<a href="#RFC8288" class="cite xref">RFC8288</a>]</span> with the <code>rpp-process</code> relation type. If multiple process objects are created, the server MUST include one <code>Link</code> header field per created process resource, each with <code>rel="rpp-process"</code>.<a href="#section-6-8" class="pilcrow">¶</a></p>
+<p id="section-6-8">When a uniform interface operation implicitly creates a process object as a side effect, the server MUST communicate the URL of the created process resource using the <code>Link</code> response header <span>[<a href="#RFC8288" class="cite xref">RFC8288</a>]</span> with the <code>rpp-process</code> relation type. If multiple process objects are created, the server MUST include one <code>Link</code> header field per created process resource, each with <code>rel="rpp-process"</code>.<a href="#section-6-8" class="pilcrow">¶</a></p>
 <p id="section-6-9">Example:<a href="#section-6-9" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-6-10">
 <pre>Link: &lt;https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest&gt;; rel="rpp-process"
@@ -2289,6 +2292,31 @@ version           = 1*DIGIT "." 1*DIGIT
 <pre>Accept: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
 Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
 </pre><a href="#section-13.3.2-6" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="process-signalling">
+<section id="section-13.3.3">
+          <h4 id="name-process-signalling">
+<a href="#section-13.3.3" class="section-number selfRef">13.3.3. </a><a href="#name-process-signalling" class="section-name selfRef">Process signalling</a>
+          </h4>
+<p id="section-13.3.3-1">When a server creates a process resource as a side effect of a uniform interface operation, it signals this to the client using the <code>Link</code> response header <span>[<a href="#RFC8288" class="cite xref">RFC8288</a>]</span> with <code>rel="rpp-process"</code>. The following target attributes are defined for this relation type:<a href="#section-13.3.3-1" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="section-13.3.3-2.1">
+              <code>process</code>: (REQUIRED) The process object identifier of the created process (e.g. <code>process="transferProcess"</code>).<a href="#section-13.3.3-2.1" class="pilcrow">¶</a>
+</li>
+            <li class="compact" id="section-13.3.3-2.2">
+              <code>processId</code>: (OPTIONAL) The server-assigned persistent identifier of the created process instance (e.g. <code>processId="XYZ-12345"</code>). If the server assigns a persistent identifier, this attribute MUST be included.<a href="#section-13.3.3-2.2" class="pilcrow">¶</a>
+</li>
+            <li class="compact" id="section-13.3.3-2.3">
+              <code>latest</code>: (OPTIONAL) The boolean value <code>"true"</code>, indicating that the target URL is the latest process created of a given type. The target URL MAY use the <code>"latest"</code> mnemonic rather than a specific process identifier. There MUST NOT be more than one process of a given type with this attribute set to <code>"true"</code>.<a href="#section-13.3.3-2.3" class="pilcrow">¶</a>
+</li>
+          </ul>
+<p id="section-13.3.3-3">If multiple process objects are created, the server MUST include one <code>Link</code> header field per created process resource.<a href="#section-13.3.3-3" class="pilcrow">¶</a></p>
+<p id="section-13.3.3-4">Example:<a href="#section-13.3.3-4" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-13.3.3-5">
+<pre>Link: &lt;https://rpp.example/rpp/v1/domainNames/foo.example/processes/transferProcesses/XYZ-12345&gt;; rel="rpp-process"; process="transferProcess"; processId="XYZ-12345"; latest=true
+</pre><a href="#section-13.3.3-5" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
@@ -3242,7 +3270,7 @@ TODO
           <h4 id="name-response-with-information-a">
 <a href="#section-14.8.2" class="section-number selfRef">14.8.2. </a><a href="#name-response-with-information-a" class="section-name selfRef">Response with information about created process</a>
           </h4>
-<p id="section-14.8.2-1">When the server creates a process object as a side effect of the operation, it MUST return the URL of the created process resource in the <code>Link</code> response header <span>[<a href="#RFC8288" class="cite xref">RFC8288</a>]</span> with <code>rel="rpp-process"</code>. If multiple process objects are created, the server MUST include one <code>Link</code> header field per created process resource.<a href="#section-14.8.2-1" class="pilcrow">¶</a></p>
+<p id="section-14.8.2-1">When the server creates a process object as a side effect of the operation, it MUST signal this to the client as described in <a href="#process-signalling" class="auto internal xref">Section 13.3.3</a>.<a href="#section-14.8.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="restore-resource">
@@ -3847,7 +3875,12 @@ Description:   Identifies a process resource that was implicitly created as a
                side effect of a uniform interface operation on the target
                resource.  The context resource is the provisioning object on
                which the operation was performed; the target resource is the
-               created process instance.
+               created process instance.  The following target attributes are
+               defined for this relation type: "process" (the Process Object
+               Identifier, REQUIRED), "processId" (the server-assigned process
+               instance identifier, OPTIONAL), and "latest" (the boolean value
+               "true", OPTIONAL, indicating the target URL uses the "latest"
+               mnemonic).
 Reference:     This document
 </pre><a href="#section-19.7-2" class="pilcrow">¶</a>
 </div>
@@ -3917,7 +3950,7 @@ Provisional registration: No
 </li>
           <li class="compact" id="section-22.1-1.3">Described full and partial update operations, using HTTP PUT and PATCH methods respectively. (Issue #21)<a href="#section-22.1-1.3" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-22.1-1.4">Added support for embedding process data in uniform interface operations: the <code>@processes/{process-collection}</code> JSON structure carries process input alongside the object representation, and the server returns the created process resource URL via the <code>Link</code> response header with <code>rel="rpp-process"</code>. Registered the <code>rpp-process</code> link relation type with IANA.<a href="#section-22.1-1.4" class="pilcrow">¶</a>
+          <li class="compact" id="section-22.1-1.4">Added support for embedding process data in uniform interface operations. Registered the <code>rpp-process</code> link relation type with IANA.<a href="#section-22.1-1.4" class="pilcrow">¶</a>
 </li>
         </ul>
 </section>

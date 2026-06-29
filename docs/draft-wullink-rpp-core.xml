@@ -95,7 +95,7 @@ For RPP result codes the leading digit MUST be &quot;1&quot;. For avoidance of c
 <ul spacing="compact">
 <li><tt>RPP-Queue-Size</tt>: Return the number of unacknowledged messages in the client message queue. The server MAY include this header in all RPP responses.</li>
 </ul>
-<t>When a uniform interface operation implicitly creates a process object as a side effect (e.g., a domain create that starts a <tt>createProcess</tt>), the server MUST communicate the URL of the created process resource using the <tt>Link</tt> response header <xref target="RFC8288"></xref> with the <tt>rpp-process</tt> relation type. If multiple process objects are created, the server MUST include one <tt>Link</tt> header field per created process resource, each with <tt>rel=&quot;rpp-process&quot;</tt>.</t>
+<t>When a uniform interface operation implicitly creates a process object as a side effect, the server MUST communicate the URL of the created process resource using the <tt>Link</tt> response header <xref target="RFC8288"></xref> with the <tt>rpp-process</tt> relation type. If multiple process objects are created, the server MUST include one <tt>Link</tt> header field per created process resource, each with <tt>rel=&quot;rpp-process&quot;</tt>.</t>
 <t>Example:</t>
 
 <artwork><![CDATA[Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process"
@@ -557,6 +557,21 @@ version           = 1*DIGIT "." 1*DIGIT
 
 <sourcecode type="http"><![CDATA[Accept: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
 Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
+]]></sourcecode>
+</section>
+
+<section anchor="process-signalling"><name>Process signalling</name>
+<t>When a server creates a process resource as a side effect of a uniform interface operation, it signals this to the client using the <tt>Link</tt> response header <xref target="RFC8288"></xref> with <tt>rel=&quot;rpp-process&quot;</tt>. The following target attributes are defined for this relation type:</t>
+
+<ul spacing="compact">
+<li><tt>process</tt>: (REQUIRED) The process object identifier of the created process (e.g. <tt>process=&quot;transferProcess&quot;</tt>).</li>
+<li><tt>processId</tt>: (OPTIONAL) The server-assigned persistent identifier of the created process instance (e.g. <tt>processId=&quot;XYZ-12345&quot;</tt>). If the server assigns a persistent identifier, this attribute MUST be included.</li>
+<li><tt>latest</tt>: (OPTIONAL) The boolean value <tt>&quot;true&quot;</tt>, indicating that the target URL is the latest process created of a given type. The target URL MAY use the <tt>&quot;latest&quot;</tt> mnemonic rather than a specific process identifier. There MUST NOT be more than one process of a given type with this attribute set to <tt>&quot;true&quot;</tt>.</li>
+</ul>
+<t>If multiple process objects are created, the server MUST include one <tt>Link</tt> header field per created process resource.</t>
+<t>Example:</t>
+
+<sourcecode type="http"><![CDATA[Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/transferProcesses/XYZ-12345>; rel="rpp-process"; process="transferProcess"; processId="XYZ-12345"; latest=true
 ]]></sourcecode>
 </section>
 </section>
@@ -1215,7 +1230,7 @@ TODO
 </section>
 
 <section anchor="response-with-information-about-created-process"><name>Response with information about created process</name>
-<t>When the server creates a process object as a side effect of the operation, it MUST return the URL of the created process resource in the <tt>Link</tt> response header <xref target="RFC8288"></xref> with <tt>rel=&quot;rpp-process&quot;</tt>. If multiple process objects are created, the server MUST include one <tt>Link</tt> header field per created process resource.</t>
+<t>When the server creates a process object as a side effect of the operation, it MUST signal this to the client as described in <xref target="process-signalling"></xref>.</t>
 </section>
 
 <section anchor="restore-resource"><name>Restore Resource</name>
@@ -1674,7 +1689,12 @@ Description:   Identifies a process resource that was implicitly created as a
                side effect of a uniform interface operation on the target
                resource.  The context resource is the provisioning object on
                which the operation was performed; the target resource is the
-               created process instance.
+               created process instance.  The following target attributes are
+               defined for this relation type: "process" (the Process Object
+               Identifier, REQUIRED), "processId" (the server-assigned process
+               instance identifier, OPTIONAL), and "latest" (the boolean value
+               "true", OPTIONAL, indicating the target URL uses the "latest"
+               mnemonic).
 Reference:     This document
 ]]></sourcecode>
 </section>
@@ -1720,7 +1740,7 @@ Provisional registration: No
 <li>Added Organisation and User resource type, with create, read, update and delete operations. (Issue #67)</li>
 <li>Added section about Mapping to EPP. (Issue #55)</li>
 <li>Described full and partial update operations, using HTTP PUT and PATCH methods respectively. (Issue #21)</li>
-<li>Added support for embedding process data in uniform interface operations: the <tt>@processes/{process-collection}</tt> JSON structure carries process input alongside the object representation, and the server returns the created process resource URL via the <tt>Link</tt> response header with <tt>rel=&quot;rpp-process&quot;</tt>. Registered the <tt>rpp-process</tt> link relation type with IANA.</li>
+<li>Added support for embedding process data in uniform interface operations. Registered the <tt>rpp-process</tt> link relation type with IANA.</li>
 </ul>
 </section>
 

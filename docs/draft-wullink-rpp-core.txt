@@ -84,13 +84,14 @@ Table of Contents
      13.3.  Signalling . . . . . . . . . . . . . . . . . . . . . . .  21
        13.3.1.  Header signalling  . . . . . . . . . . . . . . . . .  21
        13.3.2.  Media type parameter signalling  . . . . . . . . . .  21
+       13.3.3.  Process signalling . . . . . . . . . . . . . . . . .  22
    14. Endpoints . . . . . . . . . . . . . . . . . . . . . . . . . .  22
-     14.1.  HTTP Mapping Rules . . . . . . . . . . . . . . . . . . .  22
-       14.1.1.  Rule 1: Collection Path Segment  . . . . . . . . . .  22
+     14.1.  HTTP Mapping Rules . . . . . . . . . . . . . . . . . . .  23
+       14.1.1.  Rule 1: Collection Path Segment  . . . . . . . . . .  23
        14.1.2.  Rule 2: Uniform Interface Operations . . . . . . . .  23
        14.1.3.  Rule 3: Process Object Collection Path Segment . . .  24
-       14.1.4.  Rule 4: Process Uniform Interface Operations . . . .  24
-       14.1.5.  Rule 5: Extended Process Operations  . . . . . . . .  25
+       14.1.4.  Rule 4: Process Uniform Interface Operations . . . .  25
+       14.1.5.  Rule 5: Extended Process Operations  . . . . . . . .  26
        14.1.6.  Rule 6: Process Listing  . . . . . . . . . . . . . .  26
      14.2.  Derived Endpoint Reference . . . . . . . . . . . . . . .  27
      14.3.  Availability for Creation  . . . . . . . . . . . . . . .  29
@@ -105,7 +106,6 @@ Table of Contents
        14.8.4.  Renew Resource . . . . . . . . . . . . . . . . . . .  35
        14.8.5.  Transfer Resource  . . . . . . . . . . . . . . . . .  36
          14.8.5.1.  Start  . . . . . . . . . . . . . . . . . . . . .  36
-         14.8.5.2.  Status . . . . . . . . . . . . . . . . . . . . .  38
 
 
 
@@ -114,6 +114,7 @@ Wullink & Kowalik       Expires 16 September 2026               [Page 2]
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
+         14.8.5.2.  Status . . . . . . . . . . . . . . . . . . . . .  38
          14.8.5.3.  Cancel . . . . . . . . . . . . . . . . . . . . .  38
          14.8.5.4.  Reject . . . . . . . . . . . . . . . . . . . . .  39
          14.8.5.5.  Approve  . . . . . . . . . . . . . . . . . . . .  40
@@ -133,7 +134,7 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
      19.7.  Link Relation Type: rpp-process  . . . . . . . . . . . .  47
      19.8.  RPP Media Type (application/rpp+json)  . . . . . . . . .  47
    20. Internationalization Considerations . . . . . . . . . . . . .  47
-   21. Security Considerations . . . . . . . . . . . . . . . . . . .  47
+   21. Security Considerations . . . . . . . . . . . . . . . . . . .  48
    22. Change History  . . . . . . . . . . . . . . . . . . . . . . .  48
      22.1.  Version 05 to 06 . . . . . . . . . . . . . . . . . . . .  48
      22.2.  Version 04 to 05 . . . . . . . . . . . . . . . . . . . .  48
@@ -160,7 +161,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    The RPP API is designed to be used for the provisioning and
    management of objects in a shared database, such as domain names,
    hosts, and entities.
-
 
 
 
@@ -358,12 +358,11 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       all RPP responses.
 
    When a uniform interface operation implicitly creates a process
-   object as a side effect (e.g., a domain create that starts a
-   createProcess), the server MUST communicate the URL of the created
-   process resource using the Link response header [RFC8288] with the
-   rpp-process relation type.  If multiple process objects are created,
-   the server MUST include one Link header field per created process
-   resource, each with rel="rpp-process".
+   object as a side effect, the server MUST communicate the URL of the
+   created process resource using the Link response header [RFC8288]
+   with the rpp-process relation type.  If multiple process objects are
+   created, the server MUST include one Link header field per created
+   process resource, each with rel="rpp-process".
 
    Example:
 
@@ -381,6 +380,7 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
 
    The mapping strategy is to use the most specific HTTP code that
    accurately reflects the operation's result.
+
 
 
 
@@ -1191,11 +1191,48 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    Accept: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
    Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
 
+13.3.3.  Process signalling
+
+   When a server creates a process resource as a side effect of a
+   uniform interface operation, it signals this to the client using the
+   Link response header [RFC8288] with rel="rpp-process".  The following
+   target attributes are defined for this relation type:
+
+   -  process: (REQUIRED) The process object identifier of the created
+      process (e.g. process="transferProcess").
+   -  processId: (OPTIONAL) The server-assigned persistent identifier of
+      the created process instance (e.g. processId="XYZ-12345").  If the
+      server assigns a persistent identifier, this attribute MUST be
+      included.
+   -  latest: (OPTIONAL) The boolean value "true", indicating that the
+      target URL is the latest process created of a given type.  The
+      target URL MAY use the "latest" mnemonic rather than a specific
+      process identifier.  There MUST NOT be more than one process of a
+      given type with this attribute set to "true".
+
+   If multiple process objects are created, the server MUST include one
+   Link header field per created process resource.
+
+   Example:
+
+   Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/transferProcesses/XYZ-12345>; rel="rpp-process"; process="transferProcess"; processId="XYZ-12345"; latest=true
+
 14.  Endpoints
 
    Endpoints are described using URI Templates [RFC6570] relative to a
    discoverable base URL, as recommended by [RFC9205].  Some RPP
    endpoints do not require a request and/or response message.
+
+
+
+
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 22]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
 
 14.1.  HTTP Mapping Rules
 
@@ -1218,21 +1255,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    {collection} = plural(dataObject.identifier)
 
    Examples derived from current data object identifiers:
-
-
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 22]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
     +==========================+===================+==================+
     | Data Object "Identifier" | "plural()" result | URL collection   |
@@ -1260,6 +1282,14 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    only when no request data has to be added to the HTTP message body.
    Sending content using an HTTP GET request is discouraged in
    [RFC9110], there exist no generally defined semantics for content
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 23]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
    received in a GET request.  When an RPP operation requires additional
    input data, the client MUST use the HTTP POST, PUT or PATCH method
    and include any required data in the HTTP message body and HTTP
@@ -1269,26 +1299,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       |  at all?  The protocol defines if anything MAY be posted to the
       |  message body, so maybe this is a design consideration which
       |  does not belong to the final document?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 23]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
     +========================+================+======================+
     | Operation "Identifier" | HTTP Method    | URL path             |
@@ -1328,6 +1338,14 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
                                  Table 4
 
+
+
+
+Wullink & Kowalik       Expires 16 September 2026              [Page 24]
+
+Internet-Draft        RESTful Provisioning Protocol           March 2026
+
+
 14.1.4.  Rule 4: Process Uniform Interface Operations
 
    The same four uniform interface operations from Rule 2 apply to
@@ -1336,15 +1354,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    instance and make it addressable by this identifier.  The fixed
    keyword "latest" is used to address the most recent process instance
    when no specific process "{process-id}" is known or assigned.
-
-
-
-
-
-Wullink & Kowalik       Expires 16 September 2026              [Page 24]
-
-Internet-Draft        RESTful Provisioning Protocol           March 2026
-
 
     +==============+========+=========================================+
     | Operation    |HTTP    | URL path                                |
@@ -1382,15 +1391,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    If the server chooses not to expose any persistent process resource,
    it MUST return 200 OK instead of 201 Created.
 
-14.1.5.  Rule 5: Extended Process Operations
-
-   Operations on a Process Object beyond the uniform interface (e.g.
-   "transferApprove", "transferReject", "report") are mapped to sub-
-   resources of a specific process instance.  The operation's
-   "Identifier" is used unchanged as the final path segment.  The HTTP
-   method for all such extended operations MUST be POST.
-
-
 
 
 
@@ -1401,6 +1401,14 @@ Wullink & Kowalik       Expires 16 September 2026              [Page 25]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
+
+14.1.5.  Rule 5: Extended Process Operations
+
+   Operations on a Process Object beyond the uniform interface (e.g.
+   "transferApprove", "transferReject", "report") are mapped to sub-
+   resources of a specific process instance.  The operation's
+   "Identifier" is used unchanged as the final path segment.  The HTTP
+   method for all such extended operations MUST be POST.
 
    +=======================+======+=========================================+
    |Operation "Identifier" |HTTP  |URL path                                 |
@@ -1443,20 +1451,19 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    To retrieve all process instances of a given process type:
 
-   "GET /{collection}/{id}/processes/{process-collection}/"
-
-   To retrieve all process instances across all process types for an
-   object:
-
-   "GET /{collection}/{id}/processes/"
-
-
 
 
 Wullink & Kowalik       Expires 16 September 2026              [Page 26]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
+
+   "GET /{collection}/{id}/processes/{process-collection}/"
+
+   To retrieve all process instances across all process types for an
+   object:
+
+   "GET /{collection}/{id}/processes/"
 
    A server MAY choose not to implement these endpoints, in which case
    it MUST return 404 Not Found or 501 Not Implemented.
@@ -1499,13 +1506,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    |Host: delete   |"DELETE"|"/hosts/{id}"                                          |
    +---------------+--------+-------------------------------------------------------+
    |Organisation:  |"GET"   |"/organisations/{id}"                                  |
-   |read           |        |                                                       |
-   +---------------+--------+-------------------------------------------------------+
-   |Organisation:  |"POST"  |"/organisations"                                       |
-   |create         |        |                                                       |
-   +---------------+--------+-------------------------------------------------------+
-   |Organisation:  |"PATCH" |"/organisations/{id}"                                  |
-   |update         |        |                                                       |
 
 
 
@@ -1514,6 +1514,13 @@ Wullink & Kowalik       Expires 16 September 2026              [Page 27]
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
 
+   |read           |        |                                                       |
+   +---------------+--------+-------------------------------------------------------+
+   |Organisation:  |"POST"  |"/organisations"                                       |
+   |create         |        |                                                       |
+   +---------------+--------+-------------------------------------------------------+
+   |Organisation:  |"PATCH" |"/organisations/{id}"                                  |
+   |update         |        |                                                       |
    +---------------+--------+-------------------------------------------------------+
    |Organisation:  |"DELETE"|"/organisations/{id}"                                  |
    |delete         |        |                                                       |
@@ -1556,19 +1563,16 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    |Processes: list|"GET"   |"/{collection}/{id}/processes"                         |
    +---------------+--------+-------------------------------------------------------+
 
-                                  Table 8
-
-      |  TODO: add availability and message queue
-
-
-
-
 
 
 Wullink & Kowalik       Expires 16 September 2026              [Page 28]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
+
+                                  Table 8
+
+      |  TODO: add availability and message queue
 
 14.3.  Availability for Creation
 
@@ -1613,10 +1617,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    The server MUST respond with the same HTTP status code if the same
    URL is requested with HEAD and with GET.
 
-   - Request: HEAD|GET {collection}/{id}/availability
-   - Request message: None
-   - Response message: Optional availability response
-
 
 
 
@@ -1625,6 +1625,10 @@ Wullink & Kowalik       Expires 16 September 2026              [Page 29]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
+
+   - Request: HEAD|GET {collection}/{id}/availability
+   - Request message: None
+   - Response message: Optional availability response
 
    Example request for a domain name that is not available for
    provisioning:
@@ -1668,10 +1672,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    Example request using RPP-Authorization header for an object that has
    attached authorization information:
-
-
-
-
 
 
 
@@ -1938,10 +1938,8 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 14.8.2.  Response with information about created process
 
    When the server creates a process object as a side effect of the
-   operation, it MUST return the URL of the created process resource in
-   the Link response header [RFC8288] with rel="rpp-process".  If
-   multiple process objects are created, the server MUST include one
-   Link header field per created process resource.
+   operation, it MUST signal this to the client as described in
+   Section 13.3.3.
 
 14.8.3.  Restore Resource
 
@@ -1954,6 +1952,8 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       |  Objects
 
    -  Request: POST /{collection}/{id}/processes/renewalProcess
+   -  Request message: Renew request
+   -  Response message: Renew response
 
 
 
@@ -1961,9 +1961,6 @@ Wullink & Kowalik       Expires 16 September 2026              [Page 35]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
-
-   -  Request message: Renew request
-   -  Response message: Renew response
 
    Not every object resource includes support for the renew command.
    The response MUST include the Location header for the created renewal
@@ -2010,6 +2007,9 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    transfer process (Rule 4, create).
 
    Example request not using object authorization:
+
+
+
 
 
 
@@ -2589,7 +2589,12 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
                   side effect of a uniform interface operation on the target
                   resource.  The context resource is the provisioning object on
                   which the operation was performed; the target resource is the
-                  created process instance.
+                  created process instance.  The following target attributes are
+                  defined for this relation type: "process" (the Process Object
+                  Identifier, REQUIRED), "processId" (the server-assigned process
+                  instance identifier, OPTIONAL), and "latest" (the boolean value
+                  "true", OPTIONAL, indicating the target URL uses the "latest"
+                  mnemonic).
    Reference:     This document
 
 19.8.  RPP Media Type (application/rpp+json)
@@ -2619,11 +2624,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
 
    TODO
 
-21.  Security Considerations
-
-   RPP relies on the security of the underlying HTTP transport, hence
-   the best common practices for securing HTTP described in [RFC9325]
-   also apply to RPP and MUST be followed by RPP implementations.
 
 
 
@@ -2633,6 +2633,12 @@ Wullink & Kowalik       Expires 16 September 2026              [Page 47]
 
 Internet-Draft        RESTful Provisioning Protocol           March 2026
 
+
+21.  Security Considerations
+
+   RPP relies on the security of the underlying HTTP transport, hence
+   the best common practices for securing HTTP described in [RFC9325]
+   also apply to RPP and MUST be followed by RPP implementations.
 
    Data confidentiality and integrity MUST be enforced.  Every client
    and server interaction MUST be encrypted using TLS version 1.3
@@ -2649,11 +2655,8 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
    -  Described full and partial update operations, using HTTP PUT and
       PATCH methods respectively.  (Issue #21)
    -  Added support for embedding process data in uniform interface
-      operations: the @processes/{process-collection} JSON structure
-      carries process input alongside the object representation, and the
-      server returns the created process resource URL via the Link
-      response header with rel="rpp-process".  Registered the rpp-
-      process link relation type with IANA.
+      operations.  Registered the rpp-process link relation type with
+      IANA.
 
 22.2.  Version 04 to 05
 
@@ -2678,9 +2681,6 @@ Internet-Draft        RESTful Provisioning Protocol           March 2026
       security.  (Issue #37)
    -  Added IANA registration request for the new RPP media type.
       (Issue #40)
-
-
-
 
 
 
