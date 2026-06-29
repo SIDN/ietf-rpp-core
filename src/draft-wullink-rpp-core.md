@@ -624,6 +624,11 @@ When a process is created and immediately completed by the server, a 201 Created
 
 If the server chooses not to expose any persistent process resource, it MUST return 200 OK instead of 201 Created.
 
+The operations using the DELETE method MUST NOT accept a request body. Because the semantic of the HTTP DELETE method are not defined and may cause deployment issues.
+If a request body is present for any operation using the DELETE method, the server MUST reject the request with an appropriate error response.
+
+This means that the "delete" operation (HTTP DELETE method) is not extensible, if the server needs to support additional data for a special "delete" operation, then a new process MUST be defined for this purpose.
+
 ### Rule 5: Extended Process Operations
 
 Operations on a Process Object beyond the uniform interface (e.g. `"transferApprove"`, `"transferReject"`, `"report"`) are mapped to sub-resources of a specific process instance. The operation's `"Identifier"` is used unchanged as the final path segment. The HTTP method for all such extended operations MUST be `POST`.
