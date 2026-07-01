@@ -10,7 +10,7 @@ date = 2026-03-15
 
 [seriesInfo]
 name = "Internet-Draft"
-value = "draft-wullink-rpp-core-06-dev"
+value = "draft-ietf-rpp-core-00"
 stream = "IETF"
 status = "standard"
 
@@ -1509,8 +1509,9 @@ Data confidentiality and integrity MUST be enforced. Every client and server int
 
 # Change History
 
-## Version 05 to 06
+## Version 05 to 00
 
+- Renamed the document name to "draft-ietf-rpp-core" and reset version number to 00 (Issue #80)
 - Added Organisation and User resource type, with create, read, update and delete operations. (Issue #67)
 - Added section about Mapping to EPP. (Issue #55)
 - Described full and partial update operations, using HTTP PUT and PATCH methods respectively. (Issue #21)
