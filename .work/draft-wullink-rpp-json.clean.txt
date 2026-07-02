@@ -5,8 +5,8 @@
 Network Working Group                                         M. Wullink
 Internet-Draft                                                 SIDN Labs
 Intended status: Standards Track                              P. Kowalik
-Expires: 28 December 2026                                          DENIC
-                                                            26 June 2026
+Expires: 2 January 2027                                            DENIC
+                                                             1 July 2026
 
 
               JSON for Restful Provisioning Protocol (RPP)
@@ -38,7 +38,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 December 2026.
+   This Internet-Draft will expire on 2 January 2027.
 
 Copyright Notice
 
@@ -93,6 +93,7 @@ Table of Contents
        5.2.8.  JSContact Card Object
        5.2.9.  Restore Report Object
        5.2.10. Organisation Role Object
+       5.2.11. Processes Object
      5.3.  Process Object Schemas
        5.3.1.  Create Process Object
        5.3.2.  Renew Process Object
@@ -643,18 +644,17 @@ Table of Contents
    in JSON when transmitted together with the object representation in a
    single request body.
 
-   Rule 18: When a uniform interface operation requires both object data
-   and process data in the request body, the process data MUST be
-   embedded under a top-level "@process" JSON object.  The "@process"
-   object MUST be a valid JSON representation of the process object,
-   including the "@type" property set to the process object's registered
-   identifier, following the same convention as Rule 25 for RPP object
-   representations.  Only one process object MAY be embedded per
-   request.
+   Rule 18: Process data accompanying a uniform interface operation MUST
+   be represented using the processes data element of the owning
+   resource object (see Processes Object), following the Aggregation
+   rules for the corresponding process type (for example createProcess
+   for creation-specific inputs).  Each embedded process object MUST be
+   a valid JSON representation of the process object.  This applies
+   uniformly regardless of whether the resource object already exists.
 
    Example: a domain create request body carrying a two-year
-   registration period as process data embedded in a "createProcess"
-   process object:
+   registration period as process data embedded in a createProcess
+   process object under processes:
 
    {
        "@type": "domainName",
@@ -663,13 +663,18 @@ Table of Contents
            { "@type": "host", "hostName": "ns1.example.example" },
            { "@type": "host", "hostName": "ns2.example.example" }
        ],
-       "@process": {
-           "@type": "createProcess",
-           "period": {
-               "@type": "period",
-               "value": 2,
-               "unit": "y"
-           }
+       "processes": {
+           "@type": "processes",
+           "createProcess": [
+               {
+                   "@type": "createProcess",
+                   "period": {
+                       "@type": "period",
+                       "value": 2,
+                       "unit": "y"
+                   }
+               }
+           ]
        }
    }
 
@@ -1245,14 +1250,58 @@ Table of Contents
      }
    }
 
+5.2.11.  Processes Object
+
+   The Processes Object is a read-only container grouping the Process
+   Objects currently or recently initiated on the owning resource
+   object, keyed by process type.  Each key holds an array of the
+   corresponding Process Object's read representation, per the
+   Aggregation rules.
+
+   {
+     "$schema": "https://json-schema.org/draft/2020-12/schema",
+     "$ref": "#/$defs/processes",
+     "$defs": {
+       "processes": {
+         "type": "object",
+         "properties": {
+           "@type":           { "type": "string", "const": "processes", "readOnly": true },
+           "createProcess":   {
+             "type": "array",
+             "items": { "$ref": "#/$defs/createProcess.read" },
+             "readOnly": true
+           },
+           "renewProcess":    {
+             "type": "array",
+             "items": { "$ref": "#/$defs/renewProcess.read" },
+             "readOnly": true
+           },
+           "transferProcess": {
+             "type": "array",
+             "items": { "$ref": "#/$defs/transferProcess.read" },
+             "readOnly": true
+           },
+           "restoreProcess":  {
+             "type": "array",
+             "items": { "$ref": "#/$defs/restoreProcess.read" },
+             "readOnly": true
+           }
+         },
+         "required": ["@type"]
+       }
+     }
+   }
+
 5.3.  Process Object Schemas
 
 5.3.1.  Create Process Object
 
    The Create Process Object carries the process-specific inputs for a
    resource creation operation, such as the requested registration
-   period.  It is embedded in the create request body under "@process":
-   { "@type": "createProcess", ... } per Rule 18.
+   period.  It is submitted as an element of the createProcess array
+   under the processes data element of the owning resource object (see
+   Processes Object), following the same Aggregation representation as
+   the other process types.
 
    Create request schema (create-only and read-write properties):
 
@@ -1265,6 +1314,23 @@ Table of Contents
          "properties": {
            "@type": { "type": "string", "const": "createProcess" },
            "period": { "$ref": "#/$defs/period" }
+         },
+         "required": ["@type"]
+       }
+     }
+   }
+
+   Read response schema (read-only properties):
+
+   {
+     "$schema": "https://json-schema.org/draft/2020-12/schema",
+     "$ref": "#/$defs/createProcess.read",
+     "$defs": {
+       "createProcess.read": {
+         "type": "object",
+         "properties": {
+           "@type":  { "type": "string", "const": "createProcess", "readOnly": true },
+           "period": { "$ref": "#/$defs/period", "readOnly": true }
          },
          "required": ["@type"]
        }
@@ -1523,7 +1589,18 @@ Table of Contents
            },
            "dns":    { "$ref": "#/$defs/dnsData" },
            "authInfo": { "$ref": "#/$defs/authInfo" },
-           "@process": { "$ref": "#/$defs/createProcess.create" }
+           "processes": {
+             "type": "object",
+             "properties": {
+               "@type": { "type": "string", "const": "processes" },
+               "createProcess": {
+                 "type": "array",
+                 "items": { "$ref": "#/$defs/createProcess.create" },
+                 "maxItems": 1
+               }
+             },
+             "required": ["@type"]
+           }
          },
          "required": ["@type", "name"]
        }
@@ -1570,7 +1647,8 @@ Table of Contents
              "readOnly": true
            },
            "expiryDate": { "type": "string", "format": "date-time", "readOnly": true },
-           "authInfo":  { "$ref": "#/$defs/authInfo" }
+           "authInfo":  { "$ref": "#/$defs/authInfo" },
+           "processes": { "$ref": "#/$defs/processes", "readOnly": true }
          },
          "required": ["@type", "name", "provMetadata"]
        }
@@ -1740,7 +1818,8 @@ Table of Contents
              "readOnly": true
            },
            "contactInfo":   { "$ref": "#/$defs/Card" },
-           "authInfo": { "$ref": "#/$defs/authInfo" }
+           "authInfo": { "$ref": "#/$defs/authInfo" },
+           "processes": { "$ref": "#/$defs/processes", "readOnly": true }
          },
          "required": ["@type", "id", "provMetadata", "contactInfo"],
          "unevaluatedProperties": false
@@ -1810,7 +1889,8 @@ Table of Contents
              "items": { "$ref": "#/$defs/status" },
              "readOnly": true
            },
-           "dns":           { "$ref": "#/$defs/dnsData" }
+           "dns":           { "$ref": "#/$defs/dnsData" },
+           "processes":     { "$ref": "#/$defs/processes", "readOnly": true }
          },
          "required": ["@type", "hostName", "provMetadata"]
        }
@@ -1911,7 +1991,8 @@ Table of Contents
                    },
                    "required": ["label", "object"]
                  }
-               }
+               },
+               "processes": { "$ref": "#/$defs/processes", "readOnly": true }
              },
              "required": ["provMetadata", "status"]
            }
@@ -2040,7 +2121,8 @@ Table of Contents
                "enum": ["active", "suspended", "deactivated", "pending"]
              }
            },
-           "description":  { "type": "string", "const": "user" }
+           "description":  { "type": "string", "const": "user" },
+           "processes": { "$ref": "#/$defs/processes", "readOnly": true }
          },
          "required": ["@type", "userId", "details", "status"]
        }
@@ -2118,13 +2200,18 @@ Table of Contents
            "method": "authinfo",
            "authdata": "2fooBAR"
        },
-       "@process": {
-           "@type": "createProcess",
-           "period": {
-               "@type": "period",
-               "value": 2,
-               "unit": "y"
-           }
+       "processes": {
+           "@type": "processes",
+           "createProcess": [
+               {
+                   "@type": "createProcess",
+                   "period": {
+                       "@type": "period",
+                       "value": 2,
+                       "unit": "y"
+                   }
+               }
+           ]
        }
    }
 
@@ -2149,7 +2236,8 @@ Table of Contents
 
 6.1.2.  Create Process Data
 
-   Example create process data for a two-year registration period:
+   Example Create Process Object for a two-year registration period, as
+   embedded above in processes.createProcess:
 
    {
        "@type": "createProcess",
@@ -2210,6 +2298,19 @@ Table of Contents
            "@type": "authInfo",
            "method": "authinfo",
            "authdata": "2fooBAR"
+       },
+       "processes": {
+           "@type": "processes",
+           "createProcess": [
+               {
+                   "@type": "createProcess",
+                   "period": {
+                       "@type": "period",
+                       "value": 2,
+                       "unit": "y"
+                   }
+               }
+           ]
        }
    }
 

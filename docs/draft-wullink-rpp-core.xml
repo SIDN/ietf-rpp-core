@@ -328,13 +328,13 @@ _rpp IN HTTPS 1 rpp-svr2.registry.example. alpn=h2,h3 port=8443
 <li><tt>description</tt>: (optional, string) A human-readable description of the maintenance window.</li>
 </ul></li>
 </ul>
-<t>The following template variables are defined for use in RPP endpoint URL templates:</t>
+<t>The following template variables are defined for use in RPP endpoint URL templates. They are data object independent; the same variables are used regardless of which Data Object or Process Object the endpoint acts on.</t>
 
 <ul spacing="compact">
-<li><tt>collection</tt>: The resource collection type (e.g., &quot;domains&quot;, &quot;hosts&quot;, &quot;entities&quot;)</li>
-<li><tt>id</tt>: The unique identifier for a resource instance within a collection</li>
-<li><tt>process_name</tt>: The name of a process associated with a resource (e.g., &quot;transfers&quot;, &quot;renewals&quot;)</li>
-<li><tt>process_id</tt>: The unique identifier for a specific process instance</li>
+<li><tt>collection</tt>: The resource collection path segment, derived per Rule 1.</li>
+<li><tt>id</tt>: The Unique Identifier value (as defined in <xref target="I-D.kowalik-rpp-data-objects"></xref>) of the resource instance within <tt>collection</tt>.</li>
+<li><tt>process-collection</tt>: The process collection path segment, derived per Rule 3.</li>
+<li><tt>process-id</tt>: The Unique Identifier value (as defined in <xref target="I-D.kowalik-rpp-data-objects"></xref>) of a specific process instance, scoped to its owner Data Object instance.</li>
 </ul>
 <t>Example discovery response document:</t>
 
@@ -667,37 +667,97 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 </tbody>
 </table></section>
 
-<section anchor="rule-3-process-object-collection-path-segment"><name>Rule 3: Process Object Collection Path Segment</name>
-<t>Each Process Object has a stable, <tt>&quot;Identifier&quot;</tt> (e.g. <tt>&quot;transferProcess&quot;</tt>, <tt>&quot;restoreProcess&quot;</tt>). The URL path segment for a process collection MUST be derived by applying the <tt>plural()</tt> function to the Process Object's <tt>&quot;Identifier&quot;</tt>. The path MUST be nested under its owner Data Object instance using the fixed <tt>&quot;processes&quot;</tt> keyword as an intermediate path segment.</t>
+<section anchor="rule-3-direct-access-sub-resource-path-segment"><name>Rule 3: Direct Access Sub-Resource Path Segment</name>
+<t>A data element whose <tt>&quot;Direct Access&quot;</tt> flag is set to <tt>true</tt> in its Data Object definition is additionally exposed as a sub-resource, nested under the URL of the resource instance that contains it. This rule applies uniformly and recursively: the containing resource instance MAY itself be a Direct Access sub-resource of a further-enclosing resource.</t>
+<t>The fixed path segment for such a sub-resource MUST be derived by applying the <tt>plural()</tt> function to the Direct Access data element's own <tt>&quot;Identifier&quot;</tt> — not to the <tt>&quot;Identifier&quot;</tt> of the associated object type the element references.</t>
 
-<artwork><![CDATA[{process-collection} = plural(processObject.identifier)
+<artwork><![CDATA[{direct-access-segment} = plural(directAccessElement.identifier)
 ]]></artwork>
+<t>If the Direct Access element's cardinality is greater than 1, an individual associated object instance MUST be additionally addressed by appending its Unique Identifier value as a further path segment, <tt>&quot;{unique-id}&quot;</tt>. <xref target="I-D.kowalik-rpp-data-objects"></xref> requires that any object type referenced by a Direct Access element of cardinality greater than 1 define a Unique Identifier for exactly this purpose. If the Direct Access element's cardinality is 0-1 or 1, no such extra segment is appended; the element's own path is already unambiguous.</t>
+
+<artwork><![CDATA[{direct-access-path} = {container-path} "/" {direct-access-segment} [ "/" {unique-id} ]
+]]></artwork>
+<t>Applying Rule 3 recursively from the top-level Data Object down to every Direct Access element defined in <xref target="I-D.kowalik-rpp-data-objects"></xref> yields the following paths (<tt>&quot;{id}&quot;</tt> denotes the Unique Identifier value of the resource instance immediately to its left; it is instantiated per resource type as shown in the Derived Endpoint Reference below):</t>
 <table>
 <thead>
 <tr>
-<th>Process Object <tt>&quot;Identifier&quot;</tt></th>
-<th><tt>&quot;plural()&quot;</tt> result</th>
-<th>URL process collection segment</th>
+<th>Container path</th>
+<th>Direct Access element <tt>&quot;Identifier&quot;</tt></th>
+<th>Cardinality</th>
+<th>Resulting path</th>
 </tr>
 </thead>
 
 <tbody>
 <tr>
-<td><tt>&quot;transferProcess&quot;</tt></td>
-<td><tt>&quot;transferProcesses&quot;</tt></td>
-<td><tt>&quot;/processes/transferProcesses&quot;</tt></td>
+<td><tt>&quot;/domainNames/{id}&quot;</tt></td>
+<td><tt>&quot;processes&quot;</tt></td>
+<td>0-1</td>
+<td><tt>&quot;/domainNames/{id}/processes&quot;</tt></td>
 </tr>
 
 <tr>
+<td><tt>&quot;/contacts/{id}&quot;</tt></td>
+<td><tt>&quot;processes&quot;</tt></td>
+<td>0-1</td>
+<td><tt>&quot;/contacts/{id}/processes&quot;</tt></td>
+</tr>
+
+<tr>
+<td><tt>&quot;/hosts/{id}&quot;</tt></td>
+<td><tt>&quot;processes&quot;</tt></td>
+<td>0-1</td>
+<td><tt>&quot;/hosts/{id}/processes&quot;</tt></td>
+</tr>
+
+<tr>
+<td><tt>&quot;/organisations/{id}&quot;</tt></td>
+<td><tt>&quot;processes&quot;</tt></td>
+<td>0-1</td>
+<td><tt>&quot;/organisations/{id}/processes&quot;</tt></td>
+</tr>
+
+<tr>
+<td><tt>&quot;/organisations/{id}/users/{id}&quot;</tt></td>
+<td><tt>&quot;processes&quot;</tt></td>
+<td>0-1</td>
+<td><tt>&quot;/organisations/{id}/users/{id}/processes&quot;</tt></td>
+</tr>
+
+<tr>
+<td><tt>&quot;/{collection}/{id}/processes&quot;</tt></td>
+<td><tt>&quot;transferProcess&quot;</tt></td>
+<td>0+</td>
+<td><tt>&quot;/{collection}/{id}/processes/transferProcesses/{process-id}&quot;</tt></td>
+</tr>
+
+<tr>
+<td><tt>&quot;/{collection}/{id}/processes&quot;</tt></td>
+<td><tt>&quot;renewProcess&quot;</tt></td>
+<td>0+</td>
+<td><tt>&quot;/{collection}/{id}/processes/renewProcesses/{process-id}&quot;</tt></td>
+</tr>
+
+<tr>
+<td><tt>&quot;/{collection}/{id}/processes&quot;</tt></td>
 <td><tt>&quot;restoreProcess&quot;</tt></td>
-<td><tt>&quot;restoreProcesses&quot;</tt></td>
-<td><tt>&quot;/processes/restoreProcesses&quot;</tt></td>
+<td>0+</td>
+<td><tt>&quot;/{collection}/{id}/processes/restoreProcesses/{process-id}&quot;</tt></td>
+</tr>
+
+<tr>
+<td><tt>&quot;/{collection}/{id}/processes&quot;</tt></td>
+<td><tt>&quot;createProcess&quot;</tt></td>
+<td>0+</td>
+<td><tt>&quot;/{collection}/{id}/processes/createProcesses/{process-id}&quot;</tt></td>
 </tr>
 </tbody>
-</table></section>
+</table><t><tt>&quot;{collection}&quot;</tt> in the last four rows is derived per Rule 1 and stands for any owner Data Object's collection segment (e.g. <tt>&quot;domainNames&quot;</tt>, <tt>&quot;contacts&quot;</tt>); the <tt>Processes</tt> element and its nested Process Object elements are defined once, generically, and Direct Access sub-resources derive identically regardless of the owner Data Object type. <tt>&quot;{process-id}&quot;</tt> is the Process Object's Unique Identifier value; Rule 4 defines the <tt>&quot;latest&quot;</tt> mnemonic as an additional way to address it.</t>
+<t>The remaining rules in this section (Rules 4 through 6) apply Rule 3 specifically to Process Objects and describe how they are further exposed and interacted with.</t>
+</section>
 
 <section anchor="rule-4-process-uniform-interface-operations"><name>Rule 4: Process Uniform Interface Operations</name>
-<t>The same four uniform interface operations from Rule 2 apply to Process Objects, scoped under their owner Data Object instance path. Server MAY assigne a unique identifier <tt>&quot;{process-id}&quot;</tt> to each process instance and make it addressable by this identifier. The fixed keyword <tt>&quot;latest&quot;</tt> is used to address the most recent process instance when no specific process <tt>&quot;{process-id}&quot;</tt> is known or assigned.</t>
+<t>The four uniform interface operations from Rule 2 apply to Process Objects at the path derived per Rule 3. A server MAY assign a unique identifier <tt>&quot;{process-id}&quot;</tt> to each process instance and make it addressable by this identifier. The fixed keyword <tt>&quot;latest&quot;</tt> is used to address the most recent process instance when no specific process <tt>&quot;{process-id}&quot;</tt> is known or assigned.</t>
 <table>
 <thead>
 <tr>
@@ -987,13 +1047,13 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 <tr>
 <td>Renew: create</td>
 <td><tt>&quot;POST&quot;</tt></td>
-<td><tt>&quot;/{collection}/{id}/processes/renewalProcesses&quot;</tt></td>
+<td><tt>&quot;/{collection}/{id}/processes/renewProcesses&quot;</tt></td>
 </tr>
 
 <tr>
 <td>Renew: read</td>
 <td><tt>&quot;GET&quot;</tt></td>
-<td><tt>&quot;/{collection}/{id}/processes/renewalProcesses/latest&quot;</tt></td>
+<td><tt>&quot;/{collection}/{id}/processes/renewProcesses/latest&quot;</tt></td>
 </tr>
 
 <tr>
@@ -1240,28 +1300,27 @@ TODO
 </section>
 
 <section anchor="renew-resource"><name>Renew Resource</name>
-
-<aside><t>TODO: this needs update one renewalProcess is defined in Data Objects</t>
-</aside>
-
-<ul spacing="compact">
-<li>Request: POST /{collection}/{id}/processes/renewalProcess</li>
-<li>Request message: Renew request</li>
-<li>Response message: Renew response</li>
-</ul>
-<t>Not every object resource includes support for the renew command. The response MUST include the Location header for the created renewal process resource.</t>
+<t>Renew is modelled as a Process Object with its own lifecycle. The <tt>renewProcess</tt> object identifier yields the <tt>renewProcesses</tt> collection segment per Rule 3.</t>
+<t>The client MUST use the HTTP POST method to create a new renew process (Rule 4, <tt>create</tt>).</t>
+<t>Not every object resource includes support for the renew command. The response MUST include the Location header for the created renew process resource.</t>
 <t>Example Domain Renew request:</t>
 
-<sourcecode type="http"><![CDATA[POST /rpp/v1/domainNames/foo.example/processes/renewalProcesses HTTP/2
+<sourcecode type="http"><![CDATA[POST /rpp/v1/domainNames/foo.example/processes/renewProcesses HTTP/2
 Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
 Content-Type: application/rpp+json
 RPP-Cltrid: ABC-12345
 Accept-Language: en
-Content-Length: 210
+Content-Length: 96
 
-TODO: add renew request data here
+{
+  "expiryDate": "2025-09-08",
+  "renewalPeriod": {
+    "unit": "y",
+    "value": 1
+  }
+}
 ]]></sourcecode>
 <t>Example Renew response:</t>
 
@@ -1271,12 +1330,14 @@ Server: Example RPP server v1.0
 Content-Language: en
 RPP-Svtrid: XYZ-12345
 RPP-Cltrid: ABC-12345
-Content-Length: 205
-Location: https://rpp.example/rpp/v1/domainNames/foo.example/processes/renewalProcesses/XYZ-12345
+Content-Length: 85
+Location: https://rpp.example/rpp/v1/domainNames/foo.example/processes/renewProcesses/XYZ-12345
 Content-Type: application/rpp+json
 RPP-code: 01000
 
-TODO add renew response data here
+{
+  "expiryDate": "2026-09-08"
+}
 ]]></sourcecode>
 </section>
 
@@ -1741,6 +1802,9 @@ Provisional registration: No
 <li>Added section about Mapping to EPP. (Issue #55)</li>
 <li>Described full and partial update operations, using HTTP PUT and PATCH methods respectively. (Issue #21)</li>
 <li>Added support for embedding process data in uniform interface operations. Registered the <tt>rpp-process</tt> link relation type with IANA.</li>
+<li>Generalised process sub-resource URL derivation into Rule 3 (Direct Access Sub-Resource Path Segment); Rules 4 through 6 now apply this general rule to Process Objects instead of deriving process paths independently.</li>
+<li>Corrected the Renew process collection segment from <tt>renewalProcesses</tt> to <tt>renewProcesses</tt> in the Renew Resource section and the Derived Endpoint Reference table, matching the <tt>renewProcess</tt> identifier in <xref target="I-D.kowalik-rpp-data-objects"></xref>.</li>
+<li>Aligned the URL template variables in Discoverability with Unique Identifier terminology from <xref target="I-D.kowalik-rpp-data-objects"></xref> and with the <tt>{process-collection}</tt>/<tt>{process-id}</tt> naming used in the Endpoints section; removed the unused <tt>process_name</tt> variable.</li>
 </ul>
 </section>
 
