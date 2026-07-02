@@ -677,7 +677,7 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 
 <artwork><![CDATA[{direct-access-path} = {container-path} "/" {direct-access-segment} [ "/" {unique-id} ]
 ]]></artwork>
-<t>Applying Rule 3 recursively from the top-level Data Object down to every Direct Access element currently defined in <xref target="I-D.kowalik-rpp-data-objects"></xref> yields the following paths (<tt>&quot;{id}&quot;</tt> denotes the Unique Identifier value of the resource instance immediately to its left; it is instantiated per resource type as shown in the Derived Endpoint Reference below):</t>
+<t>Applying Rule 3 recursively from the top-level Data Object down to every Direct Access element defined in <xref target="I-D.kowalik-rpp-data-objects"></xref> yields the following paths (<tt>&quot;{id}&quot;</tt> denotes the Unique Identifier value of the resource instance immediately to its left; it is instantiated per resource type as shown in the Derived Endpoint Reference below):</t>
 <table>
 <thead>
 <tr>

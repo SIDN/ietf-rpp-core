@@ -633,7 +633,7 @@ If the Direct Access element's cardinality is greater than 1, an individual asso
 {direct-access-path} = {container-path} "/" {direct-access-segment} [ "/" {unique-id} ]
 ```
 
-Applying Rule 3 recursively from the top-level Data Object down to every Direct Access element currently defined in [@!I-D.kowalik-rpp-data-objects] yields the following paths (`"{id}"` denotes the Unique Identifier value of the resource instance immediately to its left; it is instantiated per resource type as shown in the Derived Endpoint Reference below):
+Applying Rule 3 recursively from the top-level Data Object down to every Direct Access element defined in [@!I-D.kowalik-rpp-data-objects] yields the following paths (`"{id}"` denotes the Unique Identifier value of the resource instance immediately to its left; it is instantiated per resource type as shown in the Derived Endpoint Reference below):
 
 | Container path | Direct Access element `"Identifier"` | Cardinality | Resulting path |
 |---|---|---|---|
