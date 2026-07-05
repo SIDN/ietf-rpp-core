@@ -56,8 +56,6 @@ REST - Representational State Transfer ([@!REST]). An architectural style.
 
 RESTful - A RESTful web service is a web service or API implemented using HTTP and the principles of [@!REST].
 
-EPP RFCs - This is a reference to the EPP version 1.0 specifications [@!RFC5730], [@!RFC5731], [@!RFC5732] and [@!RFC5733].
-
 RESTful Provisioning Protocol or RPP - The protocol described in this document.
 
 URL - A Uniform Resource Locator as defined in [@!RFC3986].
@@ -1577,31 +1575,11 @@ The authors would like to thank the following people for their helpful text cont
   </front>
 </reference>
 
-<reference anchor="YAML" target="https://yaml.org/spec/1.2.2/">
-  <front>
-    <title>YAML: YAML Ain't Markup Language</title>
-    <author>
-      <organization>YAML Language Development Team</organization>
-    </author>
-    <date year="2000"/>
-  </front>
-</reference>
-
 <reference anchor="SemVer" target="https://semver.org/">
   <front>
     <title>Semantic Versioning 2.0.0</title>
     <author>
       <organization>Semantic Versioning</organization>
     </author>
-  </front>
-</reference>
-
-<reference anchor="XML" target="https://www.w3.org/TR/xml">
-  <front>
-    <title>Extensible Markup Language (XML) 1.0 (Fifth Edition)</title>
-    <author>
-      <organization>W3C</organization>
-    </author>
-    <date year="2013"/>
   </front>
 </reference>
