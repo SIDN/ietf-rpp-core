@@ -337,9 +337,9 @@ _rpp IN HTTPS 1 rpp-svr2.registry.example. alpn=h2,h3 port=8443
 
 <ul spacing="compact">
 <li><tt>collection</tt>: The resource collection path segment, derived per Rule 1.</li>
-<li><tt>id</tt>: The Unique Identifier value (as defined in <xref target="I-D.kowalik-rpp-data-objects"></xref>) of the resource instance within <tt>collection</tt>.</li>
+<li><tt>id</tt>: The Unique Identifier value (as defined in <xref target="I-D.ietf-rpp-data-objects"></xref>) of the resource instance within <tt>collection</tt>.</li>
 <li><tt>process-collection</tt>: The process collection path segment, derived per Rule 3.</li>
-<li><tt>process-id</tt>: The Unique Identifier value (as defined in <xref target="I-D.kowalik-rpp-data-objects"></xref>) of a specific process instance, scoped to its owner Data Object instance.</li>
+<li><tt>process-id</tt>: The Unique Identifier value (as defined in <xref target="I-D.ietf-rpp-data-objects"></xref>) of a specific process instance, scoped to its owner Data Object instance.</li>
 </ul>
 <t>Example discovery response document:</t>
 
@@ -690,12 +690,12 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 <artwork><![CDATA[{direct-access-segment} = plural(directAccessElement.identifier)
 ]]>
 </artwork>
-<t>If the Direct Access element's cardinality is greater than 1, an individual associated object instance MUST be additionally addressed by appending its Unique Identifier value as a further path segment, <tt>&quot;{unique-id}&quot;</tt>. <xref target="I-D.kowalik-rpp-data-objects"></xref> requires that any object type referenced by a Direct Access element of cardinality greater than 1 define a Unique Identifier for exactly this purpose. If the Direct Access element's cardinality is 0-1 or 1, no such extra segment is appended; the element's own path is already unambiguous.</t>
+<t>If the Direct Access element's cardinality is greater than 1, an individual associated object instance MUST be additionally addressed by appending its Unique Identifier value as a further path segment, <tt>&quot;{unique-id}&quot;</tt>. <xref target="I-D.ietf-rpp-data-objects"></xref> requires that any object type referenced by a Direct Access element of cardinality greater than 1 define a Unique Identifier for exactly this purpose. If the Direct Access element's cardinality is 0-1 or 1, no such extra segment is appended; the element's own path is already unambiguous.</t>
 
 <artwork><![CDATA[{direct-access-path} = {container-path} "/" {direct-access-segment} [ "/" {unique-id} ]
 ]]>
 </artwork>
-<t>Applying Rule 3 recursively from the top-level Data Object down to every Direct Access element defined in <xref target="I-D.kowalik-rpp-data-objects"></xref> yields the following paths (<tt>&quot;{id}&quot;</tt> denotes the Unique Identifier value of the resource instance immediately to its left; it is instantiated per resource type as shown in the Derived Endpoint Reference below):</t>
+<t>Applying Rule 3 recursively from the top-level Data Object down to every Direct Access element defined in <xref target="I-D.ietf-rpp-data-objects"></xref> yields the following paths (<tt>&quot;{id}&quot;</tt> denotes the Unique Identifier value of the resource instance immediately to its left; it is instantiated per resource type as shown in the Derived Endpoint Reference below):</t>
 <table>
 <thead>
 <tr>
@@ -1865,8 +1865,8 @@ Provisional registration: No
 <li>Described full and partial update operations, using HTTP PUT and PATCH methods respectively. (Issue #21)</li>
 <li>Added support for embedding process data in uniform interface operations. Registered the <tt>rpp-process</tt> link relation type with IANA.</li>
 <li>Generalised process sub-resource URL derivation into Rule 3 (Direct Access Sub-Resource Path Segment); Rules 4 through 6 now apply this general rule to Process Objects instead of deriving process paths independently.</li>
-<li>Corrected the Renew process collection segment from <tt>renewalProcesses</tt> to <tt>renewProcesses</tt> in the Renew Resource section and the Derived Endpoint Reference table, matching the <tt>renewProcess</tt> identifier in <xref target="I-D.kowalik-rpp-data-objects"></xref>.</li>
-<li>Aligned the URL template variables in Discoverability with Unique Identifier terminology from <xref target="I-D.kowalik-rpp-data-objects"></xref> and with the <tt>{process-collection}</tt>/<tt>{process-id}</tt> naming used in the Endpoints section; removed the unused <tt>process_name</tt> variable.</li>
+<li>Corrected the Renew process collection segment from <tt>renewalProcesses</tt> to <tt>renewProcesses</tt> in the Renew Resource section and the Derived Endpoint Reference table, matching the <tt>renewProcess</tt> identifier in <xref target="I-D.ietf-rpp-data-objects"></xref>.</li>
+<li>Aligned the URL template variables in Discoverability with Unique Identifier terminology from <xref target="I-D.ietf-rpp-data-objects"></xref> and with the <tt>{process-collection}</tt>/<tt>{process-id}</tt> naming used in the Endpoints section; removed the unused <tt>process_name</tt> variable.</li>
 </ul>
 </section>
 
@@ -1943,7 +1943,6 @@ Provisional registration: No
 <references><name>References</name>
 <references><name>Normative References</name>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-rpp-data-objects.xml"/>
-<xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.kowalik-rpp-data-objects.xml"/>
 <reference anchor="REST" target="http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm">
   <front>
     <title>Architectural Styles and the Design of Network-based Software Architectures</title>

@@ -28,7 +28,7 @@
     wcwidth 0.8.1
     weasyprint 69.0
 -->
-<link href="draft-wullink-rpp-core.xml" rel="alternate" type="application/rfc+xml">
+<link href="draft-ietf-rpp-core.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
 <style type="text/css">/*
 
@@ -1983,13 +1983,13 @@ _rpp IN HTTPS 1 rpp-svr2.registry.example. alpn=h2,h3 port=8443
           <code>collection</code>: The resource collection path segment, derived per Rule 1.<a href="#section-10-4.1" class="pilcrow">¶</a>
 </li>
         <li class="compact" id="section-10-4.2">
-          <code>id</code>: The Unique Identifier value (as defined in <span>[<a href="#I-D.kowalik-rpp-data-objects" class="cite xref">I-D.kowalik-rpp-data-objects</a>]</span>) of the resource instance within <code>collection</code>.<a href="#section-10-4.2" class="pilcrow">¶</a>
+          <code>id</code>: The Unique Identifier value (as defined in <span>[<a href="#I-D.ietf-rpp-data-objects" class="cite xref">I-D.ietf-rpp-data-objects</a>]</span>) of the resource instance within <code>collection</code>.<a href="#section-10-4.2" class="pilcrow">¶</a>
 </li>
         <li class="compact" id="section-10-4.3">
           <code>process-collection</code>: The process collection path segment, derived per Rule 3.<a href="#section-10-4.3" class="pilcrow">¶</a>
 </li>
         <li class="compact" id="section-10-4.4">
-          <code>process-id</code>: The Unique Identifier value (as defined in <span>[<a href="#I-D.kowalik-rpp-data-objects" class="cite xref">I-D.kowalik-rpp-data-objects</a>]</span>) of a specific process instance, scoped to its owner Data Object instance.<a href="#section-10-4.4" class="pilcrow">¶</a>
+          <code>process-id</code>: The Unique Identifier value (as defined in <span>[<a href="#I-D.ietf-rpp-data-objects" class="cite xref">I-D.ietf-rpp-data-objects</a>]</span>) of a specific process instance, scoped to its owner Data Object instance.<a href="#section-10-4.4" class="pilcrow">¶</a>
 </li>
       </ul>
 <p id="section-10-5">Example discovery response document:<a href="#section-10-5" class="pilcrow">¶</a></p>
@@ -2505,13 +2505,13 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 
 </pre><a href="#section-14.1.3-3" class="pilcrow">¶</a>
 </div>
-<p id="section-14.1.3-4">If the Direct Access element's cardinality is greater than 1, an individual associated object instance MUST be additionally addressed by appending its Unique Identifier value as a further path segment, <code>"{unique-id}"</code>. <span>[<a href="#I-D.kowalik-rpp-data-objects" class="cite xref">I-D.kowalik-rpp-data-objects</a>]</span> requires that any object type referenced by a Direct Access element of cardinality greater than 1 define a Unique Identifier for exactly this purpose. If the Direct Access element's cardinality is 0-1 or 1, no such extra segment is appended; the element's own path is already unambiguous.<a href="#section-14.1.3-4" class="pilcrow">¶</a></p>
+<p id="section-14.1.3-4">If the Direct Access element's cardinality is greater than 1, an individual associated object instance MUST be additionally addressed by appending its Unique Identifier value as a further path segment, <code>"{unique-id}"</code>. <span>[<a href="#I-D.ietf-rpp-data-objects" class="cite xref">I-D.ietf-rpp-data-objects</a>]</span> requires that any object type referenced by a Direct Access element of cardinality greater than 1 define a Unique Identifier for exactly this purpose. If the Direct Access element's cardinality is 0-1 or 1, no such extra segment is appended; the element's own path is already unambiguous.<a href="#section-14.1.3-4" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-14.1.3-5">
 <pre>{direct-access-path} = {container-path} "/" {direct-access-segment} [ "/" {unique-id} ]
 
 </pre><a href="#section-14.1.3-5" class="pilcrow">¶</a>
 </div>
-<p id="section-14.1.3-6">Applying Rule 3 recursively from the top-level Data Object down to every Direct Access element defined in <span>[<a href="#I-D.kowalik-rpp-data-objects" class="cite xref">I-D.kowalik-rpp-data-objects</a>]</span> yields the following paths (<code>"{id}"</code> denotes the Unique Identifier value of the resource instance immediately to its left; it is instantiated per resource type as shown in the Derived Endpoint Reference below):<a href="#section-14.1.3-6" class="pilcrow">¶</a></p>
+<p id="section-14.1.3-6">Applying Rule 3 recursively from the top-level Data Object down to every Direct Access element defined in <span>[<a href="#I-D.ietf-rpp-data-objects" class="cite xref">I-D.ietf-rpp-data-objects</a>]</span> yields the following paths (<code>"{id}"</code> denotes the Unique Identifier value of the resource instance immediately to its left; it is instantiated per resource type as shown in the Derived Endpoint Reference below):<a href="#section-14.1.3-6" class="pilcrow">¶</a></p>
 <table class="center" id="table-4">
             <caption><a href="#table-4" class="selfRef">Table 4</a></caption>
 <thead>
@@ -4112,9 +4112,9 @@ Provisional registration: No
 </li>
           <li class="compact" id="section-21.1-1.6">Generalised process sub-resource URL derivation into Rule 3 (Direct Access Sub-Resource Path Segment); Rules 4 through 6 now apply this general rule to Process Objects instead of deriving process paths independently.<a href="#section-21.1-1.6" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-21.1-1.7">Corrected the Renew process collection segment from <code>renewalProcesses</code> to <code>renewProcesses</code> in the Renew Resource section and the Derived Endpoint Reference table, matching the <code>renewProcess</code> identifier in <span>[<a href="#I-D.kowalik-rpp-data-objects" class="cite xref">I-D.kowalik-rpp-data-objects</a>]</span>.<a href="#section-21.1-1.7" class="pilcrow">¶</a>
+          <li class="compact" id="section-21.1-1.7">Corrected the Renew process collection segment from <code>renewalProcesses</code> to <code>renewProcesses</code> in the Renew Resource section and the Derived Endpoint Reference table, matching the <code>renewProcess</code> identifier in <span>[<a href="#I-D.ietf-rpp-data-objects" class="cite xref">I-D.ietf-rpp-data-objects</a>]</span>.<a href="#section-21.1-1.7" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-21.1-1.8">Aligned the URL template variables in Discoverability with Unique Identifier terminology from <span>[<a href="#I-D.kowalik-rpp-data-objects" class="cite xref">I-D.kowalik-rpp-data-objects</a>]</span> and with the <code>{process-collection}</code>/<code>{process-id}</code> naming used in the Endpoints section; removed the unused <code>process_name</code> variable.<a href="#section-21.1-1.8" class="pilcrow">¶</a>
+          <li class="compact" id="section-21.1-1.8">Aligned the URL template variables in Discoverability with Unique Identifier terminology from <span>[<a href="#I-D.ietf-rpp-data-objects" class="cite xref">I-D.ietf-rpp-data-objects</a>]</span> and with the <code>{process-collection}</code>/<code>{process-id}</code> naming used in the Endpoints section; removed the unused <code>process_name</code> variable.<a href="#section-21.1-1.8" class="pilcrow">¶</a>
 </li>
         </ul>
 </section>
@@ -4243,10 +4243,6 @@ Provisional registration: No
 <dt id="I-D.ietf-rpp-data-objects">[I-D.ietf-rpp-data-objects]</dt>
         <dd>
 <span class="refAuthor">Kowalik, P.</span> and <span class="refAuthor">M. Wullink</span>, <span class="refTitle">"RESTful Provisioning Protocol (RPP) Data Objects"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-rpp-data-objects-01</span>, <time datetime="2026-07-03" class="refDate">3 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-rpp-data-objects-01">https://datatracker.ietf.org/doc/html/draft-ietf-rpp-data-objects-01</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="I-D.kowalik-rpp-data-objects">[I-D.kowalik-rpp-data-objects]</dt>
-        <dd>
-<span class="refAuthor">Kowalik, P.</span> and <span class="refAuthor">M. Wullink</span>, <span class="refTitle">"RESTful Provisioning Protocol (RPP) Data Objects"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-kowalik-rpp-data-objects-04</span>, <time datetime="2026-06-12" class="refDate">12 June 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-kowalik-rpp-data-objects-04">https://datatracker.ietf.org/doc/html/draft-kowalik-rpp-data-objects-04</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="REST">[REST]</dt>
         <dd>

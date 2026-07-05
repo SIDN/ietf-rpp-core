@@ -298,9 +298,9 @@ RPP server capabilities MUST be discoverable by clients. The server MUST provide
 The following template variables are defined for use in RPP endpoint URL templates. They are data object independent; the same variables are used regardless of which Data Object or Process Object the endpoint acts on.
 
 - `collection`: The resource collection path segment, derived per Rule 1.
-- `id`: The Unique Identifier value (as defined in [@!I-D.kowalik-rpp-data-objects]) of the resource instance within `collection`.
+- `id`: The Unique Identifier value (as defined in [@!I-D.ietf-rpp-data-objects]) of the resource instance within `collection`.
 - `process-collection`: The process collection path segment, derived per Rule 3.
-- `process-id`: The Unique Identifier value (as defined in [@!I-D.kowalik-rpp-data-objects]) of a specific process instance, scoped to its owner Data Object instance.
+- `process-id`: The Unique Identifier value (as defined in [@!I-D.ietf-rpp-data-objects]) of a specific process instance, scoped to its owner Data Object instance.
 
 <!-- TODO: Include appendix with example discovery response document. -->
 
@@ -625,13 +625,13 @@ The fixed path segment for such a sub-resource MUST be derived by applying the `
 {direct-access-segment} = plural(directAccessElement.identifier)
 ```
 
-If the Direct Access element's cardinality is greater than 1, an individual associated object instance MUST be additionally addressed by appending its Unique Identifier value as a further path segment, `"{unique-id}"`. [@!I-D.kowalik-rpp-data-objects] requires that any object type referenced by a Direct Access element of cardinality greater than 1 define a Unique Identifier for exactly this purpose. If the Direct Access element's cardinality is 0-1 or 1, no such extra segment is appended; the element's own path is already unambiguous.
+If the Direct Access element's cardinality is greater than 1, an individual associated object instance MUST be additionally addressed by appending its Unique Identifier value as a further path segment, `"{unique-id}"`. [@!I-D.ietf-rpp-data-objects] requires that any object type referenced by a Direct Access element of cardinality greater than 1 define a Unique Identifier for exactly this purpose. If the Direct Access element's cardinality is 0-1 or 1, no such extra segment is appended; the element's own path is already unambiguous.
 
 ```
 {direct-access-path} = {container-path} "/" {direct-access-segment} [ "/" {unique-id} ]
 ```
 
-Applying Rule 3 recursively from the top-level Data Object down to every Direct Access element defined in [@!I-D.kowalik-rpp-data-objects] yields the following paths (`"{id}"` denotes the Unique Identifier value of the resource instance immediately to its left; it is instantiated per resource type as shown in the Derived Endpoint Reference below):
+Applying Rule 3 recursively from the top-level Data Object down to every Direct Access element defined in [@!I-D.ietf-rpp-data-objects] yields the following paths (`"{id}"` denotes the Unique Identifier value of the resource instance immediately to its left; it is instantiated per resource type as shown in the Derived Endpoint Reference below):
 
 | Container path | Direct Access element `"Identifier"` | Cardinality | Resulting path |
 |---|---|---|---|
@@ -1541,8 +1541,8 @@ Data confidentiality and integrity MUST be enforced. Every client and server int
 - Described full and partial update operations, using HTTP PUT and PATCH methods respectively. (Issue #21)
 - Added support for embedding process data in uniform interface operations. Registered the `rpp-process` link relation type with IANA.
 - Generalised process sub-resource URL derivation into Rule 3 (Direct Access Sub-Resource Path Segment); Rules 4 through 6 now apply this general rule to Process Objects instead of deriving process paths independently.
-- Corrected the Renew process collection segment from `renewalProcesses` to `renewProcesses` in the Renew Resource section and the Derived Endpoint Reference table, matching the `renewProcess` identifier in [@!I-D.kowalik-rpp-data-objects].
-- Aligned the URL template variables in Discoverability with Unique Identifier terminology from [@!I-D.kowalik-rpp-data-objects] and with the `{process-collection}`/`{process-id}` naming used in the Endpoints section; removed the unused `process_name` variable.
+- Corrected the Renew process collection segment from `renewalProcesses` to `renewProcesses` in the Renew Resource section and the Derived Endpoint Reference table, matching the `renewProcess` identifier in [@!I-D.ietf-rpp-data-objects].
+- Aligned the URL template variables in Discoverability with Unique Identifier terminology from [@!I-D.ietf-rpp-data-objects] and with the `{process-collection}`/`{process-id}` naming used in the Endpoints section; removed the unused `process_name` variable.
 
 ## Version 04 to 05
 
