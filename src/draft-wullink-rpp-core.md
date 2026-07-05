@@ -1270,9 +1270,9 @@ RPP-code: 01000
 }
 ```
 
-# Messages
+## Messages
 
-## Retrieve
+### Retrieve
 
 A> TODO: update when covered in data objects
 
@@ -1310,7 +1310,7 @@ RPP-code: 01301
 TODO
 ```
 
-## Delete
+### Delete
 
 A> TODO: update when covered in data objects
 
@@ -1347,7 +1347,6 @@ Content-Length: 145
 
 TODO
 ```
-
 
 # Extension Framework
 

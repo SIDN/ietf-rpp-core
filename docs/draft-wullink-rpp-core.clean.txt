@@ -5,12 +5,12 @@
 Network Working Group                                         M. Wullink
 Internet-Draft                                                 SIDN Labs
 Intended status: Standards Track                              P. Kowalik
-Expires: 16 September 2026                                         DENIC
-                                                           15 March 2026
+Expires: 6 January 2027                                            DENIC
+                                                             5 July 2026
 
 
                   RESTful Provisioning Protocol (RPP)
-                     draft-wullink-rpp-core-06-dev
+                         draft-ietf-rpp-core-00
 
 Abstract
 
@@ -33,7 +33,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 16 September 2026.
+   This Internet-Draft will expire on 6 January 2027.
 
 Copyright Notice
 
@@ -101,35 +101,36 @@ Table of Contents
          14.8.5.3.  Cancel
          14.8.5.4.  Reject
          14.8.5.5.  Approve
-   15. Messages
-     15.1.  Retrieve
-     15.2.  Delete
-   16. Extension Framework
-   17. RPP Result Codes
-   18. Authentication and Authorization
-   19. IANA Considerations
-     19.1.  URN Sub-namespace for RPP (urn:ietf:params:rpp)
-     19.2.  RPP registry group
-     19.3.  RPP Discovery registry
-     19.4.  RPP Extension registry
-     19.5.  RPP Profile registry
-     19.6.  RPP Result Codes Registry
-     19.7.  Link Relation Type: rpp-process
-     19.8.  RPP Media Type (application/rpp+json)
-   20. Internationalization Considerations
-   21. Security Considerations
-   22. Change History
-     22.1.  Version 05 to 06
-     22.2.  Version 04 to 05
-     22.3.  Version 03 to 04
-     22.4.  Version 02 to 03
-     22.5.  Version 01 to 02
-     22.6.  Version 00 to 01
-     22.7.  Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)
-   23. Acknowledgements
-   24. References
-     24.1.  Normative References
-     24.2.  Informative References
+     14.9.  Messages
+       14.9.1.  Retrieve
+       14.9.2.  Delete
+   15. Extension Framework
+   16. RPP Result Codes
+   17. Authentication and Authorization
+   18. IANA Considerations
+     18.1.  URN Sub-namespace for RPP (urn:ietf:params:rpp)
+     18.2.  RPP registry group
+     18.3.  RPP Discovery registry
+     18.4.  RPP Extension registry
+     18.5.  RPP Profile registry
+     18.6.  RPP Result Codes Registry
+     18.7.  Link Relation Type: rpp-process
+     18.8.  RPP Media Type (application/rpp+json)
+   19. Internationalization Considerations
+   20. Security Considerations
+   21. Change History
+     21.1.  Version draft-wullink-rpp-core-05 to
+            draft-ietf-rpp-core-00
+     21.2.  Version 04 to 05
+     21.3.  Version 03 to 04
+     21.4.  Version 02 to 03
+     21.5.  Version 01 to 02
+     21.6.  Version 00 to 01
+     21.7.  Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)
+   22. Acknowledgements
+   23. References
+     23.1.  Normative References
+     23.2.  Informative References
    Authors' Addresses
 
 1.  Introduction
@@ -153,9 +154,6 @@ Table of Contents
 
    RESTful - A RESTful web service is a web service or API implemented
    using HTTP and the principles of [REST].
-
-   EPP RFCs - This is a reference to the EPP version 1.0 specifications
-   [RFC5730], [RFC5731], [RFC5732] and [RFC5733].
 
    RESTful Provisioning Protocol or RPP - The protocol described in this
    document.
@@ -1019,8 +1017,8 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
 14.1.  HTTP Mapping Rules
 
    All RPP endpoints are derived mechanically from the Data Object
-   definitions in [I-D.kowalik-rpp-data-objects].  No endpoint URL or
-   HTTP method related to processing of provisioning objects is defined
+   definitions in [I-D.ietf-rpp-data-objects].  No endpoint URL or HTTP
+   method related to processing of provisioning objects is defined
    independently of a corresponding Data Object.  The rules in this
    section MUST be applied to determine the URL path and HTTP method for
    any operation.
@@ -1209,6 +1207,17 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
 
    If the server chooses not to expose any persistent process resource,
    it MUST return 200 OK instead of 201 Created.
+
+   The operations using the DELETE method MUST NOT accept a request
+   body.  Because the semantic of the HTTP DELETE method are not defined
+   and may cause deployment issues.  If a request body is present for
+   any operation using the DELETE method, the server MUST reject the
+   request with an appropriate error response.
+
+   This means that the "delete" operation (HTTP DELETE method) is not
+   extensible, if the server needs to support additional data for a
+   special "delete" operation, then a new process MUST be defined for
+   this purpose.
 
 14.1.5.  Rule 5: Extended Process Operations
 
@@ -1895,9 +1904,9 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
      "actionDate": "2000-06-11T22:00:00.0Z"
    }
 
-15.  Messages
+14.9.  Messages
 
-15.1.  Retrieve
+14.9.1.  Retrieve
 
       |  TODO: update when covered in data objects
 
@@ -1932,7 +1941,7 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
 
    TODO
 
-15.2.  Delete
+14.9.2.  Delete
 
       |  TODO: update when covered in data objects
 
@@ -1972,11 +1981,11 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
 
    TODO
 
-16.  Extension Framework
+15.  Extension Framework
 
    TODO
 
-17.  RPP Result Codes
+16.  RPP Result Codes
 
    RPP result codes are used to indicate the result of an RPP request.
    They are returned in the RPP-Code header of the HTTP response.  The
@@ -2009,7 +2018,7 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
 
                                  Table 9
 
-18.  Authentication and Authorization
+17.  Authentication and Authorization
 
    Due to the stateless nature of RPP, the client MUST include the
    authentication credentials in each HTTP request.  This MAY be done by
@@ -2027,9 +2036,9 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
    Furthermore, the best practices for JWT usage as outlined in
    [RFC8725] MUST be followed.
 
-19.  IANA Considerations
+18.  IANA Considerations
 
-19.1.  URN Sub-namespace for RPP (urn:ietf:params:rpp)
+18.1.  URN Sub-namespace for RPP (urn:ietf:params:rpp)
 
    The IANA is requested to add the following value to the "IETF URN
    Sub-namespace for Registered Protocol Parameter Identifiers"
@@ -2042,7 +2051,7 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
    Repository: ?
    Index value: ?
 
-19.2.  RPP registry group
+18.2.  RPP registry group
 
    The IANA is requested to create a new registry group for RPP, this
    will be used to group together all the RPP-related registries such as
@@ -2052,7 +2061,7 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
    Reference: This Document
    IANA Registry Reference: TODO
 
-19.3.  RPP Discovery registry
+18.3.  RPP Discovery registry
 
    The IANA is requested to create a new registry for RPP discovery
    URLs, this registry will be used to register the well-known URLs for
@@ -2073,7 +2082,7 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
    -  description: A human-readable description of the discovery URL and
       its intended use.
 
-19.4.  RPP Extension registry
+18.4.  RPP Extension registry
 
    The IANA is requested to create a new registry for RPP extensions,
    this registry will be used to register standardized extensions to the
@@ -2098,7 +2107,7 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
    -  description: A human-readable description of the extension and its
       intended use.
 
-19.5.  RPP Profile registry
+18.5.  RPP Profile registry
 
    The IANA is requested to create a new registry for RPP profiles, this
    registry will be used to register standardized profiles for the RPP
@@ -2126,7 +2135,7 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
    -  description: A human-readable description of the profile and its
       intended use.
 
-19.6.  RPP Result Codes Registry
+18.6.  RPP Result Codes Registry
 
    The IANA is requested to create a new registry "RPP Result codes",
    this registry will be used to register RPP result codes defined in
@@ -2142,7 +2151,7 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
    -  description: A human-readable description of the result code and
       its intended use.
 
-19.7.  Link Relation Type: rpp-process
+18.7.  Link Relation Type: rpp-process
 
    The IANA is requested to register the following link relation type in
    the "Link Relation Types" registry, following the template in
@@ -2161,7 +2170,7 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
                   mnemonic).
    Reference:     This document
 
-19.8.  RPP Media Type (application/rpp+json)
+18.8.  RPP Media Type (application/rpp+json)
 
    The IANA is requested to add the following RPP media type to the
    "Media Types" registry, following the template in [RFC6838]:
@@ -2184,11 +2193,11 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
    Change controller: Document authors
    Provisional registration: No
 
-20.  Internationalization Considerations
+19.  Internationalization Considerations
 
    TODO
 
-21.  Security Considerations
+20.  Security Considerations
 
    RPP relies on the security of the underlying HTTP transport, hence
    the best common practices for securing HTTP described in [RFC9325]
@@ -2199,10 +2208,12 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
    [RFC8446].  Future versions of TLS MAY be used as they become
    available and are deemed secure.
 
-22.  Change History
+21.  Change History
 
-22.1.  Version 05 to 06
+21.1.  Version draft-wullink-rpp-core-05 to draft-ietf-rpp-core-00
 
+   -  Renamed the document name to "draft-ietf-rpp-core" and reset
+      version number to 00 (Issue #80)
    -  Added Organisation and User resource type, with create, read,
       update and delete operations.  (Issue #67)
    -  Added section about Mapping to EPP.  (Issue #55)
@@ -2224,7 +2235,7 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
       with the {process-collection}/{process-id} naming used in the
       Endpoints section; removed the unused process_name variable.
 
-22.2.  Version 04 to 05
+21.2.  Version 04 to 05
 
    -  Added Bootstrap and Discovery sections to the document, describing
       how a client can discover the location and capabilities of an RPP
@@ -2232,7 +2243,7 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
    -  Added IANA Considerations section with a request for new RPP
       discovery URLs, extensions and profile URLs.
 
-22.3.  Version 03 to 04
+21.3.  Version 03 to 04
 
    -  Added a new section on versioning, describing how versioning is
       applied to different RPP elements.  (Issue #39)
@@ -2248,11 +2259,11 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
    -  Added IANA registration request for the new RPP media type.
       (Issue #40)
 
-22.4.  Version 02 to 03
+21.4.  Version 02 to 03
 
    -  Added use of Problem Detail [RFC9457] for error responses
 
-22.5.  Version 01 to 02
+21.5.  Version 01 to 02
 
    -  Updated the examples, changed from "_.example.org" to "_.example"
    -  Merged the RPP-EPP-Code and RPP-Code headers into a single RPP-
@@ -2263,13 +2274,13 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
    -  Updated the Check request to now use an "availability" path
       segment and support both GET and HEAD methods
 
-22.6.  Version 00 to 01
+21.6.  Version 00 to 01
 
    -  Updated "Request Headers" and "Response Headers" section
    -  Changed transfer resource URL and HTTP method for reject, approve
       and cancel, in order to make the API easier to use
 
-22.7.  Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)
+21.7.  Version 00 (draft-rpp-core) to 00 (draft-wullink-rpp-core)
 
    -  Renamed the document name to "draft-wullink-rpp-core"
    -  Removed sections: Design Considerations, Resource Naming
@@ -2279,16 +2290,23 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
    -  Removed text about extensions
    -  Changed naming to be less EPP like and more RDAP like
 
-23.  Acknowledgements
+22.  Acknowledgements
 
    The authors would like to thank the following people for their
    helpful text contributions, comments and suggestions.
 
    -  Q Misell, AS207960 Cyfyngedig
 
-24.  References
+23.  References
 
-24.1.  Normative References
+23.1.  Normative References
+
+   [I-D.ietf-rpp-data-objects]
+              Kowalik, P. and M. Wullink, "RESTful Provisioning Protocol
+              (RPP) Data Objects", Work in Progress, Internet-Draft,
+              draft-ietf-rpp-data-objects-01, 3 July 2026,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-rpp-
+              data-objects-01>.
 
    [I-D.kowalik-rpp-data-objects]
               Kowalik, P. and M. Wullink, "RESTful Provisioning Protocol
@@ -2336,10 +2354,6 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
               Domain Name Mapping", STD 69, RFC 5731,
               DOI 10.17487/RFC5731, August 2009,
               <https://www.rfc-editor.org/info/rfc5731>.
-
-   [RFC5732]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
-              Host Mapping", STD 69, RFC 5732, DOI 10.17487/RFC5732,
-              August 2009, <https://www.rfc-editor.org/info/rfc5732>.
 
    [RFC5733]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
               Contact Mapping", STD 69, RFC 5733, DOI 10.17487/RFC5733,
@@ -2426,7 +2440,7 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
    [SemVer]   Semantic Versioning, "Semantic Versioning 2.0.0",
               <https://semver.org/>.
 
-24.2.  Informative References
+23.2.  Informative References
 
    [RFC8748]  Carney, R., Brown, G., and J. Frakes, "Registry Fee
               Extension for the Extensible Provisioning Protocol (EPP)",
