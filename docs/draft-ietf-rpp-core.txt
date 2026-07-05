@@ -89,7 +89,7 @@ Table of Contents
      14.1.  HTTP Mapping Rules . . . . . . . . . . . . . . . . . . .  22
        14.1.1.  Rule 1: Collection Path Segment  . . . . . . . . . .  22
        14.1.2.  Rule 2: Uniform Interface Operations . . . . . . . .  23
-       14.1.3.  Rule 3: Direct Access Sub-Resource Path Segment  . .  24
+       14.1.3.  Rule 3: Direct Access Sub-Resource Path Segment  . .  23
        14.1.4.  Rule 4: Process Uniform Interface Operations . . . .  26
        14.1.5.  Rule 5: Extended Process Operations  . . . . . . . .  27
        14.1.6.  Rule 6: Process Listing  . . . . . . . . . . . . . .  28
@@ -1256,40 +1256,6 @@ Internet-Draft        RESTful Provisioning Protocol            July 2026
    "{collection}" is derived per Rule 1. "{id}" is the unique identifier
    value of the specific object instance.
 
-   A RPP client MAY use the HTTP GET method for informational requests
-   only when no request data has to be added to the HTTP message body.
-   Sending content using an HTTP GET request is discouraged in
-   [RFC9110], there exist no generally defined semantics for content
-   received in a GET request.  When an RPP operation requires additional
-   input data, the client MUST use the HTTP POST, PUT or PATCH method
-   and include any required data in the HTTP message body and HTTP
-   headers.
-
-      |  TODO: the paragraph above looks like misplaced.  Do we need it
-      |  at all?  The protocol defines if anything MAY be posted to the
-      |  message body, so maybe this is a design consideration which
-      |  does not belong to the final document?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik        Expires 6 January 2027                [Page 23]
-
-Internet-Draft        RESTful Provisioning Protocol            July 2026
-
-
     +========================+================+======================+
     | Operation "Identifier" | HTTP Method    | URL path             |
     +========================+================+======================+
@@ -1312,6 +1278,17 @@ Internet-Draft        RESTful Provisioning Protocol            July 2026
    applies uniformly and recursively: the containing resource instance
    MAY itself be a Direct Access sub-resource of a further-enclosing
    resource.
+
+
+
+
+
+
+
+Wullink & Kowalik        Expires 6 January 2027                [Page 23]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2026
+
 
    The fixed path segment for such a sub-resource MUST be derived by
    applying the plural() function to the Direct Access data element's
@@ -1337,6 +1314,29 @@ Internet-Draft        RESTful Provisioning Protocol            July 2026
    value of the resource instance immediately to its left; it is
    instantiated per resource type as shown in the Derived Endpoint
    Reference below):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
