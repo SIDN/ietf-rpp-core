@@ -583,7 +583,7 @@ Endpoints are described using URI Templates [@!RFC6570] relative to a discoverab
 
 ## HTTP Mapping Rules
 
-All RPP endpoints are derived mechanically from the Data Object definitions in [@!I-D.kowalik-rpp-data-objects]. No endpoint URL or HTTP method related to processing of provisioning objects is defined independently of a corresponding Data Object. The rules in this section MUST be applied to determine the URL path and HTTP method for any operation.
+All RPP endpoints are derived mechanically from the Data Object definitions in [@!I-D.ietf-rpp-data-objects]. No endpoint URL or HTTP method related to processing of provisioning objects is defined independently of a corresponding Data Object. The rules in this section MUST be applied to determine the URL path and HTTP method for any operation.
 
 ### Rule 1: Collection Path Segment
 
