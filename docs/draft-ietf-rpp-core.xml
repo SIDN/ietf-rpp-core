@@ -65,8 +65,7 @@
 <t>Use of the RPP-Authorization header:</t>
 
 <sourcecode type="http"><![CDATA[RPP-Authorization: authinfo value=TXkgU2VjcmFRva2Vu, roid=REG-X-123
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>The value of the <tt>RPP-Authorization</tt> header is case sensitive. The server MUST reject requests where the case of the header value does not match the expected case.
 The <tt>RPP-Authorization</tt> header is specific to the user agent and MUST NOT be cached, as recommended by <xref target="RFC9110" sectionFormat="bare" section="Section 16.4.2"></xref>, the server MUST use the correct HTTP cache directives to prevent caching of the <tt>RPP-Authorization</tt> header.</t>
 
@@ -99,8 +98,7 @@ For RPP result codes the leading digit MUST be &quot;1&quot;. For avoidance of c
 <t>Example:</t>
 
 <artwork><![CDATA[Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process" process="createProcess"; processId="XYZ-12345";
-]]>
-</artwork>
+]]></artwork>
 </section>
 
 <section anchor="error-handling-and-relation-between-http-status-codes-and-rpp-codes"><name>Error handling and relation between HTTP status codes and RPP codes</name>
@@ -242,8 +240,7 @@ The document MUST contain an <tt>errors</tt> element, as a list of objects detai
     "action_cost": 25.0
   }]
 }
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Problem Detail response containing multiple errors for a domain create request using an invalid domain name (_$.example), JSONPaths are specified in the error objects to indicate which value in the request caused the error:</t>
 
 <sourcecode type="json"><![CDATA[{
@@ -262,8 +259,7 @@ The document MUST contain an <tt>errors</tt> element, as a list of objects detai
     "reason": "Domain name length must be between 3 and 63 characters",
   }]
 }
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="bootstrapping"><name>Bootstrapping</name>
@@ -281,15 +277,13 @@ The document MUST contain an <tt>errors</tt> element, as a list of objects detai
 
 <sourcecode type="dns"><![CDATA[@ORIGIN example.
 _rpp IN HTTPS 1 . alpn=h2,h3
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>In this example, the well-known endpoint URL is <tt>https://rpp.example/.well-known/rpp.json</tt>.</t>
 <t>Example HTTPS resource record for an RPP server using a different TargetName (rpp-svr2.registry.example) and a non-standard port (8443) for the TLD &quot;example&quot;:</t>
 
 <sourcecode type="dns"><![CDATA[@ORIGIN example.
 _rpp IN HTTPS 1 rpp-svr2.registry.example. alpn=h2,h3 port=8443
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>In this example, the well-known endpoint URL is <tt>https://rpp-svr2.registry.example:8443/.well-known/rpp.json</tt>.</t>
 </section>
 
@@ -392,8 +386,7 @@ _rpp IN HTTPS 1 rpp-svr2.registry.example. alpn=h2,h3 port=8443
   ]
 
 }
-]]>
-</sourcecode>
+]]></sourcecode>
 
 <section anchor="workflow"><name>Workflow</name>
 <t>The steps for a typical workflow of provisioning an object using RPP without knowing the location and capabilities of the server are as follows, the first three steps are optional, the client can choose to skip any of these steps if it already has the required information from a previous interaction or configuration.</t>
@@ -440,8 +433,7 @@ A request using an extension MUST include the version of the extension. The serv
       "url": "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0"
     }
   ],
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="profiles"><name>Profiles</name>
@@ -455,8 +447,7 @@ A request using an extension MUST include the version of the extension. The serv
       "url": "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0"
     }
   ]
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 </section>
 
@@ -505,8 +496,7 @@ A request using an extension MUST include the version of the extension. The serv
     "version": "1.0"
   }
 }
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="inheritance"><name>Inheritance</name>
@@ -528,8 +518,7 @@ A request using an extension MUST include the version of the extension. The serv
   ],
   "profile":
 }
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>The example profile definition shown in <xref target="profile-example"></xref> uses the &quot;base-profile&quot; as its base and inherits its features and also overrides the version of the &quot;rppOther&quot; extension defined in the base profile.</t>
 </section>
 
@@ -543,13 +532,11 @@ A request using an extension MUST include the version of the extension. The serv
 <sourcecode type="abnf"><![CDATA[profile-header = "profile" "=" profile-name ";" OWS "version" "=" version
 profile-name   = token
 version        = 1*DIGIT "." 1*DIGIT
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example:</t>
 
 <sourcecode type="http"><![CDATA[RPP-Profile: profile=urn:ietf:params:rpp:profile:example-profile;version=1.0
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="media-type-parameter-signalling"><name>Media type parameter signalling</name>
@@ -564,14 +551,12 @@ version        = 1*DIGIT "." 1*DIGIT
 <sourcecode type="abnf"><![CDATA[profile-parameter = "profile" "=" profile-name ";" OWS "version" "=" version
 profile-name      = token
 version           = 1*DIGIT "." 1*DIGIT
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example for the media type <tt>application/rpp+json</tt> with profile parameters indicating the use of the &quot;example-profile&quot; profile version 1.0.:</t>
 
 <sourcecode type="http"><![CDATA[Accept: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
 Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="process-signalling"><name>Process signalling</name>
@@ -586,8 +571,7 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 <t>Example:</t>
 
 <sourcecode type="http"><![CDATA[Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/transferProcesses/XYZ-12345>; rel="rpp-process"; process="transferProcess"; processId="XYZ-12345"; latest=true
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 </section>
 </section>
@@ -602,8 +586,7 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 <t>Each Data Object has a stable, <tt>&quot;Identifier&quot;</tt> (e.g. <tt>&quot;domainName&quot;</tt>, <tt>&quot;contact&quot;</tt>, <tt>&quot;host&quot;</tt>). The URL path segment for a collection of such objects MUST be derived by applying the <tt>plural()</tt> function to the object's <tt>&quot;Identifier&quot;</tt>. The <tt>&quot;plural()&quot;</tt> function appends an &quot;s&quot; or &quot;es&quot; to the identifier as per English language rules. Any irregular plural version MUST be defined in the data object specification.</t>
 
 <artwork><![CDATA[{collection} = plural(dataObject.identifier)
-]]>
-</artwork>
+]]></artwork>
 <t>Examples derived from current data object identifiers:</t>
 <table>
 <thead>
@@ -685,16 +668,15 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 
 <section anchor="rule-3-direct-access-sub-resource-path-segment"><name>Rule 3: Direct Access Sub-Resource Path Segment</name>
 <t>A data element whose <tt>&quot;Direct Access&quot;</tt> flag is set to <tt>true</tt> in its Data Object definition is additionally exposed as a sub-resource, nested under the URL of the resource instance that contains it. This rule applies uniformly and recursively: the containing resource instance MAY itself be a Direct Access sub-resource of a further-enclosing resource.</t>
-<t>The fixed path segment for such a sub-resource MUST be derived by applying the <tt>plural()</tt> function to the Direct Access data element's own <tt>&quot;Identifier&quot;</tt> — not to the <tt>&quot;Identifier&quot;</tt> of the associated object type the element references.</t>
+<t>The fixed path segment for such a sub-resource MUST be derived from the Direct Access data element's own <tt>&quot;Identifier&quot;</tt> — not from the <tt>&quot;Identifier&quot;</tt> of the associated object type the element references.</t>
+<t>If the Direct Access element's cardinality is 0-1 or 1, the element's own <tt>&quot;Identifier&quot;</tt> MUST be used as the path segment, unpluralized; the resulting path already addresses a single instance unambiguously.</t>
 
-<artwork><![CDATA[{direct-access-segment} = plural(directAccessElement.identifier)
-]]>
-</artwork>
-<t>If the Direct Access element's cardinality is greater than 1, an individual associated object instance MUST be additionally addressed by appending its Unique Identifier value as a further path segment, <tt>&quot;{unique-id}&quot;</tt>. <xref target="I-D.kowalik-rpp-data-objects"></xref> requires that any object type referenced by a Direct Access element of cardinality greater than 1 define a Unique Identifier for exactly this purpose. If the Direct Access element's cardinality is 0-1 or 1, no such extra segment is appended; the element's own path is already unambiguous.</t>
+<artwork><![CDATA[{direct-access-path} = {container-path} "/" directAccessElement.identifier
+]]></artwork>
+<t>If the Direct Access element's cardinality is greater than 1, the <tt>plural()</tt> function MUST be applied to the element's <tt>&quot;Identifier&quot;</tt> to derive the path segment, and an individual associated object instance MUST be additionally addressed by appending its Unique Identifier value as a further path segment, <tt>&quot;{unique-id}&quot;</tt>. <xref target="I-D.ietf-rpp-data-objects"></xref> requires that any object type referenced by a Direct Access element of cardinality greater than 1 define a Unique Identifier for exactly this purpose.</t>
 
-<artwork><![CDATA[{direct-access-path} = {container-path} "/" {direct-access-segment} [ "/" {unique-id} ]
-]]>
-</artwork>
+<artwork><![CDATA[{direct-access-path} = {container-path} "/" plural(directAccessElement.identifier) "/" {unique-id}
+]]></artwork>
 <t>Applying Rule 3 recursively from the top-level Data Object down to every Direct Access element defined in <xref target="I-D.ietf-rpp-data-objects"></xref> yields the following paths (<tt>&quot;{id}&quot;</tt> denotes the Unique Identifier value of the resource instance immediately to its left; it is instantiated per resource type as shown in the Derived Endpoint Reference below):</t>
 <table>
 <thead>
@@ -1108,8 +1090,7 @@ If a request body is present for any operation using the DELETE method, the serv
 <artwork><![CDATA[- Request: HEAD|GET {collection}/{id}/availability
 - Request message: None
 - Response message: Optional availability response
-]]>
-</artwork>
+]]></artwork>
 <t>Example request for a domain name that is not available for provisioning:</t>
 
 <sourcecode type="http"><![CDATA[HEAD domains/foo.example/availability HTTP/2
@@ -1118,8 +1099,7 @@ Authorization: Bearer <token>
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 404 Not Found
@@ -1130,8 +1110,7 @@ RPP-Svtrid: XYZ-12345
 RPP-code: 01000
 Content-Length: 0
 
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="resource-information"><name>Resource Information</name>
@@ -1145,8 +1124,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example request using RPP-Authorization header for an object that has attached authorization information:</t>
 
 <sourcecode type="http"><![CDATA[GET /rpp/v1/domainNames/foo.example HTTP/2
@@ -1157,8 +1135,7 @@ Accept-Language: en
 RPP-Cltrid: ABC-12345
 RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example Info response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1170,8 +1147,7 @@ Content-Language: en
 RPP-code: 01000
 
 TODO: JSON message here
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="create-resource"><name>Create Resource</name>
@@ -1187,8 +1163,7 @@ Accept-Language: en
 Content-Length: 220
 
 TODO
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example Domain Create response for a new domain name <tt>foo.example</tt>:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 201 Created
@@ -1201,8 +1176,7 @@ Location: https://rpp.example/rpp/v1/domainNames/foo.example
 RPP-code: 01000
 
 TODO
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example Domain Create response where a <tt>createProcess</tt> object was implicitly created:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 201 Created
@@ -1215,8 +1189,7 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
 RPP-code: 01000
 
 TODO
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="delete-resource"><name>Delete Resource</name>
@@ -1230,8 +1203,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example Domain Delete response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1243,8 +1215,7 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="update-resource"><name>Update Resource</name>
@@ -1271,8 +1242,7 @@ RPP-Cltrid: ABC-12345
 Content-Length: 252
 
 TODO
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example full update response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1285,8 +1255,7 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example partial update request (PATCH):</t>
 
 <sourcecode type="http"><![CDATA[PATCH /rpp/v1/domainNames/foo.example HTTP/2
@@ -1299,8 +1268,7 @@ RPP-Cltrid: ABC-12345
 Content-Length: 252
 
 TODO
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example partial update response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1313,8 +1281,7 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="processes"><name>Processes</name>
@@ -1357,8 +1324,7 @@ Content-Length: 96
     "value": 1
   }
 }
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example Renew response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 201 Created
@@ -1375,8 +1341,7 @@ RPP-code: 01000
 {
   "expiryDate": "2026-09-08"
 }
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="transfer-resource"><name>Transfer Resource</name>
@@ -1399,8 +1364,7 @@ Content-Length: 320
   "gainingClientId": "ClientX"
 }
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example request using object authorization:</t>
 
 <sourcecode type="http"><![CDATA[POST /rpp/v1/domainNames/foo.example/processes/transferProcesses HTTP/2
@@ -1416,8 +1380,7 @@ Content-Length: 320
     "transferDir": "pull"
 }
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example Transfer response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 201 Created
@@ -1437,8 +1400,7 @@ RPP-code: 01001
   "actionDate": "2000-06-11T22:00:00.0Z",
   "exDate": "2002-09-08T22:00:00.0Z"
 }
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="status"><name>Status</name>
@@ -1452,8 +1414,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example Transfer Query response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1472,8 +1433,7 @@ RPP-code: 01000
   "actionDate": "2000-06-11T22:00:00.0Z",
   "exDate": "2002-09-08T22:00:00.0Z"
 }
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="cancel"><name>Cancel</name>
@@ -1487,8 +1447,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1506,8 +1465,7 @@ RPP-code: 01000
   "requestDate": "2000-06-06T22:00:00.0Z",
   "actionDate": "2000-06-11T22:00:00.0Z"
 }
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="reject"><name>Reject</name>
@@ -1521,8 +1479,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1541,8 +1498,7 @@ RPP-code: 01000
   "actionDate": "2000-06-11T22:00:00.0Z"
 }
 
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="approve"><name>Approve</name>
@@ -1557,8 +1513,7 @@ Accept-Language: en
 RPP-Cltrid: ABC-12345
 Content-Length: 0
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1576,8 +1531,7 @@ RPP-code: 01000
   "requestDate": "2000-06-06T22:00:00.0Z",
   "actionDate": "2000-06-11T22:00:00.0Z"
 }
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 </section>
 </section>
@@ -1605,8 +1559,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1618,8 +1571,7 @@ Content-Language: en
 RPP-code: 01301
 
 TODO
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="delete"><name>Delete</name>
@@ -1642,8 +1594,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Example response:</t>
 
 <sourcecode type="http"><![CDATA[HTTP/2 200 OK
@@ -1657,8 +1608,7 @@ RPP-Cltrid: ABC-12345
 Content-Length: 145
 
 TODO
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 </section>
 </section>
@@ -1717,8 +1667,7 @@ TODO: add filled in template, if we decide to use URN for profile identification
 Specification: This Document
 Repository: ?
 Index value: ?
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="rpp-registry-group"><name>RPP registry group</name>
@@ -1727,8 +1676,7 @@ Index value: ?
 <sourcecode type="text"><![CDATA[Name of the registry: RESTful Provisioning Protocol (RPP)
 Reference: This Document
 IANA Registry Reference: TODO
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="rpp-discovery-registry"><name>RPP Discovery registry</name>
@@ -1737,8 +1685,7 @@ IANA Registry Reference: TODO
 <sourcecode type="text"><![CDATA[Name of the registry: RPP Discovery URLs
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Fields to be registered:</t>
 
 <ul spacing="compact">
@@ -1754,8 +1701,7 @@ Registration procedure: Expert Review
 <sourcecode type="text"><![CDATA[Name of the registry: RPP Extensions
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Fields to be registered:</t>
 
 <ul spacing="compact">
@@ -1772,8 +1718,7 @@ Registration procedure: Expert Review
 <sourcecode type="text"><![CDATA[Name of the registry: RPP Profiles
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Fields to be registered:</t>
 
 <ul spacing="compact">
@@ -1791,8 +1736,7 @@ Registration procedure: Expert Review
 <sourcecode type="text"><![CDATA[Name of the registry: RPP Result codes
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
-]]>
-</sourcecode>
+]]></sourcecode>
 <t>Fields to be registered:</t>
 
 <ul spacing="compact">
@@ -1816,8 +1760,7 @@ Description:   Identifies a process resource that was implicitly created as a
                "true", OPTIONAL, indicating the target URL uses the "latest"
                mnemonic).
 Reference:     This document
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 
 <section anchor="rpp-media-type-application-rpp-json"><name>RPP Media Type (application/rpp+json)</name>
@@ -1840,8 +1783,7 @@ Restrictions on usage: "N/A"
 Author: Document authors
 Change controller: Document authors
 Provisional registration: No
-]]>
-</sourcecode>
+]]></sourcecode>
 </section>
 </section>
 
@@ -1943,7 +1885,6 @@ Provisional registration: No
 <references><name>References</name>
 <references><name>Normative References</name>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-rpp-data-objects.xml"/>
-<xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.kowalik-rpp-data-objects.xml"/>
 <reference anchor="REST" target="http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm">
   <front>
     <title>Architectural Styles and the Design of Network-based Software Architectures</title>
