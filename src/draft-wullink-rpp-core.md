@@ -6,11 +6,11 @@ workgroup = "Network Working Group"
 submissiontype = "IETF"
 keyword = [""]
 TocDepth = 4
-date = 2026-03-15
+date = 2026-07-05
 
 [seriesInfo]
 name = "Internet-Draft"
-value = "draft-wullink-rpp-core-06-dev"
+value = "draft-ietf-rpp-core-00"
 stream = "IETF"
 status = "standard"
 
@@ -55,8 +55,6 @@ In this document the following terminology is used.
 REST - Representational State Transfer ([@!REST]). An architectural style.
 
 RESTful - A RESTful web service is a web service or API implemented using HTTP and the principles of [@!REST].
-
-EPP RFCs - This is a reference to the EPP version 1.0 specifications [@!RFC5730], [@!RFC5731], [@!RFC5732] and [@!RFC5733].
 
 RESTful Provisioning Protocol or RPP - The protocol described in this document.
 
@@ -583,7 +581,7 @@ Endpoints are described using URI Templates [@!RFC6570] relative to a discoverab
 
 ## HTTP Mapping Rules
 
-All RPP endpoints are derived mechanically from the Data Object definitions in [@!I-D.kowalik-rpp-data-objects]. No endpoint URL or HTTP method related to processing of provisioning objects is defined independently of a corresponding Data Object. The rules in this section MUST be applied to determine the URL path and HTTP method for any operation.
+All RPP endpoints are derived mechanically from the Data Object definitions in [@!I-D.ietf-rpp-data-objects]. No endpoint URL or HTTP method related to processing of provisioning objects is defined independently of a corresponding Data Object. The rules in this section MUST be applied to determine the URL path and HTTP method for any operation.
 
 ### Rule 1: Collection Path Segment
 
@@ -1536,8 +1534,9 @@ Data confidentiality and integrity MUST be enforced. Every client and server int
 
 # Change History
 
-## Version 05 to 06
+## Version draft-wullink-rpp-core-05 to draft-ietf-rpp-core-00
 
+- Renamed the document name to "draft-ietf-rpp-core" and reset version number to 00 (Issue #80)
 - Added Organisation and User resource type, with create, read, update and delete operations. (Issue #67)
 - Added section about Mapping to EPP. (Issue #55)
 - Described full and partial update operations, using HTTP PUT and PATCH methods respectively. (Issue #21)
@@ -1606,31 +1605,11 @@ The authors would like to thank the following people for their helpful text cont
   </front>
 </reference>
 
-<reference anchor="YAML" target="https://yaml.org/spec/1.2.2/">
-  <front>
-    <title>YAML: YAML Ain't Markup Language</title>
-    <author>
-      <organization>YAML Language Development Team</organization>
-    </author>
-    <date year="2000"/>
-  </front>
-</reference>
-
 <reference anchor="SemVer" target="https://semver.org/">
   <front>
     <title>Semantic Versioning 2.0.0</title>
     <author>
       <organization>Semantic Versioning</organization>
     </author>
-  </front>
-</reference>
-
-<reference anchor="XML" target="https://www.w3.org/TR/xml">
-  <front>
-    <title>Extensible Markup Language (XML) 1.0 (Fifth Edition)</title>
-    <author>
-      <organization>W3C</organization>
-    </author>
-    <date year="2013"/>
   </front>
 </reference>
