@@ -98,7 +98,7 @@ For RPP result codes the leading digit MUST be &quot;1&quot;. For avoidance of c
 <t>When a uniform interface operation implicitly creates a process object as a side effect, the server MUST communicate the URL of the created process resource using the <tt>Link</tt> response header <xref target="RFC8288"></xref> with the <tt>rpp-process</tt> relation type. If multiple process objects are created, the server MUST include one <tt>Link</tt> header field per created process resource, each with <tt>rel=&quot;rpp-process&quot;</tt>.</t>
 <t>Example:</t>
 
-<artwork><![CDATA[Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process"
+<artwork><![CDATA[Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process" process="createProcess"; processId="XYZ-12345";
 ]]>
 </artwork>
 </section>
@@ -690,7 +690,7 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 <artwork><![CDATA[{direct-access-segment} = plural(directAccessElement.identifier)
 ]]>
 </artwork>
-<t>If the Direct Access element's cardinality is greater than 1, an individual associated object instance MUST be additionally addressed by appending its Unique Identifier value as a further path segment, <tt>&quot;{unique-id}&quot;</tt>. <xref target="I-D.ietf-rpp-data-objects"></xref> requires that any object type referenced by a Direct Access element of cardinality greater than 1 define a Unique Identifier for exactly this purpose. If the Direct Access element's cardinality is 0-1 or 1, no such extra segment is appended; the element's own path is already unambiguous.</t>
+<t>If the Direct Access element's cardinality is greater than 1, an individual associated object instance MUST be additionally addressed by appending its Unique Identifier value as a further path segment, <tt>&quot;{unique-id}&quot;</tt>. <xref target="I-D.kowalik-rpp-data-objects"></xref> requires that any object type referenced by a Direct Access element of cardinality greater than 1 define a Unique Identifier for exactly this purpose. If the Direct Access element's cardinality is 0-1 or 1, no such extra segment is appended; the element's own path is already unambiguous.</t>
 
 <artwork><![CDATA[{direct-access-path} = {container-path} "/" {direct-access-segment} [ "/" {unique-id} ]
 ]]>
@@ -1211,7 +1211,7 @@ Server: Example RPP server v1.0
 Content-Language: en
 Content-Type: application/rpp+json
 Location: https://rpp.example/rpp/v1/domainNames/foo.example
-Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process"
+Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process" process="createProcess"; processId="XYZ-12345";
 RPP-code: 01000
 
 TODO
@@ -1943,6 +1943,7 @@ Provisional registration: No
 <references><name>References</name>
 <references><name>Normative References</name>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-rpp-data-objects.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.kowalik-rpp-data-objects.xml"/>
 <reference anchor="REST" target="http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm">
   <front>
     <title>Architectural Styles and the Design of Network-based Software Architectures</title>

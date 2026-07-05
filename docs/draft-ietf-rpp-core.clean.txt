@@ -307,7 +307,7 @@ Table of Contents
 
    Example:
 
-Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process"
+Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process" process="createProcess"; processId="XYZ-12345";
 
 7.  Error handling and relation between HTTP status codes and RPP codes
 
@@ -1058,6 +1058,19 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
    "{collection}" is derived per Rule 1. "{id}" is the unique identifier
    value of the specific object instance.
 
+   A RPP client MAY use the HTTP GET method for informational requests
+   only when no request data has to be added to the HTTP message body.
+   Sending content using an HTTP GET request is discouraged in
+   [RFC9110], there exist no generally defined semantics for content
+   received in a GET request.  When an RPP operation requires additional
+   input data, the client MUST use the HTTP POST, PUT or PATCH method
+   and include any required data in the HTTP message body and HTTP
+   headers.
+
+      |  TODO: the paragraph above looks like misplaced.  Do we need it
+      |  at all?  The protocol defines if anything MAY be posted to the
+      |  message body, so maybe this is a design consideration which
+      |  does not belong to the final document?
 
     +========================+================+======================+
     | Operation "Identifier" | HTTP Method    | URL path             |
@@ -1092,10 +1105,10 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
    If the Direct Access element's cardinality is greater than 1, an
    individual associated object instance MUST be additionally addressed
    by appending its Unique Identifier value as a further path segment,
-   "{unique-id}".  [I-D.ietf-rpp-data-objects] requires that any object
-   type referenced by a Direct Access element of cardinality greater
-   than 1 define a Unique Identifier for exactly this purpose.  If the
-   Direct Access element's cardinality is 0-1 or 1, no such extra
+   "{unique-id}".  [I-D.kowalik-rpp-data-objects] requires that any
+   object type referenced by a Direct Access element of cardinality
+   greater than 1 define a Unique Identifier for exactly this purpose.
+   If the Direct Access element's cardinality is 0-1 or 1, no such extra
    segment is appended; the element's own path is already unambiguous.
 
 {direct-access-path} = {container-path} "/" {direct-access-segment} [ "/" {unique-id} ]
@@ -1505,7 +1518,7 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
    Content-Language: en
    Content-Type: application/rpp+json
    Location: https://rpp.example/rpp/v1/domainNames/foo.example
-   Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process"
+   Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process" process="createProcess"; processId="XYZ-12345";
    RPP-code: 01000
 
    TODO
@@ -2294,6 +2307,13 @@ Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProces
               draft-ietf-rpp-data-objects-01, 3 July 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-rpp-
               data-objects-01>.
+
+   [I-D.kowalik-rpp-data-objects]
+              Kowalik, P. and M. Wullink, "RESTful Provisioning Protocol
+              (RPP) Data Objects", Work in Progress, Internet-Draft,
+              draft-kowalik-rpp-data-objects-04, 12 June 2026,
+              <https://datatracker.ietf.org/doc/html/draft-kowalik-rpp-
+              data-objects-04>.
 
    [REST]     Fielding, R., "Architectural Styles and the Design of
               Network-based Software Architectures", 2000,

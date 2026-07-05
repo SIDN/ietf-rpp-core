@@ -148,7 +148,7 @@ Internet-Draft        RESTful Provisioning Protocol            July 2026
    22. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  51
    23. References  . . . . . . . . . . . . . . . . . . . . . . . . .  51
      23.1.  Normative References . . . . . . . . . . . . . . . . . .  51
-     23.2.  Informative References . . . . . . . . . . . . . . . . .  53
+     23.2.  Informative References . . . . . . . . . . . . . . . . .  54
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  54
 
 1.  Introduction
@@ -359,7 +359,7 @@ Internet-Draft        RESTful Provisioning Protocol            July 2026
 
    Example:
 
-Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process"
+Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process" process="createProcess"; processId="XYZ-12345";
 
 7.  Error handling and relation between HTTP status codes and RPP codes
 
@@ -1323,10 +1323,10 @@ Internet-Draft        RESTful Provisioning Protocol            July 2026
    If the Direct Access element's cardinality is greater than 1, an
    individual associated object instance MUST be additionally addressed
    by appending its Unique Identifier value as a further path segment,
-   "{unique-id}".  [I-D.ietf-rpp-data-objects] requires that any object
-   type referenced by a Direct Access element of cardinality greater
-   than 1 define a Unique Identifier for exactly this purpose.  If the
-   Direct Access element's cardinality is 0-1 or 1, no such extra
+   "{unique-id}".  [I-D.kowalik-rpp-data-objects] requires that any
+   object type referenced by a Direct Access element of cardinality
+   greater than 1 define a Unique Identifier for exactly this purpose.
+   If the Direct Access element's cardinality is 0-1 or 1, no such extra
    segment is appended; the element's own path is already unambiguous.
 
 {direct-access-path} = {container-path} "/" {direct-access-segment} [ "/" {unique-id} ]
@@ -1828,7 +1828,7 @@ Internet-Draft        RESTful Provisioning Protocol            July 2026
    Content-Language: en
    Content-Type: application/rpp+json
    Location: https://rpp.example/rpp/v1/domainNames/foo.example
-   Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process"
+   Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process" process="createProcess"; processId="XYZ-12345";
    RPP-code: 01000
 
    TODO
@@ -2820,6 +2820,13 @@ Internet-Draft        RESTful Provisioning Protocol            July 2026
               <https://datatracker.ietf.org/doc/html/draft-ietf-rpp-
               data-objects-01>.
 
+   [I-D.kowalik-rpp-data-objects]
+              Kowalik, P. and M. Wullink, "RESTful Provisioning Protocol
+              (RPP) Data Objects", Work in Progress, Internet-Draft,
+              draft-kowalik-rpp-data-objects-04, 12 June 2026,
+              <https://datatracker.ietf.org/doc/html/draft-kowalik-rpp-
+              data-objects-04>.
+
    [REST]     Fielding, R., "Architectural Styles and the Design of
               Network-based Software Architectures", 2000,
               <http://www.ics.uci.edu/~fielding/pubs/dissertation/
@@ -2841,6 +2848,16 @@ Internet-Draft        RESTful Provisioning Protocol            July 2026
               DOI 10.17487/RFC2782, February 2000,
               <https://www.rfc-editor.org/info/rfc2782>.
 
+
+
+
+
+
+Wullink & Kowalik        Expires 6 January 2027                [Page 51]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2026
+
+
    [RFC3553]  Mealling, M., Masinter, L., Hardie, T., and G. Klyne, "An
               IETF URN Sub-namespace for Registered Protocol
               Parameters", BCP 73, RFC 3553, DOI 10.17487/RFC3553, June
@@ -2850,13 +2867,6 @@ Internet-Draft        RESTful Provisioning Protocol            July 2026
               Resource Identifier (URI): Generic Syntax", STD 66,
               RFC 3986, DOI 10.17487/RFC3986, January 2005,
               <https://www.rfc-editor.org/info/rfc3986>.
-
-
-
-Wullink & Kowalik        Expires 6 January 2027                [Page 51]
-
-Internet-Draft        RESTful Provisioning Protocol            July 2026
-
 
    [RFC5730]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)",
               STD 69, RFC 5730, DOI 10.17487/RFC5730, August 2009,
@@ -2895,6 +2905,15 @@ Internet-Draft        RESTful Provisioning Protocol            July 2026
               (JWT)", RFC 7519, DOI 10.17487/RFC7519, May 2015,
               <https://www.rfc-editor.org/info/rfc7519>.
 
+
+
+
+
+Wullink & Kowalik        Expires 6 January 2027                [Page 52]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2026
+
+
    [RFC7617]  Reschke, J., "The 'Basic' HTTP Authentication Scheme",
               RFC 7617, DOI 10.17487/RFC7617, September 2015,
               <https://www.rfc-editor.org/info/rfc7617>.
@@ -2906,13 +2925,6 @@ Internet-Draft        RESTful Provisioning Protocol            July 2026
    [RFC8446]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
               Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
               <https://www.rfc-editor.org/info/rfc8446>.
-
-
-
-Wullink & Kowalik        Expires 6 January 2027                [Page 52]
-
-Internet-Draft        RESTful Provisioning Protocol            July 2026
-
 
    [RFC8725]  Sheffer, Y., Hardt, D., and M. Jones, "JSON Web Token Best
               Current Practices", BCP 225, RFC 8725,
@@ -2951,6 +2963,13 @@ Internet-Draft        RESTful Provisioning Protocol            July 2026
               Resource Records)", RFC 9460, DOI 10.17487/RFC9460,
               November 2023, <https://www.rfc-editor.org/info/rfc9460>.
 
+
+
+Wullink & Kowalik        Expires 6 January 2027                [Page 53]
+
+Internet-Draft        RESTful Provisioning Protocol            July 2026
+
+
    [RFC9535]  Gössner, S., Ed., Normington, G., Ed., and C. Bormann,
               Ed., "JSONPath: Query Expressions for JSON", RFC 9535,
               DOI 10.17487/RFC9535, February 2024,
@@ -2960,15 +2979,6 @@ Internet-Draft        RESTful Provisioning Protocol            July 2026
               <https://semver.org/>.
 
 23.2.  Informative References
-
-
-
-
-
-Wullink & Kowalik        Expires 6 January 2027                [Page 53]
-
-Internet-Draft        RESTful Provisioning Protocol            July 2026
-
 
    [RFC8748]  Carney, R., Brown, G., and J. Frakes, "Registry Fee
               Extension for the Extensible Provisioning Protocol (EPP)",
@@ -2987,16 +2997,6 @@ Authors' Addresses
    DENIC
    Email: pawel.kowalik@denic.de
    URI:   https://denic.de/
-
-
-
-
-
-
-
-
-
-
 
 
 

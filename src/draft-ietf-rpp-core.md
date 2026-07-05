@@ -130,7 +130,7 @@ When a uniform interface operation implicitly creates a process object as a side
 Example:
 
 ```
-Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process"
+Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process" process="createProcess"; processId="XYZ-12345";
 ```
 
 # Error handling and relation between HTTP status codes and RPP codes
@@ -625,7 +625,7 @@ The fixed path segment for such a sub-resource MUST be derived by applying the `
 {direct-access-segment} = plural(directAccessElement.identifier)
 ```
 
-If the Direct Access element's cardinality is greater than 1, an individual associated object instance MUST be additionally addressed by appending its Unique Identifier value as a further path segment, `"{unique-id}"`. [@!I-D.ietf-rpp-data-objects] requires that any object type referenced by a Direct Access element of cardinality greater than 1 define a Unique Identifier for exactly this purpose. If the Direct Access element's cardinality is 0-1 or 1, no such extra segment is appended; the element's own path is already unambiguous.
+If the Direct Access element's cardinality is greater than 1, an individual associated object instance MUST be additionally addressed by appending its Unique Identifier value as a further path segment, `"{unique-id}"`. [@!I-D.kowalik-rpp-data-objects] requires that any object type referenced by a Direct Access element of cardinality greater than 1 define a Unique Identifier for exactly this purpose. If the Direct Access element's cardinality is 0-1 or 1, no such extra segment is appended; the element's own path is already unambiguous.
 
 ```
 {direct-access-path} = {container-path} "/" {direct-access-segment} [ "/" {unique-id} ]
@@ -876,7 +876,7 @@ Server: Example RPP server v1.0
 Content-Language: en
 Content-Type: application/rpp+json
 Location: https://rpp.example/rpp/v1/domainNames/foo.example
-Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process"
+Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process" process="createProcess"; processId="XYZ-12345";
 RPP-code: 01000
 
 TODO
