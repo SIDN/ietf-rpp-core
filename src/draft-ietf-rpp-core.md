@@ -604,9 +604,12 @@ Examples derived from current data object identifiers:
 
 The four uniform interface operations defined in the RPP data object specification map to HTTP methods and URL paths as follows. `"{collection}"` is derived per Rule 1. `"{id}"` is the unique identifier value of the specific object instance.
 
+<!-- commented out as it does not fit this section at all.
+
 A RPP client MAY use the HTTP GET method for informational requests only when no request data has to be added to the HTTP message body. Sending content using an HTTP GET request is discouraged in [@!RFC9110], there exist no generally defined semantics for content received in a GET request. When an RPP operation requires additional input data, the client MUST use the HTTP POST, PUT or PATCH method and include any required data in the HTTP message body and HTTP headers.
 
 A> TODO: the paragraph above looks like misplaced. Do we need it at all? The protocol defines if anything MAY be posted to the message body, so maybe this is a design consideration which does not belong to the final document?
+-->
 
 | Operation `"Identifier"` | HTTP Method | URL path |
 |---|---|---|
