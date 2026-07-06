@@ -622,16 +622,18 @@ A> TODO: the paragraph above looks like misplaced. Do we need it at all? The pro
 
 A data element whose `"Direct Access"` flag is set to `true` in its Data Object definition is additionally exposed as a sub-resource, nested under the URL of the resource instance that contains it. This rule applies uniformly and recursively: the containing resource instance MAY itself be a Direct Access sub-resource of a further-enclosing resource.
 
-The fixed path segment for such a sub-resource MUST be derived by applying the `plural()` function to the Direct Access data element's own `"Identifier"` — not to the `"Identifier"` of the associated object type the element references.
+The fixed path segment for such a sub-resource MUST be derived from the Direct Access data element's own `"Identifier"` — not from the `"Identifier"` of the associated object type the element references.
+
+If the Direct Access element's cardinality is 0-1 or 1, the element's own `"Identifier"` MUST be used as the path segment, unpluralized; the resulting path already addresses a single instance unambiguously.
 
 ```
-{direct-access-segment} = plural(directAccessElement.identifier)
+{direct-access-path} = {container-path} "/" directAccessElement.identifier
 ```
 
-If the Direct Access element's cardinality is greater than 1, an individual associated object instance MUST be additionally addressed by appending its Unique Identifier value as a further path segment, `"{unique-id}"`. [@!I-D.kowalik-rpp-data-objects] requires that any object type referenced by a Direct Access element of cardinality greater than 1 define a Unique Identifier for exactly this purpose. If the Direct Access element's cardinality is 0-1 or 1, no such extra segment is appended; the element's own path is already unambiguous.
+If the Direct Access element's cardinality is greater than 1, the `plural()` function MUST be applied to the element's `"Identifier"` to derive the path segment, and an individual associated object instance MUST be additionally addressed by appending its Unique Identifier value as a further path segment, `"{unique-id}"`. [@!I-D.ietf-rpp-data-objects] requires that any object type referenced by a Direct Access element of cardinality greater than 1 define a Unique Identifier for exactly this purpose.
 
 ```
-{direct-access-path} = {container-path} "/" {direct-access-segment} [ "/" {unique-id} ]
+{direct-access-path} = {container-path} "/" plural(directAccessElement.identifier) "/" {unique-id}
 ```
 
 Applying Rule 3 recursively from the top-level Data Object down to every Direct Access element defined in [@!I-D.ietf-rpp-data-objects] yields the following paths (`"{id}"` denotes the Unique Identifier value of the resource instance immediately to its left; it is instantiated per resource type as shown in the Derived Endpoint Reference below):

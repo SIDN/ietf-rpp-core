@@ -10,22 +10,23 @@
 <meta content="
        This document describes the endpoints for the RESTful Provisioning Protocol, used for the provisioning and management of objects in a shared database. 
     " name="description">
-<meta content="xml2rfc 3.31.0" name="generator">
+<meta content="xml2rfc 3.34.0" name="generator">
 <meta content="draft-ietf-rpp-core-00" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.31.0
-    Python 3.10.12
-    ConfigArgParse 1.7.1
+  xml2rfc 3.34.0
+    Python 3.14.5
+    ConfigArgParse 1.7.5
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
-    lxml 6.0.2
-    platformdirs 4.9.2
+    lxml 6.1.1
+    natsort 8.4.0
+    platformdirs 4.10.0
     pycountry 26.2.16
     PyYAML 6.0.3
-    requests 2.32.5
-    wcwidth 0.6.0
-    weasyprint 65.0
+    requests 2.34.2
+    wcwidth 0.8.1
+    weasyprint 69.0
 -->
 <link href="draft-ietf-rpp-core.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1636,6 +1637,7 @@ li > p:last-of-type:only-child {
 <p id="section-5-3">Use of the RPP-Authorization header:<a href="#section-5-3" class="pilcrow">¶</a></p>
 <div class="lang-http sourcecode" id="section-5-4">
 <pre>RPP-Authorization: authinfo value=TXkgU2VjcmFRva2Vu, roid=REG-X-123
+
 </pre><a href="#section-5-4" class="pilcrow">¶</a>
 </div>
 <p id="section-5-5">The value of the <code>RPP-Authorization</code> header is case sensitive. The server MUST reject requests where the case of the header value does not match the expected case.
@@ -1678,6 +1680,7 @@ For RPP result codes the leading digit MUST be "1". For avoidance of confusion R
 <p id="section-6-9">Example:<a href="#section-6-9" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-6-10">
 <pre>Link: &lt;https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest&gt;; rel="rpp-process" process="createProcess"; processId="XYZ-12345";
+
 </pre><a href="#section-6-10" class="pilcrow">¶</a>
 </div>
 </section>
@@ -1830,6 +1833,7 @@ The document MUST contain an <code>errors</code> element, as a list of objects d
     "action_cost": 25.0
   }]
 }
+
 </pre><a href="#section-8-7" class="pilcrow">¶</a>
 </div>
 <p id="section-8-8">Problem Detail response containing multiple errors for a domain create request using an invalid domain name (_$.example), JSONPaths are specified in the error objects to indicate which value in the request caused the error:<a href="#section-8-8" class="pilcrow">¶</a></p>
@@ -1850,6 +1854,7 @@ The document MUST contain an <code>errors</code> element, as a list of objects d
     "reason": "Domain name length must be between 3 and 63 characters",
   }]
 }
+
 </pre><a href="#section-8-9" class="pilcrow">¶</a>
 </div>
 </section>
@@ -1876,6 +1881,7 @@ The document MUST contain an <code>errors</code> element, as a list of objects d
 <div class="lang-dns sourcecode" id="section-9-8">
 <pre>@ORIGIN example.
 _rpp IN HTTPS 1 . alpn=h2,h3
+
 </pre><a href="#section-9-8" class="pilcrow">¶</a>
 </div>
 <p id="section-9-9">In this example, the well-known endpoint URL is <code>https://rpp.example/.well-known/rpp.json</code>.<a href="#section-9-9" class="pilcrow">¶</a></p>
@@ -1883,6 +1889,7 @@ _rpp IN HTTPS 1 . alpn=h2,h3
 <div class="lang-dns sourcecode" id="section-9-11">
 <pre>@ORIGIN example.
 _rpp IN HTTPS 1 rpp-svr2.registry.example. alpn=h2,h3 port=8443
+
 </pre><a href="#section-9-11" class="pilcrow">¶</a>
 </div>
 <p id="section-9-12">In this example, the well-known endpoint URL is <code>https://rpp-svr2.registry.example:8443/.well-known/rpp.json</code>.<a href="#section-9-12" class="pilcrow">¶</a></p>
@@ -1986,7 +1993,7 @@ _rpp IN HTTPS 1 rpp-svr2.registry.example. alpn=h2,h3 port=8443
 </li>
       </ul>
 <p id="section-10-5">Example discovery response document:<a href="#section-10-5" class="pilcrow">¶</a></p>
-<div class="lang-json sourcecode" id="section-10-6">
+<div class="breakable lang-json sourcecode" id="section-10-6">
 <pre>{
   "base_url": "https://rpp.example/rpp/v1",
   "version": "1.0",
@@ -2036,6 +2043,7 @@ _rpp IN HTTPS 1 rpp-svr2.registry.example. alpn=h2,h3 port=8443
   ]
 
 }
+
 </pre><a href="#section-10-6" class="pilcrow">¶</a>
 </div>
 <div id="workflow">
@@ -2111,6 +2119,7 @@ A request using an extension MUST include the version of the extension. The serv
       "url": "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0"
     }
   ],
+
 </pre><a href="#section-11.3-2" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2130,6 +2139,7 @@ A request using an extension MUST include the version of the extension. The serv
       "url": "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0"
     }
   ]
+
 </pre><a href="#section-11.4-2" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2207,6 +2217,7 @@ A request using an extension MUST include the version of the extension. The serv
     "version": "1.0"
   }
 }
+
 </pre><a href="#section-13.1-4" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2234,6 +2245,7 @@ A request using an extension MUST include the version of the extension. The serv
   ],
   "profile":
 }
+
 </pre><a href="#section-13.2-3" class="pilcrow">¶</a>
 </div>
 <p id="section-13.2-4">The example profile definition shown in <a href="#profile-example" class="auto internal xref">Section 13.1, Paragraph 3</a> uses the "base-profile" as its base and inherits its features and also overrides the version of the "rppOther" extension defined in the base profile.<a href="#section-13.2-4" class="pilcrow">¶</a></p>
@@ -2256,11 +2268,13 @@ A request using an extension MUST include the version of the extension. The serv
 <pre>profile-header = "profile" "=" profile-name ";" OWS "version" "=" version
 profile-name   = token
 version        = 1*DIGIT "." 1*DIGIT
+
 </pre><a href="#section-13.3.1-3" class="pilcrow">¶</a>
 </div>
 <p id="section-13.3.1-4">Example:<a href="#section-13.3.1-4" class="pilcrow">¶</a></p>
 <div class="lang-http sourcecode" id="section-13.3.1-5">
 <pre>RPP-Profile: profile=urn:ietf:params:rpp:profile:example-profile;version=1.0
+
 </pre><a href="#section-13.3.1-5" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2284,12 +2298,14 @@ version        = 1*DIGIT "." 1*DIGIT
 <pre>profile-parameter = "profile" "=" profile-name ";" OWS "version" "=" version
 profile-name      = token
 version           = 1*DIGIT "." 1*DIGIT
+
 </pre><a href="#section-13.3.2-4" class="pilcrow">¶</a>
 </div>
 <p id="section-13.3.2-5">Example for the media type <code>application/rpp+json</code> with profile parameters indicating the use of the "example-profile" profile version 1.0.:<a href="#section-13.3.2-5" class="pilcrow">¶</a></p>
 <div class="lang-http sourcecode" id="section-13.3.2-6">
 <pre>Accept: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
 Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
+
 </pre><a href="#section-13.3.2-6" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2315,6 +2331,7 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 <p id="section-13.3.3-4">Example:<a href="#section-13.3.3-4" class="pilcrow">¶</a></p>
 <div class="lang-http sourcecode" id="section-13.3.3-5">
 <pre>Link: &lt;https://rpp.example/rpp/v1/domainNames/foo.example/processes/transferProcesses/XYZ-12345&gt;; rel="rpp-process"; process="transferProcess"; processId="XYZ-12345"; latest=true
+
 </pre><a href="#section-13.3.3-5" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2343,6 +2360,7 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 <p id="section-14.1.1-1">Each Data Object has a stable, <code>"Identifier"</code> (e.g. <code>"domainName"</code>, <code>"contact"</code>, <code>"host"</code>). The URL path segment for a collection of such objects MUST be derived by applying the <code>plural()</code> function to the object's <code>"Identifier"</code>. The <code>"plural()"</code> function appends an "s" or "es" to the identifier as per English language rules. Any irregular plural version MUST be defined in the data object specification.<a href="#section-14.1.1-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-14.1.1-2">
 <pre>{collection} = plural(dataObject.identifier)
+
 </pre><a href="#section-14.1.1-2" class="pilcrow">¶</a>
 </div>
 <p id="section-14.1.1-3">Examples derived from current data object identifiers:<a href="#section-14.1.1-3" class="pilcrow">¶</a></p>
@@ -2477,17 +2495,20 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
 <a href="#section-14.1.3" class="section-number selfRef">14.1.3. </a><a href="#name-rule-3-direct-access-sub-re" class="section-name selfRef">Rule 3: Direct Access Sub-Resource Path Segment</a>
           </h4>
 <p id="section-14.1.3-1">A data element whose <code>"Direct Access"</code> flag is set to <code>true</code> in its Data Object definition is additionally exposed as a sub-resource, nested under the URL of the resource instance that contains it. This rule applies uniformly and recursively: the containing resource instance MAY itself be a Direct Access sub-resource of a further-enclosing resource.<a href="#section-14.1.3-1" class="pilcrow">¶</a></p>
-<p id="section-14.1.3-2">The fixed path segment for such a sub-resource MUST be derived by applying the <code>plural()</code> function to the Direct Access data element's own <code>"Identifier"</code> — not to the <code>"Identifier"</code> of the associated object type the element references.<a href="#section-14.1.3-2" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-14.1.3-3">
-<pre>{direct-access-segment} = plural(directAccessElement.identifier)
-</pre><a href="#section-14.1.3-3" class="pilcrow">¶</a>
+<p id="section-14.1.3-2">The fixed path segment for such a sub-resource MUST be derived from the Direct Access data element's own <code>"Identifier"</code> — not from the <code>"Identifier"</code> of the associated object type the element references.<a href="#section-14.1.3-2" class="pilcrow">¶</a></p>
+<p id="section-14.1.3-3">If the Direct Access element's cardinality is 0-1 or 1, the element's own <code>"Identifier"</code> MUST be used as the path segment, unpluralized; the resulting path already addresses a single instance unambiguously.<a href="#section-14.1.3-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-14.1.3-4">
+<pre>{direct-access-path} = {container-path} "/" directAccessElement.identifier
+
+</pre><a href="#section-14.1.3-4" class="pilcrow">¶</a>
 </div>
-<p id="section-14.1.3-4">If the Direct Access element's cardinality is greater than 1, an individual associated object instance MUST be additionally addressed by appending its Unique Identifier value as a further path segment, <code>"{unique-id}"</code>. <span>[<a href="#I-D.kowalik-rpp-data-objects" class="cite xref">I-D.kowalik-rpp-data-objects</a>]</span> requires that any object type referenced by a Direct Access element of cardinality greater than 1 define a Unique Identifier for exactly this purpose. If the Direct Access element's cardinality is 0-1 or 1, no such extra segment is appended; the element's own path is already unambiguous.<a href="#section-14.1.3-4" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-14.1.3-5">
-<pre>{direct-access-path} = {container-path} "/" {direct-access-segment} [ "/" {unique-id} ]
-</pre><a href="#section-14.1.3-5" class="pilcrow">¶</a>
+<p id="section-14.1.3-5">If the Direct Access element's cardinality is greater than 1, the <code>plural()</code> function MUST be applied to the element's <code>"Identifier"</code> to derive the path segment, and an individual associated object instance MUST be additionally addressed by appending its Unique Identifier value as a further path segment, <code>"{unique-id}"</code>. <span>[<a href="#I-D.ietf-rpp-data-objects" class="cite xref">I-D.ietf-rpp-data-objects</a>]</span> requires that any object type referenced by a Direct Access element of cardinality greater than 1 define a Unique Identifier for exactly this purpose.<a href="#section-14.1.3-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-14.1.3-6">
+<pre>{direct-access-path} = {container-path} "/" plural(directAccessElement.identifier) "/" {unique-id}
+
+</pre><a href="#section-14.1.3-6" class="pilcrow">¶</a>
 </div>
-<p id="section-14.1.3-6">Applying Rule 3 recursively from the top-level Data Object down to every Direct Access element defined in <span>[<a href="#I-D.ietf-rpp-data-objects" class="cite xref">I-D.ietf-rpp-data-objects</a>]</span> yields the following paths (<code>"{id}"</code> denotes the Unique Identifier value of the resource instance immediately to its left; it is instantiated per resource type as shown in the Derived Endpoint Reference below):<a href="#section-14.1.3-6" class="pilcrow">¶</a></p>
+<p id="section-14.1.3-7">Applying Rule 3 recursively from the top-level Data Object down to every Direct Access element defined in <span>[<a href="#I-D.ietf-rpp-data-objects" class="cite xref">I-D.ietf-rpp-data-objects</a>]</span> yields the following paths (<code>"{id}"</code> denotes the Unique Identifier value of the resource instance immediately to its left; it is instantiated per resource type as shown in the Derived Endpoint Reference below):<a href="#section-14.1.3-7" class="pilcrow">¶</a></p>
 <table class="center" id="table-4">
             <caption><a href="#table-4" class="selfRef">Table 4</a></caption>
 <thead>
@@ -2610,8 +2631,8 @@ Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example
               </tr>
             </tbody>
           </table>
-<p id="section-14.1.3-8"><code>"{collection}"</code> in the last four rows is derived per Rule 1 and stands for any owner Data Object's collection segment (e.g. <code>"domainNames"</code>, <code>"contacts"</code>); the <code>Processes</code> element and its nested Process Object elements are defined once, generically, and Direct Access sub-resources derive identically regardless of the owner Data Object type. <code>"{process-id}"</code> is the Process Object's Unique Identifier value; Rule 4 defines the <code>"latest"</code> mnemonic as an additional way to address it.<a href="#section-14.1.3-8" class="pilcrow">¶</a></p>
-<p id="section-14.1.3-9">The remaining rules in this section (Rules 4 through 6) apply Rule 3 specifically to Process Objects and describe how they are further exposed and interacted with.<a href="#section-14.1.3-9" class="pilcrow">¶</a></p>
+<p id="section-14.1.3-9"><code>"{collection}"</code> in the last four rows is derived per Rule 1 and stands for any owner Data Object's collection segment (e.g. <code>"domainNames"</code>, <code>"contacts"</code>); the <code>Processes</code> element and its nested Process Object elements are defined once, generically, and Direct Access sub-resources derive identically regardless of the owner Data Object type. <code>"{process-id}"</code> is the Process Object's Unique Identifier value; Rule 4 defines the <code>"latest"</code> mnemonic as an additional way to address it.<a href="#section-14.1.3-9" class="pilcrow">¶</a></p>
+<p id="section-14.1.3-10">The remaining rules in this section (Rules 4 through 6) apply Rule 3 specifically to Process Objects and describe how they are further exposed and interacted with.<a href="#section-14.1.3-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="rule-4-process-uniform-interface-operations">
@@ -3117,6 +3138,7 @@ If a request body is present for any operation using the DELETE method, the serv
 <pre>- Request: HEAD|GET {collection}/{id}/availability
 - Request message: None
 - Response message: Optional availability response
+
 </pre><a href="#section-14.3-8" class="pilcrow">¶</a>
 </div>
 <p id="section-14.3-9">Example request for a domain name that is not available for provisioning:<a href="#section-14.3-9" class="pilcrow">¶</a></p>
@@ -3126,6 +3148,7 @@ Host: rpp.example
 Authorization: Bearer &lt;token&gt;
 Accept-Language: en
 RPP-Cltrid: ABC-12345
+
 
 </pre><a href="#section-14.3-10" class="pilcrow">¶</a>
 </div>
@@ -3138,6 +3161,7 @@ RPP-Cltrid: ABC-12345
 RPP-Svtrid: XYZ-12345
 RPP-code: 01000
 Content-Length: 0
+
 
 </pre><a href="#section-14.3-12" class="pilcrow">¶</a>
 </div>
@@ -3158,6 +3182,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
+
 </pre><a href="#section-14.4-3" class="pilcrow">¶</a>
 </div>
 <p id="section-14.4-4">Example request using RPP-Authorization header for an object that has attached authorization information:<a href="#section-14.4-4" class="pilcrow">¶</a></p>
@@ -3169,6 +3194,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
+
 
 </pre><a href="#section-14.4-5" class="pilcrow">¶</a>
 </div>
@@ -3183,6 +3209,7 @@ Content-Language: en
 RPP-code: 01000
 
 TODO: JSON message here
+
 </pre><a href="#section-14.4-7" class="pilcrow">¶</a>
 </div>
 </section>
@@ -3204,6 +3231,7 @@ Accept-Language: en
 Content-Length: 220
 
 TODO
+
 </pre><a href="#section-14.5-3" class="pilcrow">¶</a>
 </div>
 <p id="section-14.5-4">Example Domain Create response for a new domain name <code>foo.example</code>:<a href="#section-14.5-4" class="pilcrow">¶</a></p>
@@ -3218,6 +3246,7 @@ Location: https://rpp.example/rpp/v1/domainNames/foo.example
 RPP-code: 01000
 
 TODO
+
 </pre><a href="#section-14.5-5" class="pilcrow">¶</a>
 </div>
 <p id="section-14.5-6">Example Domain Create response where a <code>createProcess</code> object was implicitly created:<a href="#section-14.5-6" class="pilcrow">¶</a></p>
@@ -3232,6 +3261,7 @@ Link: &lt;https://rpp.example/rpp/v1/domainNames/foo.example/processes/createPro
 RPP-code: 01000
 
 TODO
+
 </pre><a href="#section-14.5-7" class="pilcrow">¶</a>
 </div>
 </section>
@@ -3251,6 +3281,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
+
 </pre><a href="#section-14.6-3" class="pilcrow">¶</a>
 </div>
 <p id="section-14.6-4">Example Domain Delete response:<a href="#section-14.6-4" class="pilcrow">¶</a></p>
@@ -3264,6 +3295,7 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
+
 </pre><a href="#section-14.6-5" class="pilcrow">¶</a>
 </div>
 </section>
@@ -3297,6 +3329,7 @@ RPP-Cltrid: ABC-12345
 Content-Length: 252
 
 TODO
+
 </pre><a href="#section-14.7-6" class="pilcrow">¶</a>
 </div>
 <p id="section-14.7-7">Example full update response:<a href="#section-14.7-7" class="pilcrow">¶</a></p>
@@ -3311,6 +3344,7 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
+
 </pre><a href="#section-14.7-8" class="pilcrow">¶</a>
 </div>
 <p id="section-14.7-9">Example partial update request (PATCH):<a href="#section-14.7-9" class="pilcrow">¶</a></p>
@@ -3325,6 +3359,7 @@ RPP-Cltrid: ABC-12345
 Content-Length: 252
 
 TODO
+
 </pre><a href="#section-14.7-10" class="pilcrow">¶</a>
 </div>
 <p id="section-14.7-11">Example partial update response:<a href="#section-14.7-11" class="pilcrow">¶</a></p>
@@ -3339,6 +3374,7 @@ RPP-Cltrid: ABC-12345
 RPP-code: 01000
 
 TODO
+
 </pre><a href="#section-14.7-12" class="pilcrow">¶</a>
 </div>
 </section>
@@ -3402,6 +3438,7 @@ Content-Length: 96
     "value": 1
   }
 }
+
 </pre><a href="#section-14.8.4-5" class="pilcrow">¶</a>
 </div>
 <p id="section-14.8.4-6">Example Renew response:<a href="#section-14.8.4-6" class="pilcrow">¶</a></p>
@@ -3420,6 +3457,7 @@ RPP-code: 01000
 {
   "expiryDate": "2026-09-08"
 }
+
 </pre><a href="#section-14.8.4-7" class="pilcrow">¶</a>
 </div>
 </section>
@@ -3451,6 +3489,7 @@ Content-Length: 320
   "gainingClientId": "ClientX"
 }
 
+
 </pre><a href="#section-14.8.5.1-3" class="pilcrow">¶</a>
 </div>
 <p id="section-14.8.5.1-4">Example request using object authorization:<a href="#section-14.8.5.1-4" class="pilcrow">¶</a></p>
@@ -3467,6 +3506,7 @@ Content-Length: 320
 {
     "transferDir": "pull"
 }
+
 
 </pre><a href="#section-14.8.5.1-5" class="pilcrow">¶</a>
 </div>
@@ -3489,6 +3529,7 @@ RPP-code: 01001
   "actionDate": "2000-06-11T22:00:00.0Z",
   "exDate": "2002-09-08T22:00:00.0Z"
 }
+
 </pre><a href="#section-14.8.5.1-7" class="pilcrow">¶</a>
 </div>
 </section>
@@ -3507,6 +3548,7 @@ Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
+
 
 </pre><a href="#section-14.8.5.2-3" class="pilcrow">¶</a>
 </div>
@@ -3528,6 +3570,7 @@ RPP-code: 01000
   "actionDate": "2000-06-11T22:00:00.0Z",
   "exDate": "2002-09-08T22:00:00.0Z"
 }
+
 </pre><a href="#section-14.8.5.2-5" class="pilcrow">¶</a>
 </div>
 </section>
@@ -3546,6 +3589,7 @@ Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
+
 
 </pre><a href="#section-14.8.5.3-3" class="pilcrow">¶</a>
 </div>
@@ -3566,6 +3610,7 @@ RPP-code: 01000
   "requestDate": "2000-06-06T22:00:00.0Z",
   "actionDate": "2000-06-11T22:00:00.0Z"
 }
+
 </pre><a href="#section-14.8.5.3-5" class="pilcrow">¶</a>
 </div>
 </section>
@@ -3584,6 +3629,7 @@ Authorization: Bearer &lt;token&gt;
 Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
+
 
 </pre><a href="#section-14.8.5.4-3" class="pilcrow">¶</a>
 </div>
@@ -3605,6 +3651,7 @@ RPP-code: 01000
   "actionDate": "2000-06-11T22:00:00.0Z"
 }
 
+
 </pre><a href="#section-14.8.5.4-5" class="pilcrow">¶</a>
 </div>
 </section>
@@ -3625,6 +3672,7 @@ Accept-Language: en
 RPP-Cltrid: ABC-12345
 Content-Length: 0
 
+
 </pre><a href="#section-14.8.5.5-3" class="pilcrow">¶</a>
 </div>
 <p id="section-14.8.5.5-4">Example response:<a href="#section-14.8.5.5-4" class="pilcrow">¶</a></p>
@@ -3644,6 +3692,7 @@ RPP-code: 01000
   "requestDate": "2000-06-06T22:00:00.0Z",
   "actionDate": "2000-06-11T22:00:00.0Z"
 }
+
 </pre><a href="#section-14.8.5.5-5" class="pilcrow">¶</a>
 </div>
 </section>
@@ -3684,6 +3733,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
+
 </pre><a href="#section-14.9.1-6" class="pilcrow">¶</a>
 </div>
 <p id="section-14.9.1-7">Example response:<a href="#section-14.9.1-7" class="pilcrow">¶</a></p>
@@ -3697,6 +3747,7 @@ Content-Language: en
 RPP-code: 01301
 
 TODO
+
 </pre><a href="#section-14.9.1-8" class="pilcrow">¶</a>
 </div>
 </section>
@@ -3727,6 +3778,7 @@ Accept: application/rpp+json
 Accept-Language: en
 RPP-Cltrid: ABC-12345
 
+
 </pre><a href="#section-14.9.2-5" class="pilcrow">¶</a>
 </div>
 <p id="section-14.9.2-6">Example response:<a href="#section-14.9.2-6" class="pilcrow">¶</a></p>
@@ -3742,6 +3794,7 @@ RPP-Cltrid: ABC-12345
 Content-Length: 145
 
 TODO
+
 </pre><a href="#section-14.9.2-7" class="pilcrow">¶</a>
 </div>
 </section>
@@ -3827,6 +3880,7 @@ TODO: add filled in template, if we decide to use URN for profile identification
 Specification: This Document
 Repository: ?
 Index value: ?
+
 </pre><a href="#section-18.1-2" class="pilcrow">¶</a>
 </div>
 </section>
@@ -3841,6 +3895,7 @@ Index value: ?
 <pre>Name of the registry: RESTful Provisioning Protocol (RPP)
 Reference: This Document
 IANA Registry Reference: TODO
+
 </pre><a href="#section-18.2-2" class="pilcrow">¶</a>
 </div>
 </section>
@@ -3855,6 +3910,7 @@ IANA Registry Reference: TODO
 <pre>Name of the registry: RPP Discovery URLs
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
+
 </pre><a href="#section-18.3-2" class="pilcrow">¶</a>
 </div>
 <p id="section-18.3-3">Fields to be registered:<a href="#section-18.3-3" class="pilcrow">¶</a></p>
@@ -3881,6 +3937,7 @@ Registration procedure: Expert Review
 <pre>Name of the registry: RPP Extensions
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
+
 </pre><a href="#section-18.4-2" class="pilcrow">¶</a>
 </div>
 <p id="section-18.4-3">Fields to be registered:<a href="#section-18.4-3" class="pilcrow">¶</a></p>
@@ -3910,6 +3967,7 @@ Registration procedure: Expert Review
 <pre>Name of the registry: RPP Profiles
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
+
 </pre><a href="#section-18.5-2" class="pilcrow">¶</a>
 </div>
 <p id="section-18.5-3">Fields to be registered:<a href="#section-18.5-3" class="pilcrow">¶</a></p>
@@ -3942,6 +4000,7 @@ Registration procedure: Expert Review
 <pre>Name of the registry: RPP Result codes
 Registry group: RESTful Provisioning Protocol (RPP)
 Registration procedure: Expert Review
+
 </pre><a href="#section-18.6-2" class="pilcrow">¶</a>
 </div>
 <p id="section-18.6-3">Fields to be registered:<a href="#section-18.6-3" class="pilcrow">¶</a></p>
@@ -3974,6 +4033,7 @@ Description:   Identifies a process resource that was implicitly created as a
                "true", OPTIONAL, indicating the target URL uses the "latest"
                mnemonic).
 Reference:     This document
+
 </pre><a href="#section-18.7-2" class="pilcrow">¶</a>
 </div>
 </section>
@@ -4002,6 +4062,7 @@ Restrictions on usage: "N/A"
 Author: Document authors
 Change controller: Document authors
 Provisional registration: No
+
 </pre><a href="#section-18.8-2" class="pilcrow">¶</a>
 </div>
 </section>
@@ -4179,10 +4240,6 @@ Provisional registration: No
 <dt id="I-D.ietf-rpp-data-objects">[I-D.ietf-rpp-data-objects]</dt>
         <dd>
 <span class="refAuthor">Kowalik, P.</span> and <span class="refAuthor">M. Wullink</span>, <span class="refTitle">"RESTful Provisioning Protocol (RPP) Data Objects"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-rpp-data-objects-01</span>, <time datetime="2026-07-03" class="refDate">3 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-rpp-data-objects-01">https://datatracker.ietf.org/doc/html/draft-ietf-rpp-data-objects-01</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="I-D.kowalik-rpp-data-objects">[I-D.kowalik-rpp-data-objects]</dt>
-        <dd>
-<span class="refAuthor">Kowalik, P.</span> and <span class="refAuthor">M. Wullink</span>, <span class="refTitle">"RESTful Provisioning Protocol (RPP) Data Objects"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-kowalik-rpp-data-objects-04</span>, <time datetime="2026-06-12" class="refDate">12 June 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-kowalik-rpp-data-objects-04">https://datatracker.ietf.org/doc/html/draft-kowalik-rpp-data-objects-04</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="REST">[REST]</dt>
         <dd>
