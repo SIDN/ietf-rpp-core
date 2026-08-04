@@ -44,7 +44,7 @@ This document describes the endpoints for the RESTful Provisioning Protocol, use
 
 # Introduction
 
-This document describes an Application Programming Interface (API) API based on HTTP as defined in [@!RFC9110] and the principles of [@!REST]. Conforming to the REST constraints is generally referred to as being "RESTful". Hence the API is dubbed: "'RESTful Provisioning Protocol" or "RPP" for short.
+This document describes an Application Programming Interface (API) API based on HTTP as defined in [@!HTTP] and the principles of [@!REST]. Conforming to the REST constraints is generally referred to as being "RESTful". Hence the API is dubbed: "'RESTful Provisioning Protocol" or "RPP" for short.
 
 The RPP API is designed to be used for the provisioning and management of objects in a shared database, such as domain names, hosts, and entities.
 
@@ -87,7 +87,7 @@ Some RPP concepts are functionally similar to EPP concepts, but they are not dir
 A RPP request does not always require a request message body. The information conveyed by the HTTP method, URL, and request headers may be sufficient for the server to be able to successfully processes a request. However, the client MUST include a request message body when the server requires additional attributes to be present in the request message. The RPP HTTP headers listed below use the "RPP-" prefix, following the recommendations in [@!RFC6648].
 
 - `RPP-Cltrid`:  A client-assigned transaction identifier. The client MUST include this header in every request. It serves two independent purposes: as an idempotency key, allowing the server to detect and safely handle duplicate requests, and as an audit-trail identifier, enabling end-to-end correlation of a request across client and server logs. The value MUST be unique per request.
-- `RPP-Authorization`: The client MAY use this header to send authorization information in the format `<method> <authorization information>`, similar to the HTTP `Authorization` header, defined in [RFC9110, Section 11.6.2]. The `<method>` indicates the type of authorization being used. For EPP object authorization information, for example the authorization information used for domain names described in [RFC5731, Section 2.3], a new `authinfo` method is defined and MUST be used. The `<authorization information>` defines the following comma separated fields:
+- `RPP-Authorization`: The client MAY use this header to send authorization information in the format `<method> <authorization information>`, similar to the HTTP `Authorization` header, defined in [HTTP, Section 11.6.2]. The `<method>` indicates the type of authorization being used. For EPP object authorization information, for example the authorization information used for domain names described in [RFC5731, Section 2.3], a new `authinfo` method is defined and MUST be used. The `<authorization information>` defines the following comma separated fields:
  - value (REQUIRED): Base64 encoded EPP password-based authorization information. Base64 encoding is used to prevent problems when special characters are present that may conflict with the format rules for the Authorization header.
  - roid (OPTIONAL): A Roid as defined in [@!RFC5731], [@!RFC5733], and [@!RFC5730]. The roid is used to identify the object for which the authorization information is provided. If the roid is not provided, then the server MUST assume that the authorization information is linked to the object identified by the URL of the request.
 
@@ -98,7 +98,7 @@ RPP-Authorization: authinfo value=TXkgU2VjcmFRva2Vu, roid=REG-X-123
  ```
 
 The value of the `RPP-Authorization` header is case sensitive. The server MUST reject requests where the case of the header value does not match the expected case.
-The `RPP-Authorization` header is specific to the user agent and MUST NOT be cached, as recommended by [@!RFC9110, Section 16.4.2], the server MUST use the correct HTTP cache directives to prevent caching of the `RPP-Authorization` header.
+The `RPP-Authorization` header is specific to the user agent and MUST NOT be cached, as recommended by [@!HTTP, Section 16.4.2], the server MUST use the correct HTTP cache directives to prevent caching of the `RPP-Authorization` header.
 
 - `RPP-Profile`: The client MUST use this header to indicate the profiles is used in the request.
 
@@ -606,7 +606,7 @@ The four uniform interface operations defined in the RPP data object specificati
 
 <!-- commented out as it does not fit this section at all.
 
-A RPP client MAY use the HTTP GET method for informational requests only when no request data has to be added to the HTTP message body. Sending content using an HTTP GET request is discouraged in [@!RFC9110], there exist no generally defined semantics for content received in a GET request. When an RPP operation requires additional input data, the client MUST use the HTTP POST, PUT or PATCH method and include any required data in the HTTP message body and HTTP headers.
+A RPP client MAY use the HTTP GET method for informational requests only when no request data has to be added to the HTTP message body. Sending content using an HTTP GET request is discouraged in [@!HTTP], there exist no generally defined semantics for content received in a GET request. When an RPP operation requires additional input data, the client MUST use the HTTP POST, PUT or PATCH method and include any required data in the HTTP message body and HTTP headers.
 
 A> TODO: the paragraph above looks like misplaced. Do we need it at all? The protocol defines if anything MAY be posted to the message body, so maybe this is a design consideration which does not belong to the final document?
 -->
@@ -1598,6 +1598,19 @@ The authors would like to thank the following people for their helpful text cont
 
 
 {backmatter}
+
+<reference anchor="HTTP" target="https://www.rfc-editor.org/info/rfc9110">
+	<front>
+		<title>HTTP Semantics</title>
+		<author fullname="R. Fielding" initials="R." role="editor" surname="Fielding"/>
+		<author fullname="M. Nottingham" initials="M." role="editor" surname="Nottingham"/>
+		<author fullname="J. Reschke" initials="J." role="editor" surname="Reschke"/>
+		<date month="June" year="2022"/>
+	</front>
+	<seriesInfo name="STD" value="97"/>
+	<seriesInfo name="RFC" value="9110"/>
+	<seriesInfo name="DOI" value="10.17487/RFC9110"/>
+</reference>
 
 <reference anchor="REST" target="http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm">
   <front>
