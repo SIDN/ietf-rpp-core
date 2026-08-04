@@ -114,15 +114,6 @@ The server HTTP response contains a status code, headers, and MAY contain an RPP
   
 - `RPP-Code`: This header is the equivalent of the EPP result code defined in [@!RFC5730] and MUST be used accordingly. This header MUST be added to all responses and MAY be used by the client for easy access to the result code, without having to parse the HTTP response message body.
 
-For the EPP codes related to session management (1500, 2500, 2501 and 2502) there are no corresponding RPP codes.
-
-In order for RPP to be backwards compatible with EPP, RPP will use 5-digit coding of the result codes, where first digit will denote origin specification of the result codes.
-
-For [@!RFC5730] Result Codes the leading digit MUST be "0".
-For RPP result codes the leading digit MUST be "1". For avoidance of confusion RPP MUST not define new codes with the same semantic meaning as already defined in EPP.
-
-For RPP codes the remaining 4 digits MUST keep the same semantics as [@!RFC5730] Result Codes.
-
 - `RPP-Queue-Size`: Return the number of unacknowledged messages in the client message queue. The server MAY include this header in all RPP responses.
 
 When a uniform interface operation implicitly creates a process object as a side effect, the server MUST communicate the URL of the created process resource using the `Link` response header [@!RFC8288] with the `rpp-process` relation type. If multiple process objects are created, the server MUST include one `Link` header field per created process resource, each with `rel="rpp-process"`.
@@ -132,38 +123,6 @@ Example:
 ```
 Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/createProcesses/latest>; rel="rpp-process" process="createProcess"; processId="XYZ-12345";
 ```
-
-# Error handling and relation between HTTP status codes and RPP codes
-
-RPP leverages standard HTTP status codes to reflect the outcome of RPP operations. The RPP result codes are based on the EPP result codes defined in [@!RFC5730]. This allows clients to handle responses generically using common HTTP patterns. While the HTTP status code provides the primary, high-level outcome, the specific RPP result code MUST still be provided in the `RPP-Code` HTTP header for detailed diagnostics.
-
-The mapping strategy is to use the most specific HTTP code that accurately reflects the operation's result.
-
-For common and well-defined outcomes, a specific HTTP status code is used. For example, an attempt to access a non-existent resource (EPP code 2302) MUST return 404 Not Found, and an attempt to create a resource that already exists (EPP code 2303) MUST return 409 Conflict. This allows a client to handle these common situations based on the HTTP code alone.
-
-For all other failures, a generic HTTP status code is used. Client-side errors (e.g., syntax, parameter, or policy violations) MUST return 400 Bad Request. Server-side failures MUST return 500 Internal Server Error.
-
-The server MUST return HTTP status codes, following the mapping rules in Table 1.
-
-Table 1: RPP result code and HTTP Status-Code mapping.
-
-| HTTP Status-Code | Description | Corresponding RPP result code(s) |
-| ---------------- | ----------- | -------------------------------- |
-| Success (2xx)    |             |                                  |
-| 200 OK | The request was successful (e.g., for GET or UPDATE). | 01000 (in all cases not specified otherwise), 01300, 01301 |
-| 201 Created | The resource was created successfully. | 01000 for resource creating requests (POST/PUT) |
-| 202 Accepted | The request was accepted for asynchronous processing. | 01001 |
-| 204 No Content | The resource was deleted successfully. | 01000 for DELETE |
-| Client Errors (4xx) |   |   |
-| 400 Bad Request | Generic client-side error (syntax, parameters, policy). | 02000-02005, 02104-02106, 02300-02301, 02304-02308 |
-| 403 Forbidden | Authentication or authorization failed. | 02200-02202 |
-| 404 Not Found | The requested resource does not exist. | 02303 |
-| 409 Conflict | The resource could not be created because it already exists. | 02302 |
-| Server Errors (5xx) |   |   |
-| 500 Internal Server Error | Generic server-side error; command failed. | 02400 |
-| 501 Not Implemented | The requested command or feature is not implemented. | 02100-02103 |
-
-Some EPP result codes, like 01500, 02500, 02501 and 02502 are related to session management and therefore not applicable to a sessionless RPP protocol.
 
 # Problem Detail responses for errors
 
@@ -1359,17 +1318,22 @@ TODO
 
 # Result Codes
 
-An RPP result code is used to indicate the result of an RPP request. It is returned in the RPP-Code header of the HTTP response. The format of the RPP result code is a 5-digit string, where the first digit MUST always be "1", the second digit indicates the class of the result, and the remaining three digits indicate the specific result within that class, this allows implementers to define more specific result codes within each class. Every RPP result code SHOULD be registered with IANA to ensure uniqueness and avoid conflicts, a IANA registry for RPP result codes is defined in the IANA Considerations section.
+RPP result codes are backward compatible with the EPP result codes defined in [@!RFC5730] and are mapped to HTTP status codes. This allows clients to handle responses generically using common HTTP patterns. While the HTTP status code provides the primary, high-level outcome, the specific RPP result code MUST still be provided in the `RPP-Code` HTTP header for detailed diagnostics.
+
+In order for RPP to be backwards compatible with EPP, RPP will use 5-digit coding of the result codes, where first digit will denote origin specification of the result codes. For [@!RFC5730] Result Codes the leading digit MUST be "0".
+For RPP result codes the leading digit MUST be "1", the second digit indicates the class of the result, and the remaining three digits indicate the specific result within that class, this allows implementers to define more specific result codes within each class. Every RPP result code SHOULD be registered with IANA to ensure uniqueness and avoid conflicts. An IANA registry for RPP result codes is defined in the IANA Considerations section.
+
+The mapping strategy is to use a specific HTTP status code for common and well-defined RPP result codes, while using a generic HTTP status code for all other RPP result codes.
 
 The classes of RPP result codes are designed to match the classes of HTTP status codes, to facilitate mapping between RPP result codes and HTTP status codes. The classes of RPP result codes are defined as follows:
 
 - 11xxx: Informational
 - 12xxx: Success
-- 13xxx: Reserved for future use
+- 13xxx: Reserved for future use (for EPP backwards compatibility)
 - 14xxx: Client error
 - 15xxx: Server error
 
-Table [#tbl-rpp-result-codes] lists the RPP result codes and their mapping to HTTP status codes, any RPP result code not listed in the table MUST be mapped to a generic HTTP status code as defined in Table [#tbl-rpp-unknown-result-codes].
+Table (#tbl-rpp-result-codes) lists the RPP result codes and their mapping to HTTP status codes, any RPP result code not listed in the table MUST be mapped to a generic HTTP status code as defined in Table (#tbl-rpp-unknown-result-codes).
 
 | RPP Result Code | HTTP Status Code | Description | 
 |-----------------|------------------|-------------|
