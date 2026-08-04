@@ -1357,9 +1357,11 @@ TODO
 
 TODO
 
-# RPP Result Codes
+# Result Codes
 
-RPP result codes are used to indicate the result of an RPP request. They are returned in the RPP-Code header of the HTTP response. The format of the RPP result code is a 5-digit string, where the first digit MUST always be "1", the second digit indicates the class of the result, and the remaining four digits indicate the specific result within that class, his allows implementers to define more specific result codes within each class. The classes of RPP result codes are designed to match the classes of HTTP status codes, to facilitate mapping between RPP result codes and HTTP status codes. The classes of RPP result codes are defined as follows:
+An RPP result code is used to indicate the result of an RPP request. It is returned in the RPP-Code header of the HTTP response. The format of the RPP result code is a 5-digit string, where the first digit MUST always be "1", the second digit indicates the class of the result, and the remaining three digits indicate the specific result within that class, this allows implementers to define more specific result codes within each class. Every RPP result code SHOULD be registered with IANA to ensure uniqueness and avoid conflicts, a IANA registry for RPP result codes is defined in the IANA Considerations section.
+
+The classes of RPP result codes are designed to match the classes of HTTP status codes, to facilitate mapping between RPP result codes and HTTP status codes. The classes of RPP result codes are defined as follows:
 
 - 11xxx: Informational
 - 12xxx: Success
@@ -1367,14 +1369,26 @@ RPP result codes are used to indicate the result of an RPP request. They are ret
 - 14xxx: Client error
 - 15xxx: Server error
 
-The following RPP result codes are defined and used in this document:
+Table [#tbl-rpp-result-codes] lists the RPP result codes and their mapping to HTTP status codes, any RPP result code not listed in the table MUST be mapped to a generic HTTP status code as defined in Table [#tbl-rpp-unknown-result-codes].
 
 | RPP Result Code | HTTP Status Code | Description | 
 |-----------------|------------------|-------------|
-| 12000           | 200 OK           | Command completed successfully |
-| 12001           | 201 Created      | Command completed successfully and a new resource was created |
+| 12000           | 200 (OK)           | Command completed successfully |
+| 12001           | 201 (Created)      | Command completed successfully and a new resource was created |
+Table: RPP Result Codes
+{#tbl-rpp-result-codes}
 
 <!-- TODO: add more result codes here -->
+
+| RPP Result Code | HTTP Status Code | Description | 
+|-----------------|------------------|-------------|
+| 11xxx:          | 200 (OK)           | Command completed successfully |
+| 12xxx:          | 200 (OK)           | Command completed successfully |
+| 13xxx:          | 200 (OK)           | Command completed successfully |
+| 14xxx:          | 400 (Bad Request)  | Client error |
+| 15xxx:          | 500 (Internal Server Error) | Server error |
+Table: RPP Unknown Result Codes
+{#tbl-rpp-unknown-result-codes}
 
 # Authentication and Authorization
 
@@ -1464,7 +1478,7 @@ Fields to be registered:
 - `url`: The URL for the profile specification, for example "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0".
 - `description`: A human-readable description of the profile and its intended use. 
 
-## RPP Result Codes Registry
+## RPP Result Codes Registry {rpp-result-codes-registry}
 
 The IANA is requested to create a new registry "RPP Result codes", this registry will be used to register RPP result codes defined in this document and in future RPP specifications and extensions.
 
