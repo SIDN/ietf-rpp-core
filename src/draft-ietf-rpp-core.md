@@ -1538,6 +1538,10 @@ Data confidentiality and integrity MUST be enforced. Every client and server int
 
 # Change History
 
+## Version 00 to 01
+
+- Updated the reference for the HTTP specification (Issue #90)
+
 ## Version draft-wullink-rpp-core-05 to draft-ietf-rpp-core-00
 
 - Renamed the document name to "draft-ietf-rpp-core" and reset version number to 00 (Issue #80)
