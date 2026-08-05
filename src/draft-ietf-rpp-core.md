@@ -76,6 +76,8 @@ In examples, indentation and white space in examples are provided only to illust
 
 All example requests assume a RPP server using HTTP version 2 is listening on the standard HTTPS port on host rpp.example. An authorization token has been provided by an out of band process and MUST be used by the client to authenticate each request.
 
+This document does not mandate any particular authority (host and port) or path prefix for an RPP server. The `rpp.example` authority and the `/rpp/v1` path prefix used throughout the examples in this document are purely illustrative. As described in (#discoverability), the authority and path prefix actually used by a deployment are entirely deployment-defined and are discovered by the client at run time from the `base_url` field of the `.well-known/rpp.json` discovery document; no normative requirement in this document depends on the literal `/rpp/v1` segment.
+
 # Mapping to EPP
 
 RPP is designed as an independent protocol and does not require an EPP server. RPP concepts such as transaction identifiers, result codes, and object attributes are defined in their own right and serve RPP purposes regardless of whether an EPP backend is present, however compatibility with EPP is to the great extent preserved. Implementers with no prior EPP experience are be able to implement RPP based solely on this specification.
@@ -93,7 +95,7 @@ A RPP request does not always require a request message body. The information co
 
 Use of the RPP-Authorization header:
 
- ```http
+ ```http-message
 RPP-Authorization: authinfo value=TXkgU2VjcmFRva2Vu, roid=REG-X-123
  ```
 
@@ -304,7 +306,7 @@ The following template variables are defined for use in RPP endpoint URL templat
 
 <!-- TODO: Include appendix with example discovery response document. -->
 
-Example discovery response document:
+Example discovery response document. The `https://rpp.example/rpp/v1` value of `base_url` is illustrative only; it is not part of the protocol, and a deployment MAY publish a `base_url` using any authority and path prefix (or no path prefix at all):
 
 ```json
 {
@@ -369,7 +371,7 @@ The steps for a typical workflow of provisioning an object using RPP without kno
 
 # Versioning
 
-RPP is designed to be extensible and backward compatible. The version of the RPP API is indicated in the URL path, for example: `https://rpp.example/rpp/v1/`. The server MUST support at least one version of the RPP API, and MUST return a 404 Not Found status code for requests using an unsupported version. The versioning scheme uses the Semantic Versioning format defined in [@!SemVer], but only the major version number is used to indicate breaking changes. The minor and patch version numbers are not used in an URL path, but can be used in the media type or in the message body to indicate non-breaking changes.
+RPP is designed to be extensible and backward compatible, the server MUST support at least one version of the RPP API, and MUST return a 404 Not Found status code for requests using an unsupported version. The versioning scheme uses the Semantic Versioning format defined in [@!SemVer], but only the major version number is used to indicate breaking changes. The minor and patch version numbers are not used in an URL path, but can be used in the media type or in the message body to indicate non-breaking changes.
 
 The following RPP elements include versioning support:
 
@@ -382,7 +384,8 @@ The following RPP elements include versioning support:
 
 ## Endpoints
 
-The `base_url` element of the RPP Discovery response MAY include the version of the RPP API supported by the server. The client MUST use this `base_url` for all subsequent requests to the server. For example, if the version is 1.2.3, the `base_url` is `https://rpp.example/rpp/v1/`, then the client MUST use this URL for all subsequent requests to the server, and MUST not use a different version in the URL path.
+The `base_url` element of the RPP Discovery response MAY include the version of the RPP API supported by the server. The client MUST use this `base_url` for all subsequent requests to the server. For example, if the version is 1.2.3, a server MAY publish a `base_url` such as `https://rpp.example/rpp/v1/` (the `rpp.example` authority and `/rpp/v1` prefix being illustrative only); whatever `base_url` is published, the client MUST use that URL for all subsequent requests to the server, and MUST NOT substitute a different version in the URL path.
+
 
 ## Messages
 
@@ -526,7 +529,7 @@ version        = 1*DIGIT "." 1*DIGIT
 
 Example:
 
-```http
+```http-message
 RPP-Profile: profile=urn:ietf:params:rpp:profile:example-profile;version=1.0
 ```
 
@@ -547,7 +550,7 @@ version           = 1*DIGIT "." 1*DIGIT
 
 Example for the media type `application/rpp+json` with profile parameters indicating the use of the "example-profile" profile version 1.0.:
 
-```http
+```http-message
 Accept: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
 Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
 ```
@@ -571,13 +574,13 @@ If multiple process objects are created, the server MUST include one `Link` head
 
 Example:
 
-```http
+```http-message
 Link: <https://rpp.example/rpp/v1/domainNames/foo.example/processes/transferProcesses/XYZ-12345>; rel="rpp-process"; process="transferProcess"; processId="XYZ-12345"; latest=true
 ```
 
 # Endpoints
 
-Endpoints are described using URI Templates [@!RFC6570] relative to a discoverable base URL, as recommended by [@!RFC9205]. Some RPP endpoints do not require a request and/or response message.
+Endpoints are described using URI Templates [@!RFC6570] relative to a discoverable base URL, as recommended by [@!RFC9205]. The base URL, including its authority and any path prefix, is not defined by this document; it is deployment-defined and discovered by the client from the `base_url` field of the well-known discovery document, as described in (#discoverability). The URL paths given in the rules and examples below (e.g. `/{collection}/{id}`) are relative to that discovered base URL; the `rpp.example` authority and `/rpp/v1` path prefix used in examples throughout this document are illustrative only and carry no normative meaning. Some RPP endpoints do not require a request and/or response message.
 
 ## HTTP Mapping Rules
 
@@ -773,8 +776,8 @@ The server MUST respond with the same HTTP status code if the same URL is reques
 
 Example request for a domain name that is not available for provisioning:
 
-```http
-HEAD domains/foo.example/availability HTTP/2
+```http-message
+HEAD domains/foo.example/availability HTTP/1.1
 Host: rpp.example
 Authorization: Bearer <token>
 Accept-Language: en
@@ -784,8 +787,8 @@ RPP-Cltrid: ABC-12345
 
 Example response:
 
-```http
-HTTP/2 404 Not Found
+```http-message
+HTTP/1.1 404 Not Found
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 RPP-Cltrid: ABC-12345
@@ -802,8 +805,8 @@ The Object Info request MUST use the HTTP GET method on a resource identifying a
 
 Example request for an object not using authorization information:
 
-```http
-GET /rpp/v1/domainNames/foo.example HTTP/2
+```http-message
+GET /domainNames/foo.example HTTP/1.1
 Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -814,8 +817,8 @@ RPP-Cltrid: ABC-12345
 
 Example request using RPP-Authorization header for an object that has attached authorization information:
 
-```http
-GET /rpp/v1/domainNames/foo.example HTTP/2
+```http-message
+GET /domainNames/foo.example HTTP/1.1
 Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -827,8 +830,8 @@ RPP-Authorization: authinfo value=TXkgU2VjcmV0IFRva2Vu
 
 Example Info response:
 
-```http
-HTTP/2 200 OK
+```http-message
+HTTP/1.1 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Length: 424
@@ -845,8 +848,8 @@ The client MUST use the HTTP POST method on a resource identifying a collection 
 
 Example Domain Create request for a new domain name `foo.example`:
 
-```http
-POST /rpp/v1/domainNames HTTP/2
+```http-message
+POST /domainNames HTTP/1.1
 Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -859,8 +862,8 @@ TODO
 
 Example Domain Create response for a new domain name `foo.example`:
 
-```http
-HTTP/2 201 Created
+```http-message
+HTTP/1.1 201 Created
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Language: en
@@ -874,8 +877,8 @@ TODO
 
 Example Domain Create response where a `createProcess` object was implicitly created:
 
-```http
-HTTP/2 201 Created
+```http-message
+HTTP/1.1 201 Created
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Language: en
@@ -894,8 +897,8 @@ The client MUST use the HTTP DELETE method on a resource identifying a unique ob
 
 Example Domain Delete request:
 
-```http
-DELETE /rpp/v1/domainNames/foo.example HTTP/2
+```http-message
+DELETE /domainNames/foo.example HTTP/1.1
 Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -906,8 +909,8 @@ RPP-Cltrid: ABC-12345
 
 Example Domain Delete response:
 
-```http
-HTTP/2 200 OK
+```http-message
+HTTP/1.1 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Length: 80
@@ -933,8 +936,8 @@ The server MUST respond with HTTP status code 200 (OK) and include the updated o
 
 Example full update request (PUT):
 
-```http
-PUT /rpp/v1/domainNames/foo.example HTTP/2
+```http-message
+PUT /domainNames/foo.example HTTP/1.1
 Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -948,8 +951,8 @@ TODO
 
 Example full update response:
 
-```http
-HTTP/2 200 OK
+```http-message
+HTTP/1.1 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Length: 80
@@ -963,8 +966,8 @@ TODO
 
 Example partial update request (PATCH):
 
-```http
-PATCH /rpp/v1/domainNames/foo.example HTTP/2
+```http-message
+PATCH /domainNames/foo.example HTTP/1.1
 Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -978,8 +981,8 @@ TODO
 
 Example partial update response:
 
-```http
-HTTP/2 200 OK
+```http-message
+HTTP/1.1 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Length: 80
@@ -1019,8 +1022,8 @@ Not every object resource includes support for the renew command. The response M
 
 Example Domain Renew request:
 
-```http
-POST /rpp/v1/domainNames/foo.example/processes/renewProcesses HTTP/2
+```http-message
+POST /domainNames/foo.example/processes/renewProcesses HTTP/1.1
 Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -1040,8 +1043,8 @@ Content-Length: 96
 
 Example Renew response:
 
-```http
-HTTP/2 201 Created
+```http-message
+HTTP/1.1 201 Created
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Language: en
@@ -1067,8 +1070,8 @@ The initiating client MUST use the HTTP POST method to create a new transfer pro
 
 Example request not using object authorization:
 
-```http
-POST /rpp/v1/domainNames/foo.example/processes/transferProcesses HTTP/2
+```http-message
+POST /domainNames/foo.example/processes/transferProcesses HTTP/1.1
 Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -1085,8 +1088,8 @@ Content-Length: 320
 
 Example request using object authorization:
 
-```http
-POST /rpp/v1/domainNames/foo.example/processes/transferProcesses HTTP/2
+```http-message
+POST /domainNames/foo.example/processes/transferProcesses HTTP/1.1
 Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -1103,8 +1106,8 @@ Content-Length: 320
 
 Example Transfer response:
 
-```http
-HTTP/2 201 Created
+```http-message
+HTTP/1.1 201 Created
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Language: en
@@ -1130,8 +1133,8 @@ A transfer process resource may not exist when no transfer has been initiated fo
 
 Example domain name Transfer Status request:
 
-```http
-GET /rpp/v1/domainNames/foo.example/processes/transferProcesses/latest HTTP/2
+```http-message
+GET /domainNames/foo.example/processes/transferProcesses/latest HTTP/1.1
 Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -1143,8 +1146,8 @@ RPP-Cltrid: ABC-12345
 
 Example Transfer Query response:
 
-```http
-HTTP/2 200 OK
+```http-message
+HTTP/1.1 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Length: 230
@@ -1169,8 +1172,8 @@ The initiating client cancels its pending transfer request using the DELETE meth
 
 Example request:
 
-```http
-DELETE /rpp/v1/domainNames/foo.example/processes/transferProcesses/latest HTTP/2
+```http-message
+DELETE /domainNames/foo.example/processes/transferProcesses/latest HTTP/1.1
 Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -1181,8 +1184,8 @@ RPP-Cltrid: ABC-12345
 
 Example response:
 
-```http
-HTTP/2 200 OK
+```http-message
+HTTP/1.1 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Length: 80
@@ -1206,8 +1209,8 @@ The currently sponsoring client rejects a pending transfer. This is an extended 
 
 Example request:
 
-```http
-POST /rpp/v1/domainNames/foo.example/processes/transferProcesses/latest/transferReject HTTP/2
+```http-message
+POST /domainNames/foo.example/processes/transferProcesses/latest/transferReject HTTP/1.1
 Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -1218,8 +1221,8 @@ RPP-Cltrid: ABC-12345
 
 Example response:
 
-```http
-HTTP/2 200 OK
+```http-message
+HTTP/1.1 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Length: 80
@@ -1244,8 +1247,8 @@ The currently sponsoring client approves a pending transfer. The operation ident
 
 Example request:
 
-```http
-POST /rpp/v1/domainNames/foo.example/processes/transferProcesses/latest/transferApprove HTTP/2
+```http-message
+POST /domainNames/foo.example/processes/transferProcesses/latest/transferApprove HTTP/1.1
 Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -1257,8 +1260,8 @@ Content-Length: 0
 
 Example response:
 
-```http
-HTTP/2 200 OK
+```http-message
+HTTP/1.1 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Length: 80
@@ -1291,8 +1294,8 @@ The client MUST use the HTTP GET method on the messages resource collection to r
 
 Example request:
 
-```http
-GET messages HTTP/2
+```http-message
+GET messages HTTP/1.1
 Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -1303,8 +1306,8 @@ RPP-Cltrid: ABC-12345
 
 Example response:
 
-```http
-HTTP/2 200 OK
+```http-message
+HTTP/1.1 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Length: 312
@@ -1327,8 +1330,8 @@ The client MUST use the HTTP DELETE method to acknowledge receipt of a message f
 
 Example request:
 
-```http
-DELETE messages/12345 HTTP/2
+```http-message
+DELETE messages/12345 HTTP/1.1
 Host: rpp.example
 Authorization: Bearer <token>
 Accept: application/rpp+json
@@ -1339,8 +1342,8 @@ RPP-Cltrid: ABC-12345
 
 Example response:
 
-```http
-HTTP/2 200 OK
+```http-message
+HTTP/1.1 200 OK
 Date: Wed, 24 Jan 2024 12:00:00 UTC
 Server: Example RPP server v1.0
 Content-Language: en
