@@ -1506,7 +1506,7 @@ The IANA is requested to add the following RPP media type to the "Media Types" r
 Type name: application
 Subtype name: rpp+json
 Required parameters: version
-Optional parameters: "N/A"
+Optional parameters: profile, profile-version
 Encoding considerations: "N/A"
 Security considerations: "N/A"
 Interoperability considerations: "N/A"
@@ -1537,6 +1537,10 @@ RPP relies on the security of the underlying HTTP transport, hence the best comm
 Data confidentiality and integrity MUST be enforced. Every client and server interaction MUST be encrypted using TLS version 1.3 [@!RFC8446]. Future versions of TLS MAY be used as they become available and are deemed secure.
 
 # Change History
+
+## Version 00 to 01
+
+- Added optional parameters to the RPP media type registration template (Issue #101)
 
 ## Version draft-wullink-rpp-core-05 to draft-ietf-rpp-core-00
 
