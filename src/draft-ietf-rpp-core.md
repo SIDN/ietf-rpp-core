@@ -314,7 +314,7 @@ Example discovery response document:
       "name": "RPP example extension",
       "id": "urn:ietf:params:rpp:extension:example-extension",
       "version": "1.0",
-      "url": "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0"
+      "url": "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension"
     }
   ],
   "profiles": [
@@ -322,7 +322,7 @@ Example discovery response document:
       "name": "EPP compatibility profile",
       "id": "urn:ietf:params:rpp:profile:epp-compatibility",
       "version": "1.0",
-      "url": "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0"
+      "url": "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-profile"
     }
   ],
   "objects": ["domains", "hosts", "entities"],
@@ -369,24 +369,12 @@ The steps for a typical workflow of provisioning an object using RPP without kno
 
 RPP is designed to be extensible and backward compatible. The version of the RPP API is indicated in the URL path, for example: `https://rpp.example/rpp/v1/`. The server MUST support at least one version of the RPP API, and MUST return a 404 Not Found status code for requests using an unsupported version. The versioning scheme uses the Semantic Versioning format defined in [@!SemVer], but only the major version number is used to indicate breaking changes. The minor and patch version numbers are not used in an URL path, but can be used in the media type or in the message body to indicate non-breaking changes.
 
-The following RPP elements include versioning support:
+The client MUST indicate the version of RPP it is using by including the RPP Media Type `application/rpp+json` in the HTTP Accept header of each request, a "version" parameter MUST also be used for the media type, for example: `application/rpp+json; version=1.0`. The server MUST include the media type used in the request in its response to the client. The server MUST reject requests using an unsupported version of RPP, and MUST return a 406 Not Acceptable status code.
 
-- Endpoints: The server MUST support at least one version of the RPP API, and MUST return a 404 Not Found status code for requests using an unsupported version.
-- Messages: A request and response message MUST include the version of the RPP API it is compatible with.
+The following additional RPP elements include versioning support:
+
 - Extensions: RPP extensions MUST include the version of the RPP API they are compatible with.
 - Profiles: RPP profiles MUST include the version of the RPP API they are compatible with.
-- Media types: RPP media types MUST include the version of the RPP API they are compatible with.
-- Result codes: RPP result codes may be added by extensions or updates to the core RPP specification.
-
-## Endpoints
-
-The `base_url` element of the RPP Discovery response MAY include the version of the RPP API supported by the server. The client MUST use this `base_url` for all subsequent requests to the server. For example, if the version is 1.2.3, the `base_url` is `https://rpp.example/rpp/v1/`, then the client MUST use this URL for all subsequent requests to the server, and MUST not use a different version in the URL path.
-
-## Messages
-
-The `version` element of the RPP request and response messages MUST include the version of the RPP API that the message is compatible with. The server MUST reject requests with a version that is not supported by the server, and MUST return a RPP Client error code.
-
-<!-- TODO: see media type below, this version element may be redundant -->
 
 ## Extensions
 
@@ -397,16 +385,18 @@ A request using an extension MUST include the version of the extension. The serv
 "extensions": [
     {
       "name": "RPP example extension",
-      "id": "urn:ietf:params:rpp:extension:example-extension",
+      "id": "urn:ietf:params:rpp:extension:example-extension-1.0",
       "version": "1.0",
-      "url": "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0"
+      "url": "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension"
     }
   ],
 ```
 
 ## Profiles
 
-The RPP server MUST include the version for each profile in the RPP Discovery response. The client MUST use this version information to determine which profiles are supported by the server, and to ensure that it uses the correct version of the profile when making requests to the server. A request using a profile MUST include the version of the profile. The server MUST reject requests using profiles with a version that is not supported by the server, and MUST return a RPP Client error code. The following is an example of how the version information for a profile can be included in the RPP Discovery response:
+The RPP server MUST include the version for each profile in the RPP Discovery response. The client MUST use this version information to determine which profiles are supported by the server, and to ensure that it uses the correct version of the profile when making requests to the server. A request using a profile MUST include the version of the profile. The server MUST reject requests using profiles with a version that is not supported by the server, and MUST return a RPP Client error code.
+
+Example of how the version information for a profile can be included in the RPP Discovery response:
 
 ```json
 "profiles": [
@@ -414,7 +404,7 @@ The RPP server MUST include the version for each profile in the RPP Discovery re
       "name": "EPP compatibility profile",
       "id": "urn:ietf:params:rpp:profile:epp-compatibility",
       "version": "1.0",
-      "url": "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0"
+      "url": "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-profile"
     }
   ]
 ```
@@ -533,21 +523,21 @@ RPP-Profile: profile=urn:ietf:params:rpp:profile:example-profile;version=1.0
 When using Media type parameter signalling, the client and the server MUST use media type parameters in the Accept and Content-Type headers to indicate the name and version of the profile used in the request. The media type parameters MUST be defined as follows:
 
 - `profile`: The value of this parameter MUST uniquely identify the profile, for example `urn:ietf:params:rpp:profile:example-profile`.
-- `version`: The value of this parameter MUST indicate the version of the profile used in the request.
+- `profile-version`: The value of this parameter MUST indicate the version of the profile used in the request.
 
 The ABNF for media type parameter signalling is as follows:
 
 ```abnf
-profile-parameter = "profile" "=" profile-name ";" OWS "version" "=" version
+profile-parameter = "profile" "=" profile-name ";" OWS "profile-version" "=" version
 profile-name      = token
 version           = 1*DIGIT "." 1*DIGIT
 ```
 
-Example for the media type `application/rpp+json` with profile parameters indicating the use of the "example-profile" profile version 1.0.:
+Example for the media type `application/rpp+json` with profile parameters indicating the use of the "example-profile" profile version 1.0. and RPP version 1.1:
 
 ```http
-Accept: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
-Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; version="1.0"
+Accept: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; profile-version="1.0"; version="1.1"
+Content-Type: application/rpp+json; profile="urn:ietf:params:rpp:profile:example-profile"; profile-version="1.0"; version="1.1"
 ```
 
 
@@ -1441,7 +1431,7 @@ Fields to be registered:
 
 - `name`: The name of the extension, for example "RPP example extension".
 - `version`: The version of the extension, for example "1.0".
-- `url`: The URL for the extension specification, for example "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension-1.0".
+- `url`: The URL for the extension specification, for example "https://www.iana.org/assignments/rpp-extensions/rpp-example-extension".
 - `description`: A human-readable description of the extension and its intended use.
 
 ## RPP Profile registry
@@ -1457,10 +1447,10 @@ Registration procedure: Expert Review
 Fields to be registered:
 
 - `name`: The name of the profile, for example "EPP compatibility profile".
-- `id`: A unique URN identifier for the profile, for example "urn:ietf:params:rpp:profile:epp-compatibility-1.0".
+- `id`: A unique URN identifier for the profile, for example "urn:ietf:params:rpp:profile:epp-compatibility".
 - `version`: The version of the profile, for example "1.0".
-- `url`: The URL for the profile specification, for example "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-provisioning-profile-1.0".
-- `description`: A human-readable description of the profile and its intended use. 
+- `url`: The URL for the profile specification, for example "https://www.iana.org/assignments/rpp-profiles/epp-compatibility-profile".
+- `description`: A human-readable description of the profile and its intended use.
 
 ## RPP Result Codes Registry
 
