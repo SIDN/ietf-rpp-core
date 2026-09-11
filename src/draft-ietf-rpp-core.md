@@ -72,9 +72,7 @@ JWT - JSON Web Token as defined in [@!RFC7519].
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT","SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [@!RFC2119].
 
-In examples, indentation and white space in examples are provided only to illustrate element relationships and are not REQUIRED features of the protocol.
-
-All example requests assume a RPP server using HTTP version 2 is listening on the standard HTTPS port on host rpp.example. An authorization token has been provided by an out of band process and MUST be used by the client to authenticate each request.
+All example requests assume an RPP server is available on the standard HTTPS port on host `rpp.example`. An authorization token has been provided by an out of band process and MUST be used by the client to authenticate each request.
 
 # Mapping to EPP
 
@@ -1537,6 +1535,10 @@ RPP relies on the security of the underlying HTTP transport, hence the best comm
 Data confidentiality and integrity MUST be enforced. Every client and server interaction MUST be encrypted using TLS version 1.3 [@!RFC8446]. Future versions of TLS MAY be used as they become available and are deemed secure.
 
 # Change History
+
+## Version 00 to 01
+
+- Removed text suggesting HTTP/2 is minimum version required for RPP (Issue #91)
 
 ## Version draft-wullink-rpp-core-05 to draft-ietf-rpp-core-00
 
